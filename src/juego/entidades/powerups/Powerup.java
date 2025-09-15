@@ -1,43 +1,17 @@
 package juego.entidades.powerups;
 
 public class PowerUp {
-    protected Coordenada posicion;
-    protected String nombre;
-    protected boolean activo;
-    protected TipoPowerUp tipo;
+    private final TipoPowerUp tipo;
+    private final Coordenada posicion;
+    private boolean activo = true;
 
-    private final Runnable efecto;
-
-    public PowerUp(Coordenada posicion, String nombre, TipoPowerUp tipo) {
-        this.posicion = posicion;
-        this.nombre = nombre;
+    public PowerUp(TipoPowerUp tipo, Coordenada posicion) {
         this.tipo = tipo;
-        this.activo = true;
+        this.posicion = posicion;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public boolean isActivo() {
-        return activo;
-
-    }
-    public void desactivar() {
-        activo = false;
-    }
-
-    public Coordenada getPosicion() {
-        return posicion;
-    }
-
-    public TipoPowerUp getTipo() {
-        return tipo;
-    }
-
-    public void recoger() {
-        if (!activo) return;
-        efecto.run();   // ejecuta la lógica del PowerUp
-        desactivar();
-    }
+    public TipoPowerUp getTipo() { return tipo; }
+    public Coordenada getPosicion() { return posicion; }
+    public boolean isActivo() { return activo; }
+    public void desactivar() { activo = false; }
 }

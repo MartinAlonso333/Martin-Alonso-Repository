@@ -46,6 +46,7 @@ public abstract class Tanque {
 
     public void recibirDanio(int cantidad){
         this.vida -= cantidad;
+        if (this.vida<=0){/* logica para destruir*/}
     }
 
     public int getDanio() {

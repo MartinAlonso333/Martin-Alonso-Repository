@@ -1,6 +1,6 @@
 package juego.entidades.entes;
 
-public class Jugador extends Ente {
+public class Jugador extends Piloto {
     public Jugador(String nombre) {
         super(nombre, "jugador");
         this.puntaje = 0;

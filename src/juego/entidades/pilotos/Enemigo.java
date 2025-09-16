@@ -1,6 +1,6 @@
 package juego.entidades.entes;
 
-public class Enemigo extends Ente {
+public class Enemigo extends Piloto {
     private String color;
 
     public Enemigo(String nombre, String color) {

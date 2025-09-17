@@ -1,6 +1,8 @@
 package juego.entidades;
-
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.image.Image;
 
 public abstract class Ente {
     protected Coordenada posicion;
@@ -23,6 +25,11 @@ public abstract class Ente {
     public Coordenada getPosicion() { return posicion; }
     public void setPosicion(Coordenada pos) { this.posicion = pos; }
     public Dimensiones getDimensiones() { return dimensiones; }
+
+    public Image getSprite() { return sprite; }
+    public void setSprite(String ruta) {
+        this.sprite = new Image(ruta);
+    }
 
     public abstract void actualizar();
     public abstract boolean estaDestruido();

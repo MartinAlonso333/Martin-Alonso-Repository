@@ -2,6 +2,8 @@ package juego.entidades.tanques;
 
 import juego.entidades.Ente;
 import java.util.List;
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
 
 public abstract class Tanque extends Ente {
     private int vida;
@@ -10,8 +12,10 @@ public abstract class Tanque extends Ente {
     private long tiempoConducta;
     private long inicioConducta;
     private String direccion;
+    private String spriteNormal;
+    private String spriteDestruido;
 
-    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio){
+    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, String spriteNormal, String spriteDestruido) {
         super(posicion, dimensiones);
         this.vida = vida;
         this.danio = danio;
@@ -19,6 +23,10 @@ public abstract class Tanque extends Ente {
         this.tiempoConducta = sortearTiempoConducta();
         this.inicioConducta = System.currentTimeMillis();
         this.direccion = sortearDireccion();
+        this.spriteNormal = spriteNormal;
+        this.spriteDestruido = spriteDestruido;
+
+        this.setSprite(spriteNormal);
     }
 
     public abstract void disparar();
@@ -55,14 +63,26 @@ public abstract class Tanque extends Ente {
     public void recibirDanio(int cantidad){
         this.vida -= cantidad;
         if (this.vida <= 0) {
-            // lógica para destruir tanque
+            destruir();
         }
     }
 
+    protected void destruir(){
+        this.vida = 0;
+        this.setSprite(spriteDestruido);
+    }
     public int getDanio() { return danio; }
 
     @Override
     public boolean estaDestruido() {
         return vida <= 0;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 }

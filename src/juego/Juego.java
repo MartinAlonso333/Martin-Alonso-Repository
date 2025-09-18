@@ -4,82 +4,49 @@ import juego.entidades.*;
 import java.util.*;
 
 public class Juego {
-
-    private Tablero tablero;
     private List<Tanque> tanques = new ArrayList<>();
     private List<Enemigo> enemigos = new ArrayList<>();
     private List<Bloque> bloques = new ArrayList<>();
     private List<PowerUp> powerUps = new ArrayList<>();
 
-    private Map<TipoPowerUp, Consumer<Tanque>> efectos = new HashMap<>();
+    public Juego() {}
 
-    private List<EventoJuegoListener> listeners = new ArrayList<>();
+    public void actualizar(double deltaTime) {
+        // Actualizar todos los entes polimórficamente
+        for (Tanque t : tanques) t.actualizar(deltaTime);
+        for (Enemigo e : enemigos) e.actualizar(deltaTime);
+        for (PowerUp p : powerUps) if (p.activo()) p.actualizar(deltaTime);
 
-    public Juego(int ancho, int alto) {
-        this.tablero = new Tablero(ancho, alto);
-        agregarEfectos();
-    }
-
-    private void agregarEfectos() {
-        efectos.put(TipoPowerUp.GRANADA, t -> System.out.println("Boom! Todos los enemigos reciben daño"));
-        efectos.put(TipoPowerUp.CASCO, t -> System.out.println("Jugador gana +50 de vida"));
-        efectos.put(TipoPowerUp.VELOCIDAD, t -> System.out.println("Velocidad aumentada"));
-        efectos.put(TipoPowerUp.ESCUDO, t -> System.out.println("Escudo activado"));
-    }
-
-    // Actualiza todos los entes del juego
-    public void actualizar() {
-        // Actualizar jugadores
-        jugadores.forEach(t -> {
-            t.actualizar();
-
-            // Chequear power-ups
-            powerUps.stream()
-                    .filter(PowerUp::activo)
-                    .filter(t::colisionaCon)
-                    .forEach(p -> {
-                        Consumer<Tanque> efecto = efectos.get(p.getTipo());
-                        if (efecto != null) efecto.accept(t);
-                        p.desactivar();
-                    });
-
-            // Mantener dentro del tablero
-            if (!tablero.dentroDelTablero(t) || tablero.colisionaConOtros(t)) {
-                // Revertir movimiento
-                t.setPosicion(t.getPosicion()); // o lógica de retroceso según necesidad
+        for (Tanque t : tanques) {
+            for (PowerUp pu : powerUps) {
+                if (pu.activo() && colision(t, pu)) {
+                    pu.aplicar(t, gestorPowerUps); // ¡el power-up se maneja solo!
+                }
             }
-        });
+        }
+        gestorPowerUps.actualizar(deltaTime);
 
-        // Actualizar enemigos
-        enemigos.forEach(t -> {
-            t.actualizar();
-            if (!tablero.dentroDelTablero(t) || tablero.colisionaConOtros(t)) {
-                // Revertir o cambiar dirección
-            }
-        });
-
-        // Actualizar power-ups si es necesario
-        powerUps.forEach(PowerUp::actualizar);
     }
 
-    // Métodos de agregación
-    public void agregarJugador(Tanque t) {
-        jugadores.add(t);
-        tablero.agregarEnte(t);
+    public void moverJugador(int indice, Direccion dir) {
+        if (indice >= 0 && indice < tanques.size())
+            tanques.get(indice).mover(dir);
     }
-    public void agregarEnemigo(Tanque t) {
-        enemigos.add(t);
-        tablero.agregarEnte(t);
+
+    public void jugadorDispara(int indice) {
+        if (indice >= 0 && indice < tanques.size())
+            tanques.get(indice).disparar();
     }
-    public void agregarPowerUp(PowerUp p) {
-        powerUps.add(p);
-        tablero.agregarEnte(p);
-    }
-    public void agregarBloque(Bloque b) { tablero.agregarEnte(b); }
+
+    // Agregar entidades
+    public void agregarTanque(Tanque t) { tanques.add(t); }
+    public void agregarEnemigo(Enemigo e) { enemigos.add(e); }
+    public void agregarBloque(Bloque b) { bloques.add(b); }
+    public void agregarPowerUp(PowerUp p) { powerUps.add(p); }
 
     // Getters
-    public List<Tanque> getJugadores() { return jugadores; }
-    public List<Tanque> getEnemigos() { return enemigos; }
+    public List<Tanque> getTanques() { return tanques; }
+    public List<Enemigo> getEnemigos() { return enemigos; }
+    public List<Bloque> getBloques() { return bloques; }
     public List<PowerUp> getPowerUps() { return powerUps; }
-    public Tablero getTablero() { return tablero; }
 }

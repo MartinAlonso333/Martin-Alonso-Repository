@@ -19,8 +19,15 @@ public class PowerUp extends Ente {
     public void desactivar() { activo = false; }
     public TipoPowerUp getTipo() { return tipo; }
 
+    public void aplicar(Tanque t, GestorPowerUps gestor) {
+        tipo.aplicar(t, gestor);
+        desactivar();
+    }
+
     @Override
-    public void actualizar() { }
+    public void actualizar(double deltaTime) {
+        tipo.actualizar(deltaTime);
+    }
     @Override
     public boolean estaDestruido() { return !activo; }
 }

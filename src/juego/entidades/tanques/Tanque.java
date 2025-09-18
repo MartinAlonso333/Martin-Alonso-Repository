@@ -2,8 +2,7 @@ package juego.entidades.tanques;
 
 import juego.entidades.Ente;
 import java.util.List;
-import juego.utilidades.Coordenada;
-import juego.utilidades.Dimensiones;
+import juego.utilidades.*;
 
 public abstract class Tanque extends Ente {
     private int vida;
@@ -31,8 +30,9 @@ public abstract class Tanque extends Ente {
 
     public abstract void disparar();
 
-    /** Lógica de movimiento según dirección y deltaTiempo */
-    public abstract void mover();
+    public void mover(Direccion dir) {
+        dir.aplicarMovimiento(posicion, velocidad);
+    }
 
     @Override
     public void actualizar() {

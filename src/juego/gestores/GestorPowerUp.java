@@ -1,4 +1,4 @@
-package juego;
+package juego.gestores;
 
 import juego.entidades.*;
 import java.util.*;

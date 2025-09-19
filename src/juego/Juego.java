@@ -1,52 +1,77 @@
 package juego;
 
 import juego.entidades.*;
+import juego.gestores.*;
 import java.util.*;
 
 public class Juego {
-    private List<Tanque> tanques = new ArrayList<>();
-    private List<Enemigo> enemigos = new ArrayList<>();
-    private List<Bloque> bloques = new ArrayList<>();
-    private List<PowerUp> powerUps = new ArrayList<>();
 
-    public Juego() {}
+    private final List<Tanque> jugadores = new ArrayList<>();
+    private final List<Tanque> enemigos = new ArrayList<>();
+    private final List<Bloque> bloques = new ArrayList<>();
+    private final List<PowerUp> powerUps = new ArrayList<>();
+    private final List<Ente> entes = new ArrayList<>();
 
-    public void actualizar(double deltaTime) {
-        // Actualizar todos los entes polimórficamente
-        for (Tanque t : tanques) t.actualizar(deltaTime);
-        for (Enemigo e : enemigos) e.actualizar(deltaTime);
-        for (PowerUp p : powerUps) if (p.activo()) p.actualizar(deltaTime);
+    private final SistemaColision sistemaColision;
+    private final GestorPowerUps gestorPowerUps;
 
-        for (Tanque t : tanques) {
-            for (PowerUp pu : powerUps) {
-                if (pu.activo() && colision(t, pu)) {
-                    pu.aplicar(t, gestorPowerUps); // ¡el power-up se maneja solo!
-                }
-            }
-        }
-        gestorPowerUps.actualizar(deltaTime);
-
+    public Juego() {
+        this.gestorPowerUps = new GestorPowerUps();
+        this.sistemaColision = new SistemaColision(gestorPowerUps);
     }
 
+    // Métodos para agregar entidades
+    public void agregarJugador(Tanque t) { agregarEnte(t, jugadores); }
+    public void agregarEnemigo(Tanque e) { agregarEnte(e, enemigos); }
+    public void agregarBloque(Bloque b) { agregarEnte(b, bloques); }
+    public void agregarPowerUp(PowerUp p) { agregarEnte(p, powerUps); }
+    public void agregarBala(Bala b) { registrarEnte(b); }
+
+    private <T extends Ente> void agregarEnte(T ente, List<T> lista) {
+        lista.add(ente);
+        registrarEnte(ente);
+    }
+
+    private void registrarEnte(Ente e) {
+        entes.add(e);
+        sistemaColision.registrarEnte(e);
+    }
+
+    // Actualización del juego
+    public void actualizar(double deltaTime) {
+        entes.stream()
+                .filter(Ente::estaActivo)
+                .forEach(e -> e.actualizar(deltaTime));
+
+        gestorPowerUps.actualizar(deltaTime);
+    }
+
+    // Control de jugadores
     public void moverJugador(int indice, Direccion dir) {
-        if (indice >= 0 && indice < tanques.size())
-            tanques.get(indice).mover(dir);
+        if (indiceValido(indice, jugadores)) {
+            jugadores.get(indice).mover(dir, jugadores.get(indice).getVelocidad());
+        }
     }
 
     public void jugadorDispara(int indice) {
-        if (indice >= 0 && indice < tanques.size())
-            tanques.get(indice).disparar();
+        if (indiceValido(indice, jugadores)) {
+            jugadores.get(indice).disparar();
+        }
     }
 
-    // Agregar entidades
-    public void agregarTanque(Tanque t) { tanques.add(t); }
-    public void agregarEnemigo(Enemigo e) { enemigos.add(e); }
-    public void agregarBloque(Bloque b) { bloques.add(b); }
-    public void agregarPowerUp(PowerUp p) { powerUps.add(p); }
+    private boolean indiceValido(int indice, List<?> lista) {
+        return indice >= 0 && indice < lista.size();
+    }
+
+    // Estado del Nivel
+    public boolean nivelTerminado() {
+        return enemigos.stream().noneMatch(Ente::estaActivo);
+    }
 
     // Getters
-    public List<Tanque> getTanques() { return tanques; }
-    public List<Enemigo> getEnemigos() { return enemigos; }
-    public List<Bloque> getBloques() { return bloques; }
-    public List<PowerUp> getPowerUps() { return powerUps; }
+    public List<Tanque> getJugadores() { return Collections.unmodifiableList(jugadores); }
+    public List<Tanque> getEnemigos() { return Collections.unmodifiableList(enemigos); }
+    public List<Bloque> getBloques() { return Collections.unmodifiableList(bloques); }
+    public List<PowerUp> getPowerUps() { return Collections.unmodifiableList(powerUps); }
+    public List<Ente> getEntes() { return Collections.unmodifiableList(entes); }
 }

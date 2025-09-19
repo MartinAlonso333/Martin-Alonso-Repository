@@ -1,8 +1,7 @@
 package juego.entidades.bloques;
 
-import juego.entidades.entes.Ente;
-import juego.entidades.Coordenada;
-import juego.entidades.Dimensiones;
+import juego.entidades.*;
+import juego.utilidades.*:
 
 public class Bloque extends Ente {
 
@@ -12,17 +11,13 @@ public class Bloque extends Ente {
     public Bloque(TipoBloque tipo, Coordenada posicion, Dimensiones dimensiones) {
         super(posicion, dimensiones);
         this.tipo = tipo;
-        this.vida = tipo.getVidaInicial(); // vida según el tipo
+        this.vida = tipo.getVidaInicial();
     }
 
-    public TipoBloque getTipo() {
-        return tipo;
-    }
+    public TipoBloque getTipo() { return tipo; }
+    public int getVida() { return vida; }
 
-    public int getVida() {
-        return vida;
-    }
-
+    @Override
     public boolean estaDestruido() {
         return vida <= 0 && tipo.esDestructible();
     }
@@ -30,19 +25,20 @@ public class Bloque extends Ente {
     public void recibirDanio(int cantidad) {
         if (tipo.esDestructible()) {
             vida -= cantidad;
+            notificarColision(); // informa al sistema que cambió su estado
         }
     }
 
-    public boolean permitePaso() {
-        return tipo.permitePaso();
-    }
+    public boolean permitePaso() { return tipo.permitePaso(); }
+    public boolean permiteBalas() { return tipo.permiteBalas(); }
 
-    public boolean permiteBalas() {
-        return tipo.permiteBalas();
+    @Override
+    public void actualizar(double deltaTime) {
+        // Bloques estáticos normalmente no necesitan actualizar nada
     }
 
     @Override
-    public void actualizar() {
-        // Bloques estáticos: no necesitan actualizar nada
+    public TipoEnte getTipo() {
+        return TipoEnte.BLOQUE;
     }
 }

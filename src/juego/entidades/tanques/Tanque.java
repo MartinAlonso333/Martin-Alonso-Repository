@@ -7,6 +7,7 @@ import juego.utilidades.*;
 public abstract class Tanque extends Ente {
     private int vida;
     private int danio;
+    private Coordenada ultimaPosicion; // para manejar colisiones con bloques
     private long ultimoDisparo;
     private long tiempoConducta;
     private long inicioConducta;
@@ -31,15 +32,26 @@ public abstract class Tanque extends Ente {
     public abstract void disparar();
 
     public void mover(Direccion dir) {
-        dir.aplicarMovimiento(posicion, velocidad);
+        ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());
+        Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());
+        dir.aplicarMovimiento(nuevaPos, velocidad);
+        setPosicion(nuevaPos);
     }
 
-    @Override
-    public void actualizar() {
-        mover();
-        // Las colisiones se chequean desde Tablero o Juego
-        // Se podrían actualizar powerups activos aquí
+
+    public void revertirMovimiento() {
+        if (ultimaPosicion != null) {
+            setPosicion(new Coordenada(ultimaPosicion.getX(), ultimaPosicion.getY()));
+        }
     }
+
+
+    @Override
+    public void actualizar(double deltaTime) {
+        mover();
+        notificarMovimiento(); // a los observers
+    }
+
 
     public long sortearTiempoConducta(){
         return (1 + (int)(Math.random()*5)) * 1000L;

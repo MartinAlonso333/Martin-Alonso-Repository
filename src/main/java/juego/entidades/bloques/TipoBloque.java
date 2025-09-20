@@ -1,11 +1,12 @@
 package juego.entidades.bloques;
 
 public enum TipoBloque {
-    LADRILLO(true, true, true, 3),
-    BASE(true, true, true, 1),
+    LADRILLO(true, false, false, 3),
+    BASE(true, false, false, 1),
     BOSQUE(false, true, true, 0),
-    AGUA(false, false, false, 0),
-    METAL(false, false, true, 0);
+    AGUA(false, false, true, 0),
+    METAL(false, false, false, 0),
+    VACIO(false, true, true, 0);
 
     private final boolean destructible;
     private final boolean permitePaso;

@@ -1,4 +1,4 @@
-package juego.ui;
+package juego.vista;
 
 import javafx.stage.Stage;
 

@@ -1,6 +1,4 @@
 package juego.utilidades;
-import juego.utilidades.Coordenada;
-import juego.utilidades.Dimensiones;
 
 public enum Direccion {
     ARRIBA(0, -1),
@@ -17,8 +15,7 @@ public enum Direccion {
     }
     // Aplica el movimiento a la posición con cierta velocidad
     public void aplicarMovimiento(Coordenada pos, double velocidad) {
-        pos.setX(pos.getX() + dx * velocidad);
-        pos.setY(pos.getY() + dy * velocidad);
+        pos.setPixeles(pos.getX() + dx * velocidad, pos.getY() + dy * velocidad);
     }
 }
 

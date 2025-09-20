@@ -1,9 +1,8 @@
 package juego.vista;
 
-import juego.entidades.Ente;
+import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.canvas.GraphicsContext;
 
 public class JuegoVista {
 
@@ -14,16 +13,12 @@ public class JuegoVista {
     }
 
     public void dibujar(GraphicsContext gc) {
-        for (EnteView ev : vistas) {
-            if (ev.estaVisible()) {
-                ev.dibujar(gc);
-            }
+        for (EnteVista ev : vistas) {
+            if (ev.estaVisible()) ev.dibujar(gc);
         }
     }
 
-    public void actualizar() {
-        for (EnteVista ev : vistas) {
-            ev.actualizar();
-        }
+    public void actualizar(double deltaTime) {
+        for (EnteVista ev : vistas) ev.actualizar(deltaTime);
     }
 }

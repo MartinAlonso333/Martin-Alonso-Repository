@@ -15,7 +15,6 @@ public enum Direccion {
         this.dx = dx;
         this.dy = dy;
     }
-
     // Aplica el movimiento a la posición con cierta velocidad
     public void aplicarMovimiento(Coordenada pos, double velocidad) {
         pos.setX(pos.getX() + dx * velocidad);

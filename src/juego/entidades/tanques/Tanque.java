@@ -1,30 +1,26 @@
 package juego.entidades.tanques;
 
 import juego.entidades.Ente;
-import java.util.List;
 import juego.utilidades.*;
 
 public abstract class Tanque extends Ente {
     private int vida;
     private int danio;
-    private Coordenada ultimaPosicion; // para manejar colisiones con bloques
+    private Coordenada ultimaPosicion; // para manejar colisiones
     private long ultimoDisparo;
-    private long tiempoConducta;
-    private long inicioConducta;
-    private String direccion;
     private String spriteNormal;
     private String spriteDestruido;
+    private final int velocidad;
 
-    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, String spriteNormal, String spriteDestruido) {
+    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio,
+                  String spriteNormal, String spriteDestruido, int velocidad) {
         super(posicion, dimensiones);
         this.vida = vida;
         this.danio = danio;
         this.ultimoDisparo = System.currentTimeMillis();
-        this.tiempoConducta = sortearTiempoConducta();
-        this.inicioConducta = System.currentTimeMillis();
-        this.direccion = sortearDireccion();
         this.spriteNormal = spriteNormal;
         this.spriteDestruido = spriteDestruido;
+        this.velocidad = velocidad;
 
         this.setSprite(spriteNormal);
     }
@@ -38,63 +34,42 @@ public abstract class Tanque extends Ente {
         setPosicion(nuevaPos);
     }
 
-
     public void revertirMovimiento() {
         if (ultimaPosicion != null) {
             setPosicion(new Coordenada(ultimaPosicion.getX(), ultimaPosicion.getY()));
         }
     }
 
-
     @Override
     public void actualizar(double deltaTime) {
-        mover();
-        notificarMovimiento(); // a los observers
+        // Por defecto no hace nada, lo implementan las subclases
     }
 
-
-    public long sortearTiempoConducta(){
-        return (1 + (int)(Math.random()*5)) * 1000L;
-    }
-
-    public String sortearDireccion(){
-        String[] direcciones = {"↑", "↓", "←", "→"};
-        return direcciones[(int)(Math.random() * 4)];
-    }
-
-    public boolean puedeDisparar(int intervaloMs){
+    public boolean puedeDisparar(int intervaloMs) {
         return System.currentTimeMillis() - ultimoDisparo >= intervaloMs;
     }
 
-    protected void registrarDisparo(){
+    protected void registrarDisparo() {
         ultimoDisparo = System.currentTimeMillis();
     }
 
     public int getVida() { return vida; }
+    public int getDanio() { return danio; }
 
-    public void recibirDanio(int cantidad){
+    public void recibirDanio(int cantidad) {
         this.vida -= cantidad;
         if (this.vida <= 0) {
             destruir();
         }
     }
 
-    protected void destruir(){
+    protected void destruir() {
         this.vida = 0;
         this.setSprite(spriteDestruido);
     }
-    public int getDanio() { return danio; }
 
     @Override
     public boolean estaDestruido() {
         return vida <= 0;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
     }
 }

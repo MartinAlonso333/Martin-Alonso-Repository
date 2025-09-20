@@ -1,8 +1,7 @@
 package juego.entidades.tanques;
-import juego.entidades.powerups.TipoPowerUp;
+import juego.entidades.TipoEnte;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
-import java.util.List;
 
 public class TanqueJugador extends Tanque {
     private boolean invulnerable;
@@ -13,9 +12,9 @@ public class TanqueJugador extends Tanque {
     private static final int INTERVALO_DISPARO_MS = 2000;
     private static final int DURACION_INVULNERABILIDAD = 10000;
 
-    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, String spriteNormal, String spriteDestruido) {
-        super(posicion,dimensiones, 30, 10, spriteNormal, spriteDestruido
-        );
+
+    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, String spriteNormal, String spriteDestruido, int velocidad) {
+        super(posicion,dimensiones, 3, 1, spriteNormal, spriteDestruido, velocidad);
         this.invulnerable = false;
         this.disparoMejorado = false;
     }
@@ -30,11 +29,6 @@ public class TanqueJugador extends Tanque {
             }
             registrarDisparo();
         }
-    }
-
-    @Override
-    public void mover() {
-        // Movimiento controlado por input del jugador
     }
 
     public void activarInvulnerabilidad(int ms) {
@@ -55,22 +49,6 @@ public class TanqueJugador extends Tanque {
             super.recibirDanio(cantidad);
         } else {
             System.out.println("Casco activo: sin daño recibido");
-        }
-    }
-
-    public void aplicarPowerUp(TipoPowerUp tipo, List<TanqueEnemigo> enemigos) {
-        switch (tipo) {
-            case GRANADA:
-                for (TanqueEnemigo enemigo : enemigos) {
-                    enemigo.recibirDanio(enemigo.getVida());
-                }
-                break;
-            case CASCO:
-                activarInvulnerabilidad(DURACION_INVULNERABILIDAD);
-                break;
-            case ESTRELLA:
-                mejorarDisparo();
-                break;
         }
     }
 
@@ -100,4 +78,8 @@ public class TanqueJugador extends Tanque {
         actualizarDisparoMejorado(); // chequea si sigue activo el disparo mejorado
     }
 
+    @Override
+    public TipoEnte getTipo() {
+        return null;
+    }
 }

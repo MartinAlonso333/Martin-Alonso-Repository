@@ -1,20 +1,24 @@
 package juego.entidades.tanques;
-import juego.entidades.entes.Ente;
 
-public class TanqueBasico extends Tanque {
 
-    public TanqueBasico(Ente entecontrolador) {
-        super(entecontrolador,10,10);
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
+import juego.utilidades.Direccion;
+
+public class TanqueBasico extends TanqueEnemigo {
+
+    public TanqueBasico(Coordenada posicion, Dimensiones dimensiones, String spriteNormal, String spriteDestruido) {
+        super(posicion, dimensiones, 1, 1, spriteNormal, spriteDestruido, 1);
     }
 
     @Override
-    public void mover() {
-        System.out.println("Tanque básico se mueve despacio.");
+    public void mover(Direccion dr) {
+        super.mover(dr);
     }
 
     @Override
-    public void disparar(){
-        if (puedeDisparar(2000)){
+    public void disparar() {
+        if (puedeDisparar(3000)) {
             registrarDisparo();
         }
     }

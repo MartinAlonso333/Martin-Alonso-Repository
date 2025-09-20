@@ -25,8 +25,8 @@ public class Coordenada {
     }
 
     // Getters
-    public int getCeldaX() { return celdaX; }
-    public int getCeldaY() { return celdaY; }
+    public int getX() { return celdaX; }
+    public int getY() { return celdaY; }
     public double getPixelX() { return pixelX; }
     public double getPixelY() { return pixelY; }
 

@@ -1,4 +1,6 @@
-package juego.entidades.utilidades;
+package juego.utilidades;
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
 
 public enum Direccion {
     ARRIBA(0, -1),
@@ -20,3 +22,4 @@ public enum Direccion {
         pos.setY(pos.getY() + dy * velocidad);
     }
 }
+

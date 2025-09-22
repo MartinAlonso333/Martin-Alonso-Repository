@@ -1,10 +1,9 @@
-package main.java.juego.entidades;
+package juego.entidades;
 
-
-import main.java.juego.gestores.ColisionVisitor;
-import main.java.juego.utilidades.Coordenada;
-import main.java.juego.utilidades.Dimensiones;
-import main.java.juego.utilidades.EventManager;
+import juego.entidades.tanques.Bala;
+import juego.eventos.EventoManager;
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
 
 public abstract class Ente {
     protected Coordenada posicion;
@@ -20,7 +19,7 @@ public abstract class Ente {
 
     public void setPosicion(Coordenada nuevaPos) {
         this.posicion = nuevaPos;
-        EventManager.getInstancia().notificar("ente_movido:" + this.hashCode());
+        EventoManager.getInstancia().notificar("ente_movido:" + this.hashCode(), this);
     }
 
     public Dimensiones getDimensiones() { return dimensiones; }
@@ -29,13 +28,13 @@ public abstract class Ente {
     public void setActivo(boolean activo) { this.activo = activo; }
 
     public boolean intersecta(Ente otro) {
-        return this.posicion.getX() < otro.posicion.getX() + otro.dimensiones.ancho() &&
-                this.posicion.getX() + this.dimensiones.ancho() > otro.posicion.getX() &&
-                this.posicion.getY() < otro.posicion.getY() + otro.dimensiones.alto() &&
-                this.posicion.getY() + this.dimensiones.alto() > otro.posicion.getY();
+        return this.posicion.getX() < otro.posicion.getX() + otro.dimensiones.getAncho() &&
+                this.posicion.getX() + this.dimensiones.getAncho() > otro.posicion.getX() &&
+                this.posicion.getY() < otro.posicion.getY() + otro.dimensiones.getAlto() &&
+                this.posicion.getY() + this.dimensiones.getAlto() > otro.posicion.getY();
     }
 
-    public abstract void aceptar(ColisionVisitor visitor, Ente otro);
+    public Bala disparar() { return null; }
     public abstract void actualizar();
     public abstract boolean estaDestruido();
     public abstract TipoEnte getTipo();

@@ -1,11 +1,11 @@
-package main.java.juego.entidades.tanques;
+package juego.entidades.tanques;
 
 
-import main.java.juego.entidades.TipoEnte;
-import main.java.juego.utilidades.Coordenada;
-import main.java.juego.utilidades.Dimensiones;
-import main.java.juego.utilidades.Direccion;
-import main.java.juego.utilidades.EventManager;
+import juego.entidades.TipoEnte;
+import juego.eventos.EventoManager;
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
+import juego.utilidades.Direccion;
 
 public class TanqueEnemigo extends Tanque {
 
@@ -29,8 +29,8 @@ public class TanqueEnemigo extends Tanque {
         if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
             Coordenada origen = getPuntoDeDisparo();
-            Bala bala = new Bala(direccion, getDanio(), origen, new Dimensiones(8, 8), 5.0);
-            EventManager.getInstancia().notificar("nueva_bala", bala);
+            Bala bala = new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0);
+            EventoManager.getInstancia().notificar("bala_disparada", bala);
             return bala;
         }
         return null;

@@ -1,12 +1,11 @@
-package main.java.juego.entidades.tanques;
+package juego.entidades.tanques;
 
 
-import main.java.juego.entidades.Ente;
-import main.java.juego.entidades.TipoEnte;
-import main.java.juego.gestores.ColisionVisitor;
-import main.java.juego.utilidades.Coordenada;
-import main.java.juego.utilidades.Dimensiones;
-import main.java.juego.utilidades.Direccion;
+import juego.entidades.Ente;
+import juego.entidades.TipoEnte;
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
+import juego.utilidades.Direccion;
 
 public class Bala extends Ente {
     private final Direccion direccion;
@@ -30,9 +29,6 @@ public class Bala extends Ente {
     public void setActivo(boolean activo) { this.activo = activo; }
 
     @Override
-    public void aceptar(ColisionVisitor visitor, Ente otro) {
-    }
-    @Override
     public void actualizar() { direccion.aplicarMovimiento(posicion, velocidad); }
 
     @Override
@@ -40,9 +36,4 @@ public class Bala extends Ente {
 
     @Override
     public boolean estaDestruido() { return !activo; }
-
-    @Override
-    public void aceptar(juego.gestores.ColisionVisitor visitor, Ente otro) {
-        visitor.visit(this, otro);
-    }
 }

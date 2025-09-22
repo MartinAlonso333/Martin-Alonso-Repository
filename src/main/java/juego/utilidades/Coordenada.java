@@ -1,4 +1,4 @@
-package main.java.juego.utilidades;
+package juego.utilidades;
 
 import java.util.Objects;
 

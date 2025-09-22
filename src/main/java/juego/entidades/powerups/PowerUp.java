@@ -1,13 +1,14 @@
-package main.java.juego.entidades.powerups;
+package juego.entidades.powerups;
 
 import juego.entidades.Ente;
 import juego.entidades.TipoEnte;
-import juego.gestores.ColisionVisitor;
+import juego.entidades.tanques.TanqueJugador;
+import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
-import juego.utilidades.EventManager;
 
 public class PowerUp extends Ente {
+
     private final TipoPowerUp tipo;
 
     public PowerUp(Coordenada pos, Dimensiones dim, TipoPowerUp tipo) {
@@ -17,19 +18,17 @@ public class PowerUp extends Ente {
 
     public TipoPowerUp getTipoPowerUp() { return tipo; }
 
-    @Override
-    public void aceptar(ColisionVisitor visitor, Ente otro) { visitor.visit(this, otro); }
+    public void aplicar(TanqueJugador jugador) {
+        tipo.aplicar(jugador);
+        EventoManager.getInstancia().notificar("tipo_powerup", tipo);
+        setActivo(false);
+    }
 
     @Override
     public void actualizar() {}
 
     @Override
     public boolean estaDestruido() { return !estaActivo(); }
-
-    public void desactivar() {
-        setActivo(false);
-        EventManager.getInstancia().notificar("powerup_destruido", this);
-    }
 
     @Override
     public TipoEnte getTipo() { return TipoEnte.POWERUP; }

@@ -1,11 +1,10 @@
-package main.java.juego.entidades.bloques;
+package juego.entidades.bloques;
 
 import juego.entidades.Ente;
 import juego.entidades.TipoEnte;
-import juego.gestores.ColisionVisitor;
+import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
-import juego.utilidades.EventManager;
 
 public class Bloque extends Ente {
     private final TipoBloque tipo;
@@ -28,7 +27,7 @@ public class Bloque extends Ente {
             vida -= cantidad;
             if (estaDestruido()) {
                 setActivo(false);
-                EventManager.getInstancia().notificar("bloque_destruido", this);
+                EventoManager.getInstancia().notificar("bloque_destruido", this);
             }
         }
     }
@@ -38,9 +37,6 @@ public class Bloque extends Ente {
 
     @Override
     public boolean estaDestruido() { return tipo.esDestructible() && vida <= 0; }
-
-    @Override
-    public void aceptar(ColisionVisitor visitor, Ente otro) { visitor.visit(this, otro); }
 
     @Override
     public TipoEnte getTipo() { return TipoEnte.BLOQUE; }

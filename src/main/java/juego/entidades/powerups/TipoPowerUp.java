@@ -1,7 +1,7 @@
-package main.java.juego.entidades.powerups;
+package juego.entidades.powerups;
 
 import juego.entidades.tanques.TanqueJugador;
-import juego.utilidades.EventManager;
+import juego.eventos.EventoManager;
 
 public enum TipoPowerUp {
 
@@ -16,14 +16,14 @@ public enum TipoPowerUp {
         @Override
         public void aplicar(TanqueJugador jugador) {
             jugador.mejorarDisparo();
+
         }
     },
 
     GRANADA {
         @Override
         public void aplicar(TanqueJugador jugador) {
-            // Dispara un evento global que el juego puede escuchar
-            EventManager.getInstancia().notificar("granada_activada", jugador);
+            EventoManager.getInstancia().triggerExplosionGranada(jugador.getPosicion());
         }
     };
 

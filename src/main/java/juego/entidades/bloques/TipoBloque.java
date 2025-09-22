@@ -1,4 +1,4 @@
-package main.java.juego.entidades.bloques;
+package juego.entidades.bloques;
 
 public enum TipoBloque {
     LADRILLO(true, false, false, 3),

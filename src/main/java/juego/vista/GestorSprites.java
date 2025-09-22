@@ -1,7 +1,7 @@
-package main.java.juego.vista;
+package juego.vista;
 
 import juego.entidades.Ente;
-import juego.entidades.Direccion;
+import juego.utilidades.Direccion;
 
 import java.io.InputStream;
 import java.util.*;

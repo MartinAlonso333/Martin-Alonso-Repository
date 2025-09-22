@@ -1,32 +1,21 @@
-package main.java.juego.gestores;
+package juego.gestores;
 
-import main.java.juego.entidades.Ente;
-import main.java.juego.utilidades.EventManager;
-
-import java.util.HashSet;
-import java.util.Set;
+import juego.entidades.Ente;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SistemaColision {
 
-    private final ColisionHandler manejador = new ColisionHandler();
-    private final Set<Ente> entesActivos = new HashSet<>();
+    private final ColisionHandler colisionHandler = new ColisionHandler();
+    private final List<Ente> entes = new ArrayList<>();
 
-    public void registrarEnte(Ente ente) {
-        entesActivos.add(ente);
-        EventManager.getInstancia().suscribir("ente_movido:" + ente.hashCode(),
-                datos -> verificarColisiones(ente));
-    }
+    public void agregarEnte(Ente e) { entes.add(e); }
+    public void removerEnte(Ente e) { entes.remove(e); }
 
-    public void desregistrarEnte(Ente ente) {
-        entesActivos.remove(ente);
-    }
-
-    private void verificarColisiones(Ente enteMovido) {
-        if (!enteMovido.estaActivo()) return;
-
-        for (Ente otro : entesActivos) {
-            if (otro != enteMovido && otro.estaActivo() && enteMovido.intersecta(otro)) {
-                enteMovido.aceptar(manejador, otro);
+    public void chequearColisiones(Ente mover) {
+        for (Ente otro : entes) {
+            if (otro != mover && mover.intersecta(otro)) {
+                colisionHandler.manejarColision(mover, otro);
             }
         }
     }

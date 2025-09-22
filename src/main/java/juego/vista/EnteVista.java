@@ -1,8 +1,8 @@
-package main.java.juego.vista;
+package juego.vista;
 
 
-import main.java.juego.entidades.Ente;
-import main.java.juego.utilidades.Direccion;
+import juego.entidades.Ente;
+import juego.utilidades.Direccion;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class EnteVista {
 
     public void actualizar(double deltaTime) {
         // Actualizar dirección si el ente tiene un getter de dirección
-        if (ente instanceof juego.entidades.Tanque t) {
+        if (ente instanceof Tanque t) {
             direccionActual = t.getDireccion();
         }
 

@@ -1,13 +1,13 @@
-package main.java.juego.gestores;
+package juego.gestores;
 
+import juego.entidades.powerups.TipoPowerUp;
+import juego.entidades.tanques.TanqueJugador;
 
-
-import main.java.juego.entidades.powerups.TipoPowerUp;
-import main.java.juego.entidades.tanques.TanqueJugador;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GestorPowerUp {
+
     private final List<PowerUpActivo> activos = new ArrayList<>();
 
     public void activarPowerUp(TanqueJugador t, TipoPowerUp tipo, double duracionMs) {
@@ -17,7 +17,6 @@ public class GestorPowerUp {
     }
 
     public void actualizar(double deltaTime) {
-        // No se finalizan los efectos, lo hace el tanque
         activos.removeIf(pa -> pa.actualizar(deltaTime));
     }
 
@@ -36,7 +35,7 @@ public class GestorPowerUp {
 
         boolean actualizar(double deltaTime) {
             tiempoRestante -= deltaTime;
-            return tiempoRestante <= 0; // solo indica remover de la lista
+            return tiempoRestante <= 0;
         }
     }
 }

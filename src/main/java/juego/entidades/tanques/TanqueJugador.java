@@ -1,11 +1,10 @@
-package main.java.juego.entidades.tanques;
+package juego.entidades.tanques;
 
-
-import main.java.juego.entidades.TipoEnte;
-import main.java.juego.utilidades.Coordenada;
-import main.java.juego.utilidades.Dimensiones;
-import main.java.juego.utilidades.Direccion;
-import main.java.juego.utilidades.EventManager;
+import juego.entidades.TipoEnte;
+import juego.eventos.EventoManager;
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
+import juego.utilidades.Direccion;
 
 public class TanqueJugador extends Tanque {
 
@@ -26,17 +25,15 @@ public class TanqueJugador extends Tanque {
         if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
 
-            // Determinar punto de salida (centro del tanque)
+            // Punto de salida del disparo
             Coordenada origen = new Coordenada(
-                    getPosicion().getX() + getDimensiones().ancho() / 2,
-                    getPosicion().getY() + getDimensiones().alto() / 2
+                    getPosicion().getX() + getDimensiones().getAncho() / 2,
+                    getPosicion().getY() + getDimensiones().getAlto() / 2
             );
-            // Elegir daño según si es mejorado o no
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();
-            Bala bala = new Bala(getDireccion(), danioDisparo, origen, new Dimensiones(8, 8), 8.0);
-            // Notificar al EventManager que hay una nueva bala
-            EventManager.getInstancia().notificar("nueva_bala", bala);
 
+            Bala bala = new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0);
+            EventoManager.getInstancia().notificar("bala_disparada", bala);
             return bala;
         }
         return null;

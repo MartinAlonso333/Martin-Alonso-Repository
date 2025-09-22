@@ -1,12 +1,11 @@
-package main.java.juego.entidades.tanques;
+package juego.entidades.tanques;
 
 
-import main.java.juego.entidades.Ente;
-import main.java.juego.gestores.ColisionVisitor;
-import main.java.juego.utilidades.Coordenada;
-import main.java.juego.utilidades.Dimensiones;
-import main.java.juego.utilidades.Direccion;
-import main.java.juego.utilidades.EventManager;
+import juego.entidades.Ente;
+import juego.eventos.EventoManager;
+import juego.utilidades.Coordenada;
+import juego.utilidades.Dimensiones;
+import juego.utilidades.Direccion;
 
 public abstract class Tanque extends Ente {
     private int vida;
@@ -31,19 +30,21 @@ public abstract class Tanque extends Ente {
 
     protected Coordenada getPuntoDeDisparo() {
         return new Coordenada(
-                getPosicion().getX() + getDimensiones().ancho() / 2,
-                getPosicion().getY() + getDimensiones().alto() / 2
+                getPosicion().getX() + getDimensiones().getAncho() / 2,
+                getPosicion().getY() + getDimensiones().getAlto() / 2
         );
     }
 
     public Direccion getDireccion() {
         return direccion;
     }
+
     public void mover(Direccion dir) {
         ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());
         Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());
         dir.aplicarMovimiento(nuevaPos, velocidad);
         setPosicion(nuevaPos);
+        EventoManager.getInstancia().notificar("jugador_movido", this);
     }
 
     public void revertirMovimiento() {
@@ -72,16 +73,10 @@ public abstract class Tanque extends Ente {
     protected void destruir() {
         vida = 0;
         setActivo(false);
-        EventManager.getInstancia().notificar("tanque_destruido", this);
     }
 
     @Override
     public boolean estaDestruido() {
         return vida <= 0;
-    }
-
-    @Override
-    public void aceptar(ColisionVisitor visitor, Ente otro) {
-        visitor.visit(this, otro);
     }
 }

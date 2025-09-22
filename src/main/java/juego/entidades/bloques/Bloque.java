@@ -1,4 +1,4 @@
-package juego.entidades.bloques;
+package main.java.juego.entidades.bloques;
 
 import juego.entidades.Ente;
 import juego.entidades.TipoEnte;

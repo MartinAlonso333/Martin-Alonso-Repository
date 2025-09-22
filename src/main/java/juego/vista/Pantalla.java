@@ -1,4 +1,4 @@
-package juego.vista;
+package main.java.juego.vista;
 
 import javafx.stage.Stage;
 

@@ -1,7 +1,8 @@
-package juego.gestores;
+package main.java.juego.gestores;
 
-import juego.entidades.Ente;
-import juego.utilidades.EventManager;
+import main.java.juego.entidades.Ente;
+import main.java.juego.utilidades.EventManager;
+
 import java.util.HashSet;
 import java.util.Set;
 

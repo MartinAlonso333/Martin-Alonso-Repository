@@ -1,4 +1,4 @@
-package juego.vista;
+package main.java.juego.vista;
 
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;

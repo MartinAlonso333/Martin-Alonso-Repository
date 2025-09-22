@@ -1,10 +1,10 @@
-package juego.vista;
+package main.java.juego.vista;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import juego.entidades.Ente;
-import juego.entidades.Direccion;
 
+import main.java.juego.entidades.Ente;
+import main.java.juego.utilidades.Direccion;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

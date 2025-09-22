@@ -1,4 +1,4 @@
-package juego;
+package main.java.juego;
 
 import juego.entidades.*;
 import juego.entidades.bloques.Bloque;

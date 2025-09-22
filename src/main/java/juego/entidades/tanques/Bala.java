@@ -1,16 +1,19 @@
-package juego.entidades.tanques;
+package main.java.juego.entidades.tanques;
 
-import juego.entidades.Ente;
-import juego.entidades.TipoEnte;
-import juego.utilidades.Coordenada;
-import juego.utilidades.Dimensiones;
-import juego.utilidades.Direccion;
+
+import main.java.juego.entidades.Ente;
+import main.java.juego.entidades.TipoEnte;
+import main.java.juego.gestores.ColisionVisitor;
+import main.java.juego.utilidades.Coordenada;
+import main.java.juego.utilidades.Dimensiones;
+import main.java.juego.utilidades.Direccion;
 
 public class Bala extends Ente {
     private final Direccion direccion;
     private int danio;
     private boolean activo;
     private final double velocidad;
+
 
     public Bala(Direccion direccion, int danio, Coordenada posicion, Dimensiones dimensiones, double velocidad) {
         super(posicion, dimensiones);
@@ -26,6 +29,9 @@ public class Bala extends Ente {
     public void setDanio(int danio) { this.danio = danio; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
+    @Override
+    public void aceptar(ColisionVisitor visitor, Ente otro) {
+    }
     @Override
     public void actualizar() { direccion.aplicarMovimiento(posicion, velocidad); }
 

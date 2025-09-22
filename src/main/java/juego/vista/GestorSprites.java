@@ -1,4 +1,4 @@
-package juego.vista;
+package main.java.juego.vista;
 
 import juego.entidades.Ente;
 import juego.entidades.Direccion;

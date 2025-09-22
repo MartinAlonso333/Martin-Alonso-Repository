@@ -1,14 +1,14 @@
-package juego.entidades.tanques;
+package main.java.juego.entidades.tanques;
 
 
-import juego.utilidades.Coordenada;
-import juego.utilidades.Dimensiones;
-import juego.utilidades.Direccion;
+import main.java.juego.utilidades.Coordenada;
+import main.java.juego.utilidades.Dimensiones;
+import main.java.juego.utilidades.Direccion;
 
 public class TanquePotente extends TanqueEnemigo {
 
     public TanquePotente(Coordenada posicion, Dimensiones dimensiones, String spriteNormal, String spriteDestruido) {
-        super(posicion, dimensiones, 1, 1, spriteNormal, spriteDestruido, 1);
+        super(posicion, dimensiones, 1, 1, 1,1);
     }
 
     @Override
@@ -16,10 +16,5 @@ public class TanquePotente extends TanqueEnemigo {
         super.mover(dr);
     }
 
-    @Override
-    public void disparar() {
-        if (puedeDisparar(1000)) { //
-            registrarDisparo();
-        }
-    }
+
 }

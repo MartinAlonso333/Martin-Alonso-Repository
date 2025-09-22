@@ -1,4 +1,4 @@
-package juego.utilidades;
+package main.java.juego.utilidades;
 
 public enum Direccion {
     ARRIBA(0, -1),

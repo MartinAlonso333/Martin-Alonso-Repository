@@ -1,4 +1,4 @@
-package juego.entidades.powerups;
+package main.java.juego.entidades.powerups;
 
 import juego.entidades.Ente;
 import juego.entidades.TipoEnte;

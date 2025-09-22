@@ -1,4 +1,4 @@
-package juego;
+package main.java.juego;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;

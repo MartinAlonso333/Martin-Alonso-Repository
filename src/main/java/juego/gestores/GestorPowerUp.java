@@ -1,7 +1,10 @@
-package juego.gestores;
+package main.java.juego.gestores;
 
-import juego.entidades.tanques.TanqueJugador;
-import juego.entidades.powerups.TipoPowerUp;
+
+
+import main.java.juego.entidades.powerups.TipoPowerUp;
+import main.java.juego.entidades.tanques.TanqueJugador;
+
 import java.util.*;
 
 public class GestorPowerUp {

@@ -1,9 +1,10 @@
-package juego.entidades;
+package main.java.juego.entidades;
 
-import juego.gestores.ColisionVisitor;
-import juego.utilidades.Coordenada;
-import juego.utilidades.Dimensiones;
-import juego.utilidades.EventManager;
+
+import main.java.juego.gestores.ColisionVisitor;
+import main.java.juego.utilidades.Coordenada;
+import main.java.juego.utilidades.Dimensiones;
+import main.java.juego.utilidades.EventManager;
 
 public abstract class Ente {
     protected Coordenada posicion;

@@ -1,4 +1,4 @@
-package juego.entidades;
+package main.java.juego.entidades;
 
 public enum TipoEnte {
     JUGADOR,

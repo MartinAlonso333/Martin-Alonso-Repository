@@ -1,4 +1,4 @@
-package juego.utilidades;
+package main.java.juego.utilidades;
 
 public record Dimensiones(double ancho, double alto) {
 }

@@ -1,28 +1,39 @@
-package juego.entidades.tanques;
+package main.java.juego.entidades.tanques;
 
-import juego.entidades.Ente;
-import juego.gestores.ColisionVisitor;
-import juego.utilidades.Coordenada;
-import juego.utilidades.Dimensiones;
-import juego.utilidades.Direccion;
-import juego.utilidades.EventManager;
+
+import main.java.juego.entidades.Ente;
+import main.java.juego.gestores.ColisionVisitor;
+import main.java.juego.utilidades.Coordenada;
+import main.java.juego.utilidades.Dimensiones;
+import main.java.juego.utilidades.Direccion;
+import main.java.juego.utilidades.EventManager;
 
 public abstract class Tanque extends Ente {
     private int vida;
     private final int danio;
     private Coordenada ultimaPosicion;
     private long ultimoDisparo;
-    private final int velocidad;
+    protected final int velocidad;
+    protected final int velocidadDeDisparo;
 
-    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad) {
+    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo) {
         super(posicion, dimensiones);
         this.vida = vida;
         this.danio = danio;
         this.velocidad = velocidad;
+        this.velocidadDeDisparo = velocidadDeDisparo;
         this.ultimoDisparo = System.currentTimeMillis();
     }
 
-    public abstract void disparar();
+    public abstract Bala disparar();
+
+    protected Coordenada getPuntoDeDisparo() {
+        // ejemplo: el centro del tanque
+        return new Coordenada(
+                getPosicion().getX() + getDimensiones().getAncho() / 2,
+                getPosicion().getY() + getDimensiones().getAlto() / 2
+        );
+    }
 
     public void mover(Direccion dir) {
         ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());

@@ -1,4 +1,4 @@
-package juego.entidades.powerups;
+package main.java.juego.entidades.powerups;
 
 import juego.entidades.tanques.TanqueJugador;
 import juego.utilidades.EventManager;

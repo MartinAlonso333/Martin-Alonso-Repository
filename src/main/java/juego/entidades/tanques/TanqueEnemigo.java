@@ -1,9 +1,11 @@
-package juego.entidades.tanques;
+package main.java.juego.entidades.tanques;
 
-import juego.entidades.TipoEnte;
-import juego.utilidades.Coordenada;
-import juego.utilidades.Dimensiones;
-import juego.utilidades.Direccion;
+
+import main.java.juego.entidades.TipoEnte;
+import main.java.juego.utilidades.Coordenada;
+import main.java.juego.utilidades.Dimensiones;
+import main.java.juego.utilidades.Direccion;
+import main.java.juego.utilidades.EventManager;
 
 public class TanqueEnemigo extends Tanque {
 
@@ -13,8 +15,8 @@ public class TanqueEnemigo extends Tanque {
     private Coordenada ultimaPosicionChequear;
     private long ultimoTiempoQuieto;
 
-    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad) {
-        super(posicion, dimensiones, vida, danio, velocidad);
+    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad,int velocidadDeDisparo) {
+        super(posicion, dimensiones, vida, danio, velocidad,velocidadDeDisparo);
         this.tiempoConducta = sortearTiempoConducta();
         this.inicioConducta = System.currentTimeMillis();
         this.direccion = sortearDireccion();
@@ -23,11 +25,15 @@ public class TanqueEnemigo extends Tanque {
     }
 
     @Override
-    public void disparar() {
-        if (puedeDisparar(1500)) { // 1.5s entre disparos
-            System.out.println("Tanque enemigo disparó desde " + getPosicion());
+    public Bala disparar() {
+        if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
+            Coordenada origen = getPuntoDeDisparo();
+            Bala bala = new Bala(direccion, getDanio(),origen, new Dimensiones(8, 8), 5.0
+            );
+            EventManager.getInstancia().notificar("nueva_bala", bala);
         }
+        return null;
     }
 
     @Override

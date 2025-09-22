@@ -1,4 +1,4 @@
-package juego.utilidades;
+package main.java.juego.utilidades;
 
 import java.util.*;
 import java.util.function.Consumer;

@@ -7,8 +7,8 @@ import main.java.juego.utilidades.Direccion;
 
 public class TanqueBlindado extends TanqueEnemigo {
 
-    public TanqueBlindado(Coordenada posicion, Dimensiones dimensiones, String spriteNormal, String spriteDestruido) {
-        super(posicion, dimensiones, 3, 1, 1,2);
+    public TanqueBlindado(Coordenada posicion, Dimensiones dimensiones, String spriteNormal, String spriteDestruido,Direccion direccion) {
+        super(posicion, dimensiones, 3, 1, 1,2,direccion);
     }
 
     @Override

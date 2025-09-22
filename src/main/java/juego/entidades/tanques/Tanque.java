@@ -15,26 +15,30 @@ public abstract class Tanque extends Ente {
     private long ultimoDisparo;
     protected final int velocidad;
     protected final int velocidadDeDisparo;
-
-    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo) {
+    private Direccion direccion;
+    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
         super(posicion, dimensiones);
         this.vida = vida;
         this.danio = danio;
         this.velocidad = velocidad;
         this.velocidadDeDisparo = velocidadDeDisparo;
         this.ultimoDisparo = System.currentTimeMillis();
+        this.posicion = posicion;
+        this.direccion = direccionInicial;
     }
 
     public abstract Bala disparar();
 
     protected Coordenada getPuntoDeDisparo() {
-        // ejemplo: el centro del tanque
         return new Coordenada(
-                getPosicion().getX() + getDimensiones().getAncho() / 2,
-                getPosicion().getY() + getDimensiones().getAlto() / 2
+                getPosicion().getX() + getDimensiones().ancho() / 2,
+                getPosicion().getY() + getDimensiones().alto() / 2
         );
     }
 
+    public Direccion getDireccion() {
+        return direccion;
+    }
     public void mover(Direccion dir) {
         ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());
         Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());

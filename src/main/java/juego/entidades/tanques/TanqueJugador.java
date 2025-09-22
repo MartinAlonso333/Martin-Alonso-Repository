@@ -4,6 +4,7 @@ package main.java.juego.entidades.tanques;
 import main.java.juego.entidades.TipoEnte;
 import main.java.juego.utilidades.Coordenada;
 import main.java.juego.utilidades.Dimensiones;
+import main.java.juego.utilidades.Direccion;
 import main.java.juego.utilidades.EventManager;
 
 public class TanqueJugador extends Tanque {
@@ -16,8 +17,8 @@ public class TanqueJugador extends Tanque {
     private static final int DURACION_DISPARO_MEJORADO = 10000;
     private static final int DURACION_INVULNERABILIDAD = 10000;
 
-    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo) {
-        super(posicion, dimensiones, 3, 1, 1,2);
+    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccion, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
+        super(posicion, dimensiones, 3, 1, 1,2,direccionInicial);
     }
 
     @Override
@@ -26,13 +27,17 @@ public class TanqueJugador extends Tanque {
             registrarDisparo();
 
             // Determinar punto de salida (centro del tanque)
-            Coordenada origen = new Coordenada(getPosicion().getX() + getDimensiones().ancho() / 2, getPosicion().getY() + getDimensiones().alto() / 2);
-
+            Coordenada origen = new Coordenada(
+                    getPosicion().getX() + getDimensiones().ancho() / 2,
+                    getPosicion().getY() + getDimensiones().alto() / 2
+            );
             // Elegir daño según si es mejorado o no
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();
-            Bala bala = new Bala(getDireccion(), danioDisparo, origen, new Dimensiones(8, 8),8.0);
+            Bala bala = new Bala(getDireccion(), danioDisparo, origen, new Dimensiones(8, 8), 8.0);
             // Notificar al EventManager que hay una nueva bala
             EventManager.getInstancia().notificar("nueva_bala", bala);
+
+            return bala;
         }
         return null;
     }

@@ -15,8 +15,8 @@ public class TanqueEnemigo extends Tanque {
     private Coordenada ultimaPosicionChequear;
     private long ultimoTiempoQuieto;
 
-    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad,int velocidadDeDisparo) {
-        super(posicion, dimensiones, vida, danio, velocidad,velocidadDeDisparo);
+    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad,int velocidadDeDisparo,Direccion direccionIinicial) {
+        super(posicion, dimensiones, vida, danio, velocidad,velocidadDeDisparo,direccionIinicial);
         this.tiempoConducta = sortearTiempoConducta();
         this.inicioConducta = System.currentTimeMillis();
         this.direccion = sortearDireccion();
@@ -29,9 +29,9 @@ public class TanqueEnemigo extends Tanque {
         if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
             Coordenada origen = getPuntoDeDisparo();
-            Bala bala = new Bala(direccion, getDanio(),origen, new Dimensiones(8, 8), 5.0
-            );
+            Bala bala = new Bala(direccion, getDanio(), origen, new Dimensiones(8, 8), 5.0);
             EventManager.getInstancia().notificar("nueva_bala", bala);
+            return bala;
         }
         return null;
     }

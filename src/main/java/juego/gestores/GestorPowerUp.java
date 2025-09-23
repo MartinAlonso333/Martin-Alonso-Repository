@@ -32,6 +32,7 @@ public class GestorPowerUp {
         }
 
         void aplicar() { tipo.aplicar(tanque); }
+        void remover() { tipo.remover(tanque); }
 
         boolean actualizar(double deltaTime) {
             tiempoRestante -= deltaTime;

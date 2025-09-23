@@ -13,9 +13,6 @@ public class TanqueJugador extends Tanque {
     private boolean disparoMejorado;
     private long tiempoDisparoMejorado;
 
-    private static final int DURACION_DISPARO_MEJORADO = 10000;
-    private static final int DURACION_INVULNERABILIDAD = 10000;
-
     public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccion, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
         super(posicion, dimensiones, 3, 1, 1,2,direccionInicial);
     }
@@ -38,21 +35,24 @@ public class TanqueJugador extends Tanque {
         return null;
     }
 
-    public void activarInvulnerabilidad() {
+    public void activarInvulnerabilidad(int duracion) {
         invulnerable = true;
-        tiempoInvulnerable = System.currentTimeMillis() + DURACION_INVULNERABILIDAD;
+        tiempoInvulnerable = System.currentTimeMillis() + duracion;
     }
 
-    public void mejorarDisparo() {
+    public void mejorarDisparo(int duracion) {
         disparoMejorado = true;
-        tiempoDisparoMejorado = System.currentTimeMillis() + DURACION_DISPARO_MEJORADO;
+        tiempoDisparoMejorado = System.currentTimeMillis() + duracion;
     }
 
     @Override
     public void actualizar() {
-        long ahora = System.currentTimeMillis();
-        if (invulnerable && ahora > tiempoInvulnerable) invulnerable = false;
-        if (disparoMejorado && ahora > tiempoDisparoMejorado) disparoMejorado = false;
+        if (invulnerable && System.currentTimeMillis() > tiempoInvulnerable) {
+            invulnerable = false;
+        }
+        if (disparoMejorado && System.currentTimeMillis() > tiempoDisparoMejorado) {
+            disparoMejorado = false;
+        }
     }
 
     @Override

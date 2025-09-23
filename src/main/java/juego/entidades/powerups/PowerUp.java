@@ -6,6 +6,16 @@ import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 
 public class PowerUp extends Ente {
+    private static final int DURACION_DISPARO_MEJORADO = 10000;
+    private static final int DURACION_INVULNERABILIDAD = 10000;
+
+    public void aplicarEn(TanqueJugador jugador) {
+        switch (tipo) {
+            case CASCO -> jugador.activarInvulnerabilidad(DURACION_INVULNERABILIDAD);
+            case ESTRELLA -> jugador.mejorarDisparo(DURACION_DISPARO_MEJORADO);
+            case GRANADA -> ;
+        }
+    }
 
     private final TipoPowerUp tipo;
 

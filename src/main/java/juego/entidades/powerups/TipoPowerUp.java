@@ -2,31 +2,35 @@ package juego.entidades.powerups;
 
 import juego.entidades.tanques.TanqueJugador;
 import juego.eventos.EventoManager;
-
 public enum TipoPowerUp {
 
-    CASCO {
+    CASCO(10000) {
         @Override
         public void aplicar(TanqueJugador jugador) {
-            jugador.activarInvulnerabilidad();
+            jugador.activarInvulnerabilidad(getDuracionMs());
         }
     },
-
-    ESTRELLA {
+    ESTRELLA(10000) {
         @Override
         public void aplicar(TanqueJugador jugador) {
-            jugador.mejorarDisparo();
-
+            jugador.mejorarDisparo(getDuracionMs());
         }
     },
-
-    GRANADA {
+    GRANADA(0) {
         @Override
         public void aplicar(TanqueJugador jugador) {
             EventoManager.getInstancia().triggerExplosionGranada(jugador.getPosicion());
         }
     };
+    private final int duracion;
 
-    // Todos los power-ups aplican su efecto sobre el tanque
+    TipoPowerUp(int duracion) {
+        this.duracion = duracion;
+    }
+
+    public int getDuracionMs() {
+        return duracion;
+    }
+
     public abstract void aplicar(TanqueJugador jugador);
 }

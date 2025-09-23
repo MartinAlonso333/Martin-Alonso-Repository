@@ -1,7 +1,6 @@
 package juego.entidades.tanques;
 
 import juego.entidades.TipoEnte;
-import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 import juego.utilidades.Direccion;
@@ -35,24 +34,17 @@ public class TanqueJugador extends Tanque {
         return null;
     }
 
-    public void activarInvulnerabilidad(int duracion) {
-        invulnerable = true;
-        tiempoInvulnerable = System.currentTimeMillis() + duracion;
+    public void setInvulnerabilidad(boolean estado) {
+        invulnerable = estado;
     }
 
-    public void mejorarDisparo(int duracion) {
-        disparoMejorado = true;
-        tiempoDisparoMejorado = System.currentTimeMillis() + duracion;
+    public void setDisparoMejorado(boolean estado) {
+        disparoMejorado = estado;
     }
 
     @Override
     public void actualizar() {
-        if (invulnerable && System.currentTimeMillis() > tiempoInvulnerable) {
-            invulnerable = false;
-        }
-        if (disparoMejorado && System.currentTimeMillis() > tiempoDisparoMejorado) {
-            disparoMejorado = false;
-        }
+
     }
 
     @Override

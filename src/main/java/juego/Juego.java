@@ -18,14 +18,13 @@ import java.util.stream.Collectors;
 
 public class Juego {
 
+    private static final int ANCHO_MAPA = 800;
+    private static final int ALTO_MAPA = 600;
+
     private final List<Ente> entes = new ArrayList<>();
     private final Map<Class<? extends Ente>, List<Ente>> porTipo = new HashMap<>();
     private final SistemaColision sistemaColision = new SistemaColision();
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
-
-    // Spawn temporal
-    private double contadorPowerUp = 0;
-    private final double INTERVALO_SPAWN_POWERUP = 5000; // ms
 
     // ------------------ GESTIÓN DE ENTES ------------------
     public void agregarEnte(Ente e) {
@@ -46,7 +45,9 @@ public class Juego {
                 .collect(Collectors.toList());
     }
 
-    public List<Ente> getEntes() { return new ArrayList<>(entes); }
+    public List<Ente> getEntes() {
+        return new ArrayList<>(entes);
+    }
 
     // ------------------ ACCIONES ------------------
     public void agregarJugador(TanqueJugador jugador) {
@@ -86,7 +87,14 @@ public class Juego {
             // Chequear colisión con powerups
             for (PowerUp pu : getEntesDeTipo(PowerUp.class)) {
                 if (pu.estaActivo() && jugador.intersecta(pu)) {
-                    gestorPowerUp.activarPowerUp(jugador, pu.getTipoPowerUp(), pu.getTipoPowerUp().getDuracionMs());
+                    if (pu.getTipoPowerUp() == TipoPowerUp.GRANADA) {
+                        for (TanqueEnemigo enemigo : getEntesDeTipo(TanqueEnemigo.class)) {
+                            enemigo.recibirDanio(50);
+                        }
+                        EventoManager.getInstancia().notificar(TipoEvento.GRANADA_EXPLOTADA, pu);
+                    } else {
+                        gestorPowerUp.activarPowerUp(jugador, pu.getTipoPowerUp());
+                    }
                     pu.setActivo(false);
                     EventoManager.getInstancia().notificar(TipoEvento.POWERUP_RECOGIDO, pu);
                 }
@@ -112,6 +120,15 @@ public class Juego {
             if (enemigo.estaDestruido()) {
                 removerEnte(enemigo);
                 EventoManager.getInstancia().notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
+
+                // Intentar spawnear powerup con probabilidad del 20%
+                if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).isEmpty()) {
+                    PowerUp nuevo = generarPowerUpAleatorio();
+                    if (nuevo != null) {
+                        agregarEnte(nuevo);
+                        EventoManager.getInstancia().notificar(TipoEvento.POWERUP_SPAWN, nuevo);
+                    }
+                }
             }
         }
 
@@ -141,27 +158,37 @@ public class Juego {
         // --- Agregar nuevas balas ---
         for (Bala b : nuevasBalas) agregarEnte(b);
 
-        // --- Spawn temporal de PowerUps ---
-        contadorPowerUp += deltaTime;
-        if (contadorPowerUp >= INTERVALO_SPAWN_POWERUP) {
-            contadorPowerUp = 0;
-            PowerUp nuevo = generarPowerUpAleatorio();
-            agregarEnte(nuevo);
-            EventoManager.getInstancia().notificar(TipoEvento.POWERUP_SPAWN, nuevo);
-        }
-
         // --- Actualizar efectos de powerups activos ---
         gestorPowerUp.actualizar(deltaTime);
     }
 
+    // ------------------ GENERAR POWERUP ------------------
     private PowerUp generarPowerUpAleatorio() {
-        // Posición aleatoria en el mapa (ajustar según dimensiones del mapa)
-        Coordenada pos = new Coordenada((int)(Math.random() * 800), (int)(Math.random() * 600));
         Dimensiones dim = new Dimensiones(16, 16);
-
-        // Tipo aleatorio
         TipoPowerUp tipo = TipoPowerUp.values()[(int)(Math.random() * TipoPowerUp.values().length)];
 
-        return new PowerUp(pos, dim, tipo);
+        int intentos = 0;
+        PowerUp nuevo = null;
+
+        while (intentos < 50) {
+            Coordenada pos = new Coordenada(
+                    (int)(Math.random() * ANCHO_MAPA),
+                    (int)(Math.random() * ALTO_MAPA)
+            );
+            nuevo = new PowerUp(pos, dim, tipo);
+            if (esPosicionValida(nuevo)) break;
+            nuevo = null;
+            intentos++;
+        }
+        return nuevo;
+    }
+
+    private boolean esPosicionValida(PowerUp pu) {
+        for (Bloque bloque : getEntesDeTipo(Bloque.class)) {
+            if (!bloque.permitePaso() && pu.intersecta(bloque)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

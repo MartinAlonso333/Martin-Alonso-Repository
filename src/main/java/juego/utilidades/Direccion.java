@@ -13,6 +13,7 @@ public enum Direccion {
         this.dx = dx;
         this.dy = dy;
     }
+
     // Aplica el movimiento a la posición con cierta velocidad
     public void aplicarMovimiento(Coordenada pos, double velocidad) {
         pos.setPixeles(pos.getX() + dx * velocidad, pos.getY() + dy * velocidad);

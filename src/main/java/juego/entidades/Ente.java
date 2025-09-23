@@ -1,7 +1,5 @@
 package juego.entidades;
 
-import juego.entidades.tanques.Bala;
-import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 
@@ -32,8 +30,6 @@ public abstract class Ente {
                 this.posicion.getY() < otro.posicion.getY() + otro.dimensiones.getAlto() &&
                 this.posicion.getY() + this.dimensiones.getAlto() > otro.posicion.getY();
     }
-
-    public Bala disparar() { return null; }
     public abstract void actualizar();
     public abstract boolean estaDestruido();
     public abstract TipoEnte getTipo();

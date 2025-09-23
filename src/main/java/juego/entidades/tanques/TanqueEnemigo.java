@@ -2,7 +2,6 @@ package juego.entidades.tanques;
 
 
 import juego.entidades.TipoEnte;
-import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 import juego.utilidades.Direccion;

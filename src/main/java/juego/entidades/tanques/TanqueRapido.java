@@ -15,5 +15,4 @@ public class TanqueRapido extends TanqueEnemigo {
     public void mover(Direccion dr) {
         super.mover(dr);
     }
-
 }

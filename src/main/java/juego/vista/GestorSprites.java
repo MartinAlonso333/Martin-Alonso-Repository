@@ -1,46 +1,45 @@
-package juego.vista;
+package juego.utilidades;
 
-import juego.entidades.Ente;
-import juego.utilidades.Direccion;
+import javafx.scene.image.Image;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GestorSprites {
 
+    private static final Map<String, Image> cache = new HashMap<>();
+    private static final String RUTA_SPRITES = "/sprites/";
+
     /**
-     * Devuelve rutas de sprites por dirección para un Ente usando convención de carpetas.
-     * Cada clase de Ente debe tener su carpeta en /imagenes/<clase>/
-     * Ej: Tanque -> /imagenes/tanque/tanque_arriba_1.png, etc.
+     * Devuelve el sprite correspondiente al nombre de archivo.
+     * Si ya se cargó, lo devuelve del cache.
      */
-    public static Map<Direccion, List<String>> obtenerRutas(Ente e) {
-        String clase = e.getClass().getSimpleName().toLowerCase(); // "tanque", "bloque", "powerup", etc.
-
-        Map<Direccion, List<String>> rutas = new HashMap<>();
-        for (Direccion dir : Direccion.values()) {
-            List<String> frames = new ArrayList<>();
-            int i = 1;
-
-            while (true) {
-                String path = String.format("/imagenes/%s/%s_%s_%d.png",
-                        clase, clase, dir.name().toLowerCase(), i);
-                InputStream stream = GestorSprites.class.getResourceAsStream(path);
-                if (stream == null) break; // no hay más frames
-                frames.add(path);
-                i++;
-            }
-
-            if (!frames.isEmpty()) {
-                rutas.put(dir, frames);
-            }
+    public static Image obtenerSprite(String nombreArchivo) {
+        if (cache.containsKey(nombreArchivo)) {
+            return cache.get(nombreArchivo);
         }
 
-        // Si no hay frames por dirección, usa un sprite genérico
-        if (rutas.isEmpty()) {
-            String path = String.format("/imagenes/%s/%s.png", clase, clase);
-            rutas.put(Direccion.ARRIBA, List.of(path));
+        try (InputStream is = GestorSprites.class.getResourceAsStream(RUTA_SPRITES + nombreArchivo)) {
+            if (is == null) {
+                System.err.println("No se encontró el sprite: " + nombreArchivo);
+                return null;
+            }
+            Image img = new Image(is);
+            cache.put(nombreArchivo, img);
+            return img;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
+    }
 
-        return rutas;
+    /**
+     * Devuelve las dimensiones del sprite como un arreglo [ancho, alto].
+     */
+    public static int[] obtenerDimensiones(String nombreArchivo) {
+        Image img = obtenerSprite(nombreArchivo);
+        if (img == null) return new int[]{32, 32};
+        return new int[]{(int) img.getWidth(), (int) img.getHeight()};
     }
 }

@@ -19,7 +19,6 @@ public abstract class Ente {
 
     public void setPosicion(Coordenada nuevaPos) {
         this.posicion = nuevaPos;
-        EventoManager.getInstancia().notificar("ente_movido:" + this.hashCode(), this);
     }
 
     public Dimensiones getDimensiones() { return dimensiones; }

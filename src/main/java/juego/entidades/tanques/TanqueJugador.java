@@ -33,7 +33,6 @@ public class TanqueJugador extends Tanque {
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();
 
             Bala bala = new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0);
-            EventoManager.getInstancia().notificar("bala_disparada", bala);
             return bala;
         }
         return null;

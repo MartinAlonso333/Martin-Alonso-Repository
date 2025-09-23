@@ -27,7 +27,6 @@ public class Bloque extends Ente {
             vida -= cantidad;
             if (estaDestruido()) {
                 setActivo(false);
-                EventoManager.getInstancia().notificar("bloque_destruido", this);
             }
         }
     }

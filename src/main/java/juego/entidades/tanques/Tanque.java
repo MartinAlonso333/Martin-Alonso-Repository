@@ -2,7 +2,6 @@ package juego.entidades.tanques;
 
 
 import juego.entidades.Ente;
-import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 import juego.utilidades.Direccion;
@@ -44,7 +43,6 @@ public abstract class Tanque extends Ente {
         Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());
         dir.aplicarMovimiento(nuevaPos, velocidad);
         setPosicion(nuevaPos);
-        EventoManager.getInstancia().notificar("jugador_movido", this);
     }
 
     public void revertirMovimiento() {

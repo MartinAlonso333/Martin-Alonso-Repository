@@ -29,9 +29,8 @@ public class TanqueEnemigo extends Tanque {
         if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
             Coordenada origen = getPuntoDeDisparo();
-            Bala bala = new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0);
-            EventoManager.getInstancia().notificar("bala_disparada", bala);
-            return bala;
+            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0);
+
         }
         return null;
     }

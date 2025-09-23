@@ -2,8 +2,6 @@ package juego.entidades.powerups;
 
 import juego.entidades.Ente;
 import juego.entidades.TipoEnte;
-import juego.entidades.tanques.TanqueJugador;
-import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 
@@ -17,12 +15,6 @@ public class PowerUp extends Ente {
     }
 
     public TipoPowerUp getTipoPowerUp() { return tipo; }
-
-    public void aplicar(TanqueJugador jugador) {
-        tipo.aplicar(jugador);
-        EventoManager.getInstancia().notificar("tipo_powerup", tipo);
-        setActivo(false);
-    }
 
     @Override
     public void actualizar() {}

@@ -5,6 +5,7 @@ import juego.entidades.Ente;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 import juego.utilidades.Direccion;
+import juego.entidades.tanques.Bala;
 
 public abstract class Tanque extends Ente {
     private int vida;

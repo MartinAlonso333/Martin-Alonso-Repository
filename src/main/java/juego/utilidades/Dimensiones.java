@@ -1,8 +1,8 @@
 package juego.utilidades;
 
 public class Dimensiones {
-    private final int ancho;
-    private final int alto;
+    public final int ancho;
+    public final int alto;
 
     public Dimensiones(int ancho, int alto) {
         if (ancho <= 0 || alto <= 0) {

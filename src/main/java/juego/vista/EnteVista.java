@@ -1,7 +1,9 @@
 package juego.vista;
 
 
+import javafx.scene.canvas.GraphicsContext;
 import juego.entidades.Ente;
+import juego.entidades.tanques.Tanque;
 import juego.utilidades.Direccion;
 
 import java.awt.*;
@@ -39,8 +41,8 @@ public class EnteVista {
                 img,
                 ente.getPosicion().getX(),
                 ente.getPosicion().getY(),
-                ente.getDimensiones().ancho(),
-                ente.getDimensiones().alto()
+                ente.getDimensiones().getAncho(),
+                ente.getDimensiones().getAlto()
         );
     }
 

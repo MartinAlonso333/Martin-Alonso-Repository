@@ -1,8 +1,12 @@
 package juego.gestores;
 
 import juego.entidades.Ente;
+import juego.entidades.bloques.Bloque;
+import juego.entidades.bloques.TipoBloque;
 import juego.entidades.powerups.PowerUp;
 import juego.entidades.tanques.*;
+import juego.eventos.EventoManager;
+import juego.eventos.TipoEvento;
 
 
 import java.util.HashMap;
@@ -14,12 +18,16 @@ public class ColisionHandler {
     private final Map<EntesInvolucrados, BiConsumer<Ente, Ente>> reglas = new HashMap<>();
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
 
+    private static final int TIEMPOATURDIDO = 2000; // milisegundos
+
     public ColisionHandler() { registrarReglas(); }
 
     private void registrarReglas() {
         registrarRegla(Bala.class, Tanque.class, (a, b) -> colisionBalaConTanque((Bala) a, (Tanque) b));
         registrarRegla(TanqueJugador.class, PowerUp.class, (a, b) -> colisionTanqueConPowerUp((TanqueJugador) a, (PowerUp) b));
         registrarRegla(Bala.class, Bala.class, (a, b) -> colisionBalaConBala((Bala) a, (Bala) b));
+        registrarRegla(Tanque.class, Tanque.class, (a, b) -> colisionTanqueConTanque((Tanque) a, (Tanque) b));
+        registrarRegla(Bala.class, Bloque.class, (a, b) -> colisionbalaConBloque((Bala) a, (Bloque) b));
     }
 
     public void registrarRegla(Class<? extends Ente> c1, Class<? extends Ente> c2,
@@ -38,6 +46,11 @@ public class ColisionHandler {
 
     // ------------------ FUNCIONES CONCRETAS ------------------
     private void colisionBalaConTanque(Bala bala, Tanque tanque) {
+        if (bala.getDuenio().getTipo() == tanque.getTipo()) {
+            tanque.aturdir(TIEMPOATURDIDO);
+            bala.setActivo(false);
+            return;
+        }
         tanque.recibirDanio(bala.getDanio());
         bala.setActivo(false);
     }
@@ -52,6 +65,26 @@ public class ColisionHandler {
     private void colisionBalaConBala(Bala a, Bala b) {
         a.setActivo(false);
         b.setActivo(false);
+    }
+
+    private void colisionTanqueConTanque(Tanque a, Tanque b) {
+        a.revertirMovimiento();
+        b.revertirMovimiento();
+    }
+
+    private void colisionbalaConBloque(Bala bala, Bloque bloque) {
+        if (!bloque.balaimpacta()) return;
+
+        bala.setActivo(false);
+        if (bloque.esDestructible()) {
+            bloque.recibirDanio(bala.getDanio());
+            if (bloque.getTipoBloque() == TipoBloque.BASE) {
+                EventoManager.getInstancia().notificar(TipoEvento.BASE_DESTRUIDA);
+            }
+            if (bloque.estaDestruido() && bloque.getTipoBloque() == TipoBloque.LADRILLO) {
+                EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_DESTRUIDO);
+            }
+        }
     }
 
     // ------------------ CLASE AUXILIAR ------------------

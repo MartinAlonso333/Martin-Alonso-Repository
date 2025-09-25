@@ -7,7 +7,7 @@ import juego.entidades.powerups.TipoPowerUp;
 import juego.entidades.tanques.*;
 import juego.eventos.EventoManager;
 import juego.eventos.TipoEvento;
-import juego.gestores.SistemaColision;
+import juego.gestores.SistemaColisionGrilla;
 import juego.gestores.GestorPowerUp;
 import juego.utilidades.Direccion;
 import juego.utilidades.Coordenada;
@@ -23,19 +23,21 @@ public class Juego {
 
     private final List<Ente> entes = new ArrayList<>();
     private final Map<Class<? extends Ente>, List<Ente>> porTipo = new HashMap<>();
-    private final SistemaColision sistemaColision = new SistemaColision();
+    private final SistemaColisionGrilla sistemaColision = new SistemaColisionGrilla();
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
 
     // ------------------ GESTIÓN DE ENTES ------------------
     public void agregarEnte(Ente e) {
         entes.add(e);
         porTipo.computeIfAbsent(e.getClass(), k -> new ArrayList<>()).add(e);
+        sistemaColision.agregarEnte(e);
     }
 
     public void removerEnte(Ente e) {
         entes.remove(e);
         List<Ente> lista = porTipo.get(e.getClass());
         if (lista != null) lista.remove(e);
+        sistemaColision.removerEnte(e);
     }
 
     public <T extends Ente> List<T> getEntesDeTipo(Class<T> tipo) {
@@ -57,9 +59,17 @@ public class Juego {
     public void moverJugador(int indice, Direccion dir) {
         List<TanqueJugador> jugadores = getEntesDeTipo(TanqueJugador.class);
         if (indice >= 0 && indice < jugadores.size()) {
-            jugadores.get(indice).mover(dir);
-            sistemaColision.chequearColisiones(jugadores.get(indice));
-            EventoManager.getInstancia().notificar(TipoEvento.TANQUE_MOVIDO, jugadores.get(indice));
+            TanqueJugador jugador = jugadores.get(indice);
+            int oldX = jugador.getPosicion().getX();
+            int oldY = jugador.getPosicion().getY();
+
+            jugador.mover(dir);
+
+            // Actualiza la grilla
+            sistemaColision.actualizarPosicion(jugador, oldX, oldY);
+            sistemaColision.chequearColisiones(jugador);
+
+            EventoManager.getInstancia().notificar(TipoEvento.TANQUE_MOVIDO, jugador);
         }
     }
 
@@ -134,8 +144,12 @@ public class Juego {
 
         // --- Actualizar balas ---
         for (Bala bala : getEntesDeTipo(Bala.class)) {
+            int oldX = bala.getPosicion().getX();
+            int oldY = bala.getPosicion().getY();
             bala.actualizar();
+            sistemaColision.actualizarPosicion(bala, oldX, oldY);
             sistemaColision.chequearColisiones(bala);
+
             if (bala.estaDestruido()) removerEnte(bala);
         }
 

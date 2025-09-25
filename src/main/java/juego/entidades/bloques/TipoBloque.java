@@ -10,18 +10,18 @@ public enum TipoBloque {
 
     private final boolean destructible;
     private final boolean permitePaso;
-    private final boolean permiteBalas;
+    private final boolean balaimpacta;
     private final int vidaInicial;
 
-    TipoBloque(boolean destructible, boolean permitePaso, boolean permiteBalas, int vidaInicial) {
+    TipoBloque(boolean destructible, boolean permitePaso, boolean balaimpacta, int vidaInicial) {
         this.destructible = destructible;
         this.permitePaso = permitePaso;
-        this.permiteBalas = permiteBalas;
+        this.balaimpacta = balaimpacta;
         this.vidaInicial = vidaInicial;
     }
 
     public boolean esDestructible() { return destructible; }
     public boolean permitePaso() { return permitePaso; }
-    public boolean permiteBalas() { return permiteBalas; }
+    public boolean balaimpacta() { return balaimpacta; }
     public int getVidaInicial() { return vidaInicial; }
 }

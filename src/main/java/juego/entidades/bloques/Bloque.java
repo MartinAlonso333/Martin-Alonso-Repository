@@ -18,7 +18,7 @@ public class Bloque extends Ente {
     public TipoBloque getTipoBloque() { return tipo; }
     public int getVida() { return vida; }
     public boolean permitePaso() { return tipo.permitePaso(); }
-    public boolean permiteBalas() { return tipo.permiteBalas(); }
+    public boolean balaimpacta() { return tipo.balaimpacta(); }
     public boolean esDestructible() { return tipo.esDestructible(); }
 
     public void recibirDanio(int cantidad) {

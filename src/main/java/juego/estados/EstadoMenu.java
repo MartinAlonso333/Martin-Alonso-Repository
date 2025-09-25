@@ -15,7 +15,7 @@ public class EstadoMenu implements EstadoJuego {
         // Pasamos un solo Consumer<Integer> para manejar 1 o 2 jugadores
         this.vista = new MenuVista(stage,
                 numJugadores -> gestor.iniciarPartida(numJugadores)),
-                stage::close
+                () -> gestor.cambiarAFinPartida()
         );
     }
 

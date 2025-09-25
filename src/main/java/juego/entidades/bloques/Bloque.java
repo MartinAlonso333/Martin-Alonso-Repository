@@ -2,7 +2,6 @@ package juego.entidades.bloques;
 
 import juego.entidades.Ente;
 import juego.entidades.TipoEnte;
-import juego.eventos.EventoManager;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 

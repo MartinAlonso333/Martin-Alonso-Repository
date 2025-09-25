@@ -89,7 +89,7 @@ public class Juego {
                 if (pu.estaActivo() && jugador.intersecta(pu)) {
                     if (pu.getTipoPowerUp() == TipoPowerUp.GRANADA) {
                         for (TanqueEnemigo enemigo : getEntesDeTipo(TanqueEnemigo.class)) {
-                            enemigo.recibirDanio(50);
+                            enemigo.destruir();
                         }
                         EventoManager.getInstancia().notificar(TipoEvento.GRANADA_EXPLOTADA, pu);
                     } else {

@@ -1,4 +1,4 @@
-package juego.niveles;
+package juego.CargaDePartida;
 
 import juego.entidades.*;
 import juego.entidades.bloques.*;

@@ -10,17 +10,22 @@ import org.w3c.dom.*;
 
 import javax.xml.parsers.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParserXML {
 
-    public static void cargarNivel(Juego juego, String pathXml) {
+    public static void cargarNivel(Juego juego, int numJugadores, String pathXml) {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(new File(pathXml));
             doc.getDocumentElement().normalize();
 
-            // --- Jugadores ---
+            // --- Leer coordenadas de jugadores ---
             NodeList players = doc.getElementsByTagName("player");
+            List<Coordenada> posicionesJugadores = new ArrayList<>();
+            List<Direccion> direccionesJugadores = new ArrayList<>();
+
             for (int i = 0; i < players.getLength(); i++) {
                 Element p = (Element) players.item(i);
                 Coordenada pos = new Coordenada(
@@ -31,6 +36,14 @@ public class ParserXML {
                         Direccion.valueOf(p.getAttribute("direccion")) :
                         Direccion.ARRIBA;
 
+                posicionesJugadores.add(pos);
+                direccionesJugadores.add(dir);
+            }
+
+            // Crear solo la cantidad de jugadores solicitada
+            for (int i = 0; i < numJugadores && i < posicionesJugadores.size(); i++) {
+                Coordenada pos = posicionesJugadores.get(i);
+                Direccion dir = direccionesJugadores.get(i);
                 Ente jugador = RegistroEntidades.crearEntidad(TipoEnte.JUGADOR, pos, dir);
                 juego.agregarJugador((TanqueJugador) jugador);
             }

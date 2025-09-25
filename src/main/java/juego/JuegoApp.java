@@ -3,43 +3,22 @@ package juego;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import juego.utilidades.Direccion;
+import juego.estados.GestorEstados;
+import juego.input.GestorInput;
 
 public class JuegoApp extends Application {
 
-    private Juego juego;
+    private GestorEstados gestor;
 
     @Override
     public void start(Stage stage) {
-        juego = new Juego();
         Pane root = new Pane();
         Scene scene = new Scene(root, 800, 600);
 
-        // Asignar controles genéricos
-        scene.setOnKeyPressed(e -> {
-            KeyCode code = e.getCode();
-
-            // Jugador 1
-            switch (code) {
-                case UP -> juego.moverJugador(0, Direccion.ARRIBA);
-                case DOWN -> juego.moverJugador(0, Direccion.ABAJO);
-                case LEFT -> juego.moverJugador(0, Direccion.IZQUIERDA);
-                case RIGHT -> juego.moverJugador(0, Direccion.DERECHA);
-                case ENTER -> juego.dispararJugador(0);
-            }
-
-            // Jugador 2
-            switch (code) {
-                case W -> juego.moverJugador(1, Direccion.ARRIBA);
-                case S -> juego.moverJugador(1, Direccion.ABAJO);
-                case A -> juego.moverJugador(1, Direccion.IZQUIERDA);
-                case D -> juego.moverJugador(1, Direccion.DERECHA);
-                case SPACE -> juego.dispararJugador(1);
-            }
-        });
+        gestor = new GestorEstados(scene); // gestor controla el estado actual del juego
+        new GestorInput(scene, gestor);    // conecta los KeyCode con el estado actual
 
         stage.setScene(scene);
         stage.setTitle("Yet Another Battle City");
@@ -58,7 +37,7 @@ public class JuegoApp extends Application {
                 double deltaTime = (ahora - ultimoFrame) / 1_000_000_000.0;
                 ultimoFrame = ahora;
 
-                juego.actualizar(deltaTime);
+                gestor.actualizar(deltaTime); // ✅ Aquí se actualiza TODO según el estado activo
             }
         };
         loop.start();

@@ -68,7 +68,7 @@ public abstract class Tanque extends Ente {
         if (vida <= 0) destruir();
     }
 
-    protected void destruir() {
+    public void destruir() {
         vida = 0;
         setActivo(false);
     }

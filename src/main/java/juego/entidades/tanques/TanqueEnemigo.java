@@ -28,11 +28,11 @@ public class TanqueEnemigo extends Tanque {
         if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
             Coordenada origen = getPuntoDeDisparo();
-            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0);
-
+            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0, this);
         }
         return null;
     }
+
 
     @Override
     public void actualizar() {

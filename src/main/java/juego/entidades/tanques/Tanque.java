@@ -15,6 +15,8 @@ public abstract class Tanque extends Ente {
     protected final int velocidad;
     protected final int velocidadDeDisparo;
     private Direccion direccion;
+    private long tiempoQuieto = 0;
+
     public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
         super(posicion, dimensiones);
         this.vida = vida;
@@ -40,16 +42,25 @@ public abstract class Tanque extends Ente {
     }
 
     public void mover(Direccion dir) {
+        if (System.currentTimeMillis() < tiempoQuieto) {
+            return;
+        }
+
         ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());
         Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());
         dir.aplicarMovimiento(nuevaPos, velocidad);
         setPosicion(nuevaPos);
     }
 
+
     public void revertirMovimiento() {
         if (ultimaPosicion != null) {
             setPosicion(new Coordenada(ultimaPosicion.getX(), ultimaPosicion.getY()));
         }
+    }
+
+    public void aturdir(long duracionMs) {
+        tiempoQuieto = System.currentTimeMillis() + duracionMs;
     }
 
     public boolean puedeDisparar(int intervaloMs) {
@@ -69,7 +80,7 @@ public abstract class Tanque extends Ente {
         if (vida <= 0) destruir();
     }
 
-    protected void destruir() {
+    public void destruir() {
         vida = 0;
         setActivo(false);
     }

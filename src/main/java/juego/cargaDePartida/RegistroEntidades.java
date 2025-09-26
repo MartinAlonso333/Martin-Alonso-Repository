@@ -35,19 +35,21 @@ public class RegistroEntidades {
 
         // --- Registro de constructores ---
         registro.put(TipoEnte.JUGADOR, (pos, dir) ->
-                new TanqueJugador(pos, obtenerDimensionesSprite("player.png"), dir, 3, 1, 1, 2, dir));
-
+                new TanqueJugador(pos, obtenerDimensionesSprite("player.png"), dir, 3, 1, 1, 2, dir)
+        );
         registro.put(TipoEnte.TANQUE_BASICO, (pos, dir) ->
-                new TanqueBasico(pos, obtenerDimensionesSprite("basicEnemy.png"), dir));
+                new TanqueBasico(pos, obtenerDimensionesSprite("basicEnemy.png"), dir)
+        );
         registro.put(TipoEnte.TANQUE_RAPIDO, (pos, dir) ->
-                new TanqueRapido(pos, obtenerDimensionesSprite("fastEnemy.png"), dir));
+                new TanqueRapido(pos, obtenerDimensionesSprite("fastEnemy.png"), dir)
+        );
         registro.put(TipoEnte.TANQUE_BLINDADO, (pos, dir) ->
-                new TanqueBlindado(pos, obtenerDimensionesSprite("heavyEnemy.png"), dir));
+                new TanqueBlindado(pos, obtenerDimensionesSprite("heavyEnemy.png"), dir)
+        );
         registro.put(TipoEnte.TANQUE_POTENTE, (pos, dir) ->
-                new TanquePotente(pos, obtenerDimensionesSprite("powerfulEnemy.png"), dir));
+                new TanquePotente(pos, obtenerDimensionesSprite("powerfulEnemy.png"), dir)
+        );
 
-        registro.put(TipoEnte.BLOQUE, (pos, dir) ->
-                new Bloque(TipoBloque.VACIO, pos, obtenerDimensionesSprite("emptyBlock.png")));
     }
 
     public static Ente crearEntidad(TipoEnte tipo, Coordenada pos, Direccion dir) {
@@ -79,7 +81,7 @@ public class RegistroEntidades {
             return new Dimensiones((int) img.getWidth(), (int) img.getHeight());
         } catch (Exception e) {
             e.printStackTrace();
-            return new Dimensiones(32, 32);
+            return new Dimensiones(20, 20);
         }
     }
 }

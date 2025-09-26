@@ -69,11 +69,11 @@ public class SistemaColisionGrilla {
     }
 
     // ------------------ ACTUALIZACION DE POSICION ------------------
-    public void actualizarPosicion(Ente e, int anteriorX, int anteriorY) {
-        int x1 = anteriorX / ANCHO_CELDA;
-        int y1 = anteriorY / ALTO_CELDA;
-        int x2 = (anteriorX + e.getDimensiones().getAncho() - 1) / ANCHO_CELDA;
-        int y2 = (anteriorY + e.getDimensiones().getAlto() - 1) / ALTO_CELDA;
+    public void actualizarPosicion(Ente e, Coordenada anterior) {
+        int x1 = anterior.getX() / ANCHO_CELDA;
+        int y1 = anterior.getY() / ALTO_CELDA;
+        int x2 = (anterior.getX() + e.getDimensiones().getAncho() - 1) / ANCHO_CELDA;
+        int y2 = (anterior.getY() + e.getDimensiones().getAlto() - 1) / ALTO_CELDA;
 
         for (int i = x1; i <= x2; i++)
             for (int j = y1; j <= y2; j++)

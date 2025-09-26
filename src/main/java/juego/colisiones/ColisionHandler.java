@@ -59,8 +59,8 @@ public class ColisionHandler {
 
     private void colisionTanqueConPowerUp(TanqueJugador tanque, PowerUp powerUp) {
         if (!powerUp.estaActivo()) return;
-
-        powerUp.getTipoPowerUp().aplicar(tanque); // aplica el efecto
+        gestorPowerUp.activarPowerUp(tanque, powerUp.getTipoPowerUp()); // aplica el efecto
+        powerUp.setActivo(false);
     }
 
 

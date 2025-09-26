@@ -26,6 +26,13 @@ public class Juego {
     private final Map<Class<? extends Ente>, List<Ente>> porTipo = new HashMap<>();
     private final SistemaColisionGrilla sistemaColision = new SistemaColisionGrilla();
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
+    private final EventoManager em = EventoManager.getInstancia();
+
+    // ------------------ CONSTRUCTOR ------------------
+    public Juego() {
+        // Suscripción al evento de granada
+        em.registrar(TipoEvento.GRANADA_RECOGIDA, (data) -> destruirTodosEnemigos());
+    }
 
     // ------------------ GESTIÓN DE ENTES ------------------
     public void agregarEnte(Ente e) {
@@ -61,16 +68,13 @@ public class Juego {
         List<TanqueJugador> jugadores = getEntesDeTipo(TanqueJugador.class);
         if (indice >= 0 && indice < jugadores.size()) {
             TanqueJugador jugador = jugadores.get(indice);
-            int oldX = jugador.getPosicion().getX();
-            int oldY = jugador.getPosicion().getY();
-
+            Coordenada coordenadasAntes = new Coordenada(jugador.getPosicion().getX(), jugador.getPosicion().getY());
             jugador.mover(dir);
 
-            // Actualiza la grilla
-            sistemaColision.actualizarPosicion(jugador, oldX, oldY);
+            sistemaColision.actualizarPosicion(jugador, coordenadasAntes);
             sistemaColision.chequearColisiones(jugador);
 
-            EventoManager.getInstancia().notificar(TipoEvento.TANQUE_MOVIDO, jugador);
+            em.notificar(TipoEvento.TANQUE_MOVIDO, jugador);
         }
     }
 
@@ -81,7 +85,7 @@ public class Juego {
             if (bala != null) {
                 agregarEnte(bala);
                 sistemaColision.chequearColisiones(bala);
-                EventoManager.getInstancia().notificar(TipoEvento.BALA_DISPARADA, bala);
+                em.notificar(TipoEvento.BALA_DISPARADA, bala);
             }
         }
     }
@@ -98,20 +102,14 @@ public class Juego {
             // Chequear colisión con powerups
             for (PowerUp pu : getEntesDeTipo(PowerUp.class)) {
                 if (pu.estaActivo() && jugador.intersecta(pu)) {
-                    if (pu.getTipoPowerUp() == TipoPowerUp.GRANADA) {
-                        for (TanqueEnemigo enemigo : getEntesDeTipo(TanqueEnemigo.class)) {
-                            enemigo.destruir();
-                        }
-                    } else {
-                        gestorPowerUp.activarPowerUp(jugador, pu.getTipoPowerUp());
-                    }
+                    pu.getTipoPowerUp().aplicar(jugador); // granada notificará el evento
                     pu.setActivo(false);
                 }
             }
 
             if (jugador.estaDestruido()) {
                 removerEnte(jugador);
-                EventoManager.getInstancia().notificar(TipoEvento.TANQUE_DESTRUIDO, jugador);
+                em.notificar(TipoEvento.TANQUE_DESTRUIDO, jugador);
             }
         }
 
@@ -123,21 +121,22 @@ public class Juego {
             Bala b = enemigo.disparar();
             if (b != null) {
                 nuevasBalas.add(b);
-                EventoManager.getInstancia().notificar(TipoEvento.BALA_DISPARADA, b);
+                em.notificar(TipoEvento.BALA_DISPARADA, b);
             }
 
             if (enemigo.estaDestruido()) {
                 removerEnte(enemigo);
-                EventoManager.getInstancia().notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
+                em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
 
                 Coordenada coordenada = enemigo.getPosicion();
                 agregarEnte(new Bloque(TipoBloque.TANQUE_DESTRUIDO, coordenada, new Dimensiones(20,20)));
+
                 // Intentar spawnear powerup con probabilidad del 20%
                 if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).isEmpty()) {
                     PowerUp nuevo = generarPowerUpAleatorio();
                     if (nuevo != null) {
                         agregarEnte(nuevo);
-                        EventoManager.getInstancia().notificar(TipoEvento.POWERUP_SPAWN, nuevo);
+                        em.notificar(TipoEvento.POWERUP_SPAWN, nuevo);
                     }
                 }
             }
@@ -145,10 +144,9 @@ public class Juego {
 
         // --- Actualizar balas ---
         for (Bala bala : getEntesDeTipo(Bala.class)) {
-            int oldX = bala.getPosicion().getX();
-            int oldY = bala.getPosicion().getY();
+            Coordenada coordenadasAntes = new Coordenada(bala.getPosicion().getX(), bala.getPosicion().getY());
             bala.actualizar();
-            sistemaColision.actualizarPosicion(bala, oldX, oldY);
+            sistemaColision.actualizarPosicion(bala, coordenadasAntes);
             sistemaColision.chequearColisiones(bala);
 
             if (bala.estaDestruido()) removerEnte(bala);
@@ -166,7 +164,7 @@ public class Juego {
             sistemaColision.chequearColisiones(bloque);
             if (bloque.estaDestruido()) {
                 removerEnte(bloque);
-                EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_DESTRUIDO, bloque);
+                em.notificar(TipoEvento.BLOQUE_DESTRUIDO, bloque);
             }
         }
 
@@ -177,7 +175,7 @@ public class Juego {
         gestorPowerUp.actualizar(deltaTime);
     }
 
-    // ------------------ GENERAR POWERUP ------------------
+    // ------------------ MÉTODOS DE POWERUP ------------------
     private PowerUp generarPowerUpAleatorio() {
         Dimensiones dim = new Dimensiones(16, 16);
         TipoPowerUp tipo = TipoPowerUp.values()[(int)(Math.random() * TipoPowerUp.values().length)];
@@ -205,5 +203,14 @@ public class Juego {
             }
         }
         return true;
+    }
+
+    // ------------------ MÉTODO DE EVENTO GRANADA ------------------
+    private void destruirTodosEnemigos() {
+        for (TanqueEnemigo enemigo : getEntesDeTipo(TanqueEnemigo.class)) {
+            enemigo.destruir();
+            removerEnte(enemigo);
+            em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
+        }
     }
 }

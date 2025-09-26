@@ -29,7 +29,6 @@ public class Bala extends Ente {
     public boolean estaActivo() { return activo; }
     public Direccion getDireccion() { return direccion; }
 
-    public void setDanio(int danio) { this.danio = danio; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
 

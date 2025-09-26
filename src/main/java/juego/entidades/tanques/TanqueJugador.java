@@ -8,9 +8,7 @@ import juego.utilidades.Direccion;
 public class TanqueJugador extends Tanque {
 
     private boolean invulnerable;
-    private long tiempoInvulnerable;
     private boolean disparoMejorado;
-    private long tiempoDisparoMejorado;
 
     public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccion, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
         super(posicion, dimensiones, 3, 1, 1,2,direccionInicial);
@@ -28,8 +26,7 @@ public class TanqueJugador extends Tanque {
             );
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();
 
-            Bala bala = new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0, this);
-            return bala;
+            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0, this);
         }
         return null;
     }
@@ -51,9 +48,6 @@ public class TanqueJugador extends Tanque {
     public void recibirDanio(int cantidad) {
         if (!invulnerable) super.recibirDanio(cantidad);
     }
-
-    public boolean isInvulnerable() { return invulnerable; }
-    public boolean isDisparoMejorado() { return disparoMejorado; }
 
     @Override
     public TipoEnte getTipo() { return TipoEnte.JUGADOR; }

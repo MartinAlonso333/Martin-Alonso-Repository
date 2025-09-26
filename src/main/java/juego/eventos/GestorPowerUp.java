@@ -12,7 +12,6 @@ public class GestorPowerUp {
     private final List<PowerUpActivo> activos = new ArrayList<>();
 
     public void activarPowerUp(TanqueJugador jugador, TipoPowerUp tipo) {
-        if (tipo.getDuracionMs() <= 0) return; // globales no se gestionan aquí
         PowerUpActivo pa = new PowerUpActivo(jugador, tipo);
         activos.add(pa);
         pa.aplicar();

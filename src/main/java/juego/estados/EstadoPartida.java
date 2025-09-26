@@ -4,6 +4,7 @@ import juego.Juego;
 import juego.cargaDePartida.ParserXML;
 import juego.entidades.tanques.TanqueEnemigo;
 import juego.entidades.tanques.TanqueJugador;
+import juego.sonidos.GestorSonidos;
 import juego.utilidades.Direccion;
 
 public class EstadoPartida implements EstadoJuego {
@@ -13,15 +14,19 @@ public class EstadoPartida implements EstadoJuego {
     private final int nivelActual;
     private final int totalJugadores;
     private final int TOTAL_NIVELES = 3;
+    private final GestorSonidos sonidos;
 
     public EstadoPartida(GestorEstados gestor, int nivel, int numJugadores) {
         this.gestor = gestor;
         this.juego = new Juego();
         this.nivelActual = nivel;
         this.totalJugadores = numJugadores;
+        this.sonidos = new GestorSonidos();
 
         String archivoNivel = "niveles/nivel" + nivel + ".xml";
         ParserXML.cargarNivel(juego, numJugadores, archivoNivel);
+
+        sonidos.reproducirMusicaLoop();
     }
 
     @Override

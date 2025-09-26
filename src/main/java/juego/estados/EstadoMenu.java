@@ -1,7 +1,6 @@
 // EstadoMenu.java
 package juego.estados;
 
-import juego.vista.MenuVista;
 import javafx.stage.Stage;
 
 public class EstadoMenu implements EstadoJuego {

@@ -1,11 +1,13 @@
-package juego.gestores;
+package juego.colisiones;
 
 import juego.entidades.Ente;
+import juego.entidades.TipoEnte;
 import juego.entidades.bloques.Bloque;
 import juego.entidades.bloques.TipoBloque;
 import juego.entidades.powerups.PowerUp;
 import juego.entidades.tanques.*;
 import juego.eventos.EventoManager;
+import juego.eventos.GestorPowerUp;
 import juego.eventos.TipoEvento;
 
 
@@ -46,7 +48,7 @@ public class ColisionHandler {
 
     // ------------------ FUNCIONES CONCRETAS ------------------
     private void colisionBalaConTanque(Bala bala, Tanque tanque) {
-        if (bala.getDuenio().getTipo() == tanque.getTipo()) {
+        if (bala.getDuenio().getTipo() == tanque.getTipo() && tanque.getTipo() == TipoEnte.JUGADOR) {
             tanque.aturdir(TIEMPOATURDIDO);
             bala.setActivo(false);
             return;

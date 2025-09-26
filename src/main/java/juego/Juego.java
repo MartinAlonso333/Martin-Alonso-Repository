@@ -2,13 +2,14 @@ package juego;
 
 import juego.entidades.*;
 import juego.entidades.bloques.Bloque;
+import juego.entidades.bloques.TipoBloque;
 import juego.entidades.powerups.PowerUp;
 import juego.entidades.powerups.TipoPowerUp;
 import juego.entidades.tanques.*;
 import juego.eventos.EventoManager;
 import juego.eventos.TipoEvento;
-import juego.gestores.SistemaColisionGrilla;
-import juego.gestores.GestorPowerUp;
+import juego.colisiones.SistemaColisionGrilla;
+import juego.eventos.GestorPowerUp;
 import juego.utilidades.Direccion;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
@@ -101,12 +102,10 @@ public class Juego {
                         for (TanqueEnemigo enemigo : getEntesDeTipo(TanqueEnemigo.class)) {
                             enemigo.destruir();
                         }
-                        EventoManager.getInstancia().notificar(TipoEvento.GRANADA_EXPLOTADA, pu);
                     } else {
                         gestorPowerUp.activarPowerUp(jugador, pu.getTipoPowerUp());
                     }
                     pu.setActivo(false);
-                    EventoManager.getInstancia().notificar(TipoEvento.POWERUP_RECOGIDO, pu);
                 }
             }
 
@@ -131,6 +130,8 @@ public class Juego {
                 removerEnte(enemigo);
                 EventoManager.getInstancia().notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
 
+                Coordenada coordenada = enemigo.getPosicion();
+                agregarEnte(new Bloque(TipoBloque.TANQUE_DESTRUIDO, coordenada, new Dimensiones(20,20)));
                 // Intentar spawnear powerup con probabilidad del 20%
                 if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).isEmpty()) {
                     PowerUp nuevo = generarPowerUpAleatorio();

@@ -6,7 +6,7 @@ public enum TipoBloque {
     BOSQUE(false, true, true, 0),
     AGUA(false, false, true, 0),
     ACERO(false, false, false, 0),
-    VACIO(false, true, true, 0);
+    TANQUE_DESTRUIDO(false, false, false, 0 );
 
     private final boolean destructible;
     private final boolean permitePaso;

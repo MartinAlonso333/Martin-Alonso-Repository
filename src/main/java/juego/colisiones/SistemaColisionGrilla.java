@@ -1,4 +1,4 @@
-package juego.gestores;
+package juego.colisiones;
 
 import juego.entidades.Ente;
 import juego.utilidades.Coordenada;

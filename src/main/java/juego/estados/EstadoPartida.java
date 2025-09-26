@@ -1,8 +1,9 @@
 package juego.estados;
 
 import juego.Juego;
-import juego.niveles.ParserXML;
+import juego.cargaDePartida.ParserXML;
 import juego.entidades.tanques.TanqueEnemigo;
+import juego.entidades.tanques.TanqueJugador;
 import juego.utilidades.Direccion;
 
 public class EstadoPartida implements EstadoJuego {
@@ -26,6 +27,10 @@ public class EstadoPartida implements EstadoJuego {
     @Override
     public void actualizar(double deltaTime) {
         juego.actualizar(deltaTime);
+
+        if (juegoTerminado()) {
+            gestor.cambiarAPantallaPerder();
+        }
 
         if (nivelTerminado()) {
             if (nivelActual < TOTAL_NIVELES) {
@@ -59,6 +64,9 @@ public class EstadoPartida implements EstadoJuego {
         }
     }
 
+    private boolean juegoTerminado() {
+        return juego.getEntesDeTipo(TanqueJugador.class).isEmpty();
+    }
     private boolean nivelTerminado() {
         return juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty();
     }

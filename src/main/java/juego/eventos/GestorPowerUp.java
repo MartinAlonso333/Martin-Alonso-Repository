@@ -1,4 +1,4 @@
-package juego.gestores;
+package juego.eventos;
 
 import juego.entidades.powerups.TipoPowerUp;
 import juego.entidades.tanques.TanqueJugador;

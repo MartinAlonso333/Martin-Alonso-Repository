@@ -16,14 +16,15 @@ public class RegistroEntidades {
 
     private static final Map<TipoEnte, BiFunction<Coordenada, Direccion, Ente>> registro = new HashMap<>();
     private static final Map<String, TipoEnte> tipoStrToEnte = new HashMap<>();
+    private static final Map<String, TipoTanqueEnemigo> tipoStrToTanque = new HashMap<>();
 
     static {
         // --- Map de string a TipoEnte ---
         tipoStrToEnte.put("player", TipoEnte.JUGADOR);
-        tipoStrToEnte.put("regularEnemy", TipoEnte.TANQUE_BASICO);
-        tipoStrToEnte.put("fastEnemy", TipoEnte.TANQUE_RAPIDO);
-        tipoStrToEnte.put("heavyEnemy", TipoEnte.TANQUE_BLINDADO);
-        tipoStrToEnte.put("powerfulEnemy", TipoEnte.TANQUE_POTENTE);
+        tipoStrToEnte.put("basicEnemy", TipoEnte.ENEMIGO);
+        tipoStrToEnte.put("fastEnemy", TipoEnte.ENEMIGO);
+        tipoStrToEnte.put("heavyEnemy", TipoEnte.ENEMIGO);
+        tipoStrToEnte.put("powerfulEnemy", TipoEnte.ENEMIGO);
         tipoStrToEnte.put("bullet", TipoEnte.BALA);
         tipoStrToEnte.put("steelBlock", TipoEnte.BLOQUE);
         tipoStrToEnte.put("brickBlock", TipoEnte.BLOQUE);
@@ -32,23 +33,36 @@ public class RegistroEntidades {
         tipoStrToEnte.put("baseBlock", TipoEnte.BLOQUE);
         tipoStrToEnte.put("powerup", TipoEnte.POWERUP);
 
+        // --- Map de string a TipoTanqueEnemigo ---
+        tipoStrToTanque.put("basicEnemy", TipoTanqueEnemigo.BASICO);
+        tipoStrToTanque.put("fastEnemy", TipoTanqueEnemigo.RAPIDO);
+        tipoStrToTanque.put("heavyEnemy", TipoTanqueEnemigo.BLINDADO);
+        tipoStrToTanque.put("powerfulEnemy", TipoTanqueEnemigo.POTENTE);
+
         // --- Registro de constructores ---
         registro.put(TipoEnte.JUGADOR, (pos, dir) ->
                 new TanqueJugador(pos, obtenerDimensionesSprite("player.png"), dir, 3, 1, 1, 2, dir)
         );
-        registro.put(TipoEnte.TANQUE_BASICO, (pos, dir) ->
-                new TanqueBasico(pos, obtenerDimensionesSprite("basicEnemy.png"), dir)
-        );
-        registro.put(TipoEnte.TANQUE_RAPIDO, (pos, dir) ->
-                new TanqueRapido(pos, obtenerDimensionesSprite("fastEnemy.png"), dir)
-        );
-        registro.put(TipoEnte.TANQUE_BLINDADO, (pos, dir) ->
-                new TanqueBlindado(pos, obtenerDimensionesSprite("heavyEnemy.png"), dir)
-        );
-        registro.put(TipoEnte.TANQUE_POTENTE, (pos, dir) ->
-                new TanquePotente(pos, obtenerDimensionesSprite("powerfulEnemy.png"), dir)
-        );
 
+        // Enemigos: un único constructor genérico
+        registro.put(TipoEnte.ENEMIGO, (pos, dir) -> {
+            // dirString debe ser conocido en contexto de carga de nivel
+            // Para ejemplo usamos BASICO como default; se reemplaza al cargar nivel real
+            return new TanqueEnemigo(pos, obtenerDimensionesSprite("enemy.png"), dir, TipoTanqueEnemigo.BASICO);
+        });
+    }
+
+    public static Ente crearEntidad(String tipoStr, Coordenada pos, Direccion dir) {
+        TipoEnte tipo = tipoDesdeString(tipoStr);
+
+        if (tipo == TipoEnte.ENEMIGO) {
+            TipoTanqueEnemigo tipoTanque = tipoStrToTanque.get(tipoStr);
+            if (tipoTanque == null) tipoTanque = TipoTanqueEnemigo.BASICO; // default
+            Dimensiones dims = obtenerDimensionesSprite(tipoStr + ".png");
+            return new TanqueEnemigo(pos, dims, dir, tipoTanque);
+        } else {
+            return crearEntidad(tipo, pos, dir);
+        }
     }
 
     public static Ente crearEntidad(TipoEnte tipo, Coordenada pos, Direccion dir) {

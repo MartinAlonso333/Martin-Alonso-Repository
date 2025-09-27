@@ -1,14 +1,13 @@
 // EstadoMenu.java
 package org.modelo.estados;
 
-import javafx.stage.Stage;
 
 public class EstadoMenu implements EstadoJuego {
 
     private GestorEstados gestor;
     private MenuVista vista;
 
-    public EstadoMenu(GestorEstados gestor, Stage stage) {
+    public EstadoMenu(GestorEstados gestor) {
         this.gestor = gestor;
 
         // Pasamos un solo Consumer<Integer> para manejar 1 o 2 jugadores

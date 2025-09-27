@@ -60,9 +60,8 @@ public class ParserXML {
                         Direccion.valueOf(e.getAttribute("direccion")) :
                         Direccion.ARRIBA;
 
-                String typeStr = e.getAttribute("type");
-                TipoEnte tipo = RegistroEntidades.tipoDesdeString(typeStr);
-                Ente enemigo = RegistroEntidades.crearEntidad(tipo, pos, dir);
+                String typeStr = e.getAttribute("type"); // ej: "fastEnemy", "heavyEnemy", etc.
+                Ente enemigo = RegistroEntidades.crearEntidad(typeStr, pos, dir);
                 juego.agregarEnte(enemigo);
             }
 

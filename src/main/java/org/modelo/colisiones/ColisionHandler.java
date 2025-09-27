@@ -55,11 +55,17 @@ public class ColisionHandler {
         }
         tanque.recibirDanio(bala.getDanio());
         bala.setActivo(false);
+        if (tanque.getTipo() == TipoEnte.ENEMIGO){
+            TanqueEnemigo enemigo = (TanqueEnemigo) tanque;
+            if (enemigo.getTipoTanqueEnemigo() == TipoTanqueEnemigo.BLINDADO) {
+                EventoManager.getInstancia().notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO);
+            }
+        }
     }
 
     private void colisionTanqueConPowerUp(TanqueJugador tanque, PowerUp powerUp) {
         if (!powerUp.estaActivo()) return;
-        gestorPowerUp.activarPowerUp(tanque, powerUp.getTipoPowerUp()); // aplica el efecto
+        gestorPowerUp.activarPowerUp(tanque, powerUp);
         powerUp.setActivo(false);
     }
 
@@ -78,7 +84,6 @@ public class ColisionHandler {
         if (!bloque.balaimpacta()) return;
 
         bala.setActivo(false);
-        if (bloque.esDestructible()) {
             bloque.recibirDanio(bala.getDanio());
             if (bloque.getTipoBloque() == TipoBloque.BASE) {
                 EventoManager.getInstancia().notificar(TipoEvento.BASE_DESTRUIDA);
@@ -86,7 +91,9 @@ public class ColisionHandler {
             if (bloque.estaDestruido() && bloque.getTipoBloque() == TipoBloque.LADRILLO) {
                 EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_DESTRUIDO);
             }
-        }
+            if (bloque.getTipoBloque() == TipoBloque.ACERO) {
+                EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_ACERO_IMPACTADO);
+            }
     }
 
     // ------------------ CLASE AUXILIAR ------------------

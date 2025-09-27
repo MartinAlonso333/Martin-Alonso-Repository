@@ -28,6 +28,12 @@ public class Juego {
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
     private final EventoManager em = EventoManager.getInstancia();
 
+    private final int INTERVALO_SPAWN_ENEMIGO = 5000; // ms
+    private long ultimoSpawnEnemigo = 0;
+
+    private final int maxEnemigosTotales = 3; // máximo de enemigos a spawnear por nivel
+    private int enemigosSpawneados = 0;
+
     // ------------------ CONSTRUCTOR ------------------
     public Juego() {
         // Suscripción al evento de granada
@@ -68,12 +74,10 @@ public class Juego {
         List<TanqueJugador> jugadores = getEntesDeTipo(TanqueJugador.class);
         if (indice >= 0 && indice < jugadores.size()) {
             TanqueJugador jugador = jugadores.get(indice);
-            Coordenada coordenadasAntes = new Coordenada(jugador.getPosicion().getX(), jugador.getPosicion().getY());
+            Coordenada antes = new Coordenada(jugador.getPosicion().getX(), jugador.getPosicion().getY());
             jugador.mover(dir);
-
-            sistemaColision.actualizarPosicion(jugador, coordenadasAntes);
+            sistemaColision.actualizarPosicion(jugador, antes);
             sistemaColision.chequearColisiones(jugador);
-
             em.notificar(TipoEvento.TANQUE_MOVIDO, jugador);
         }
     }
@@ -99,14 +103,6 @@ public class Juego {
             jugador.actualizar();
             sistemaColision.chequearColisiones(jugador);
 
-            // Chequear colisión con powerups
-            for (PowerUp pu : getEntesDeTipo(PowerUp.class)) {
-                if (pu.estaActivo() && jugador.intersecta(pu)) {
-                    pu.getTipoPowerUp().aplicar(jugador); // granada notificará el evento
-                    pu.setActivo(false);
-                }
-            }
-
             if (jugador.estaDestruido()) {
                 removerEnte(jugador);
                 em.notificar(TipoEvento.TANQUE_DESTRUIDO, jugador);
@@ -127,85 +123,71 @@ public class Juego {
             if (enemigo.estaDestruido()) {
                 removerEnte(enemigo);
                 em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
+            }
+        }
 
-                Coordenada coordenada = enemigo.getPosicion();
-                agregarEnte(new Bloque(TipoBloque.TANQUE_DESTRUIDO, coordenada, new Dimensiones(20,20)));
-
-                // Intentar spawnear powerup con probabilidad del 20%
-                if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).isEmpty()) {
-                    PowerUp nuevo = generarPowerUpAleatorio();
-                    if (nuevo != null) {
-                        agregarEnte(nuevo);
-                        em.notificar(TipoEvento.POWERUP_SPAWN, nuevo);
-                    }
+        // --- Spawn de enemigos (máximo 3 por nivel) ---
+        if (System.currentTimeMillis() - ultimoSpawnEnemigo > INTERVALO_SPAWN_ENEMIGO) {
+            if (enemigosSpawneados < maxEnemigosTotales) {
+                TanqueEnemigo nuevo = crearEnemigoAleatorio();
+                if (nuevo != null) {
+                    agregarEnte(nuevo);
+                    enemigosSpawneados++;
                 }
             }
+            ultimoSpawnEnemigo = System.currentTimeMillis();
         }
 
         // --- Actualizar balas ---
         for (Bala bala : getEntesDeTipo(Bala.class)) {
-            Coordenada coordenadasAntes = new Coordenada(bala.getPosicion().getX(), bala.getPosicion().getY());
+            Coordenada antes = new Coordenada(bala.getPosicion().getX(), bala.getPosicion().getY());
             bala.actualizar();
-            sistemaColision.actualizarPosicion(bala, coordenadasAntes);
+            sistemaColision.actualizarPosicion(bala, antes);
             sistemaColision.chequearColisiones(bala);
-
             if (bala.estaDestruido()) removerEnte(bala);
         }
 
         // --- Actualizar powerups ---
+        gestorPowerUp.actualizar(deltaTime);
         for (PowerUp pu : getEntesDeTipo(PowerUp.class)) {
-            pu.actualizar();
             if (pu.estaDestruido()) removerEnte(pu);
-        }
-
-        // --- Actualizar bloques ---
-        for (Bloque bloque : getEntesDeTipo(Bloque.class)) {
-            bloque.actualizar();
-            sistemaColision.chequearColisiones(bloque);
-            if (bloque.estaDestruido()) {
-                removerEnte(bloque);
-                em.notificar(TipoEvento.BLOQUE_DESTRUIDO, bloque);
-            }
         }
 
         // --- Agregar nuevas balas ---
         for (Bala b : nuevasBalas) agregarEnte(b);
-
-        // --- Actualizar efectos de powerups activos ---
-        gestorPowerUp.actualizar(deltaTime);
     }
 
-    // ------------------ MÉTODOS DE POWERUP ------------------
-    private PowerUp generarPowerUpAleatorio() {
-        Dimensiones dim = new Dimensiones(16, 16);
-        TipoPowerUp tipo = TipoPowerUp.values()[(int)(Math.random() * TipoPowerUp.values().length)];
+    // ------------------ MÉTODOS DE ENEMIGOS ------------------
+    private TanqueEnemigo crearEnemigoAleatorio() {
+        TipoTanqueEnemigo tipo = TipoTanqueEnemigo.values()[(int)(Math.random() * TipoTanqueEnemigo.values().length)];
+        Direccion dir = Direccion.values()[(int)(Math.random() * Direccion.values().length)];
 
+        TanqueEnemigo nuevo = null;
         int intentos = 0;
-        PowerUp nuevo = null;
-
         while (intentos < 50) {
             Coordenada pos = new Coordenada(
                     (int)(Math.random() * ANCHO_MAPA),
                     (int)(Math.random() * ALTO_MAPA)
             );
-            nuevo = new PowerUp(pos, dim, tipo);
-            if (esPosicionValida(nuevo)) break;
-            nuevo = null;
+            nuevo = new TanqueEnemigo(pos, new Dimensiones(32, 32), dir, tipo);
+            if (esPosicionValida(nuevo)) {
+                return nuevo;
+            }
             intentos++;
+            nuevo = null;
         }
-        return nuevo;
+        return null;
     }
 
-    private boolean esPosicionValida(PowerUp pu) {
+    // ------------------ MÉTODOS DE POWERUP ------------------
+    private boolean esPosicionValida(Ente ente) {
         for (Bloque bloque : getEntesDeTipo(Bloque.class)) {
-            if (!bloque.permitePaso() && pu.intersecta(bloque)) {
-                return false;
-            }
+            if (!bloque.permitePaso() && ente.intersecta(bloque)) return false;
         }
         return true;
     }
 
-    // ------------------ MÉTODO DE EVENTO GRANADA ------------------
+    // ------------------ EVENTO GRANADA ------------------
     private void destruirTodosEnemigos() {
         for (TanqueEnemigo enemigo : getEntesDeTipo(TanqueEnemigo.class)) {
             enemigo.destruir();
@@ -213,4 +195,8 @@ public class Juego {
             em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
         }
     }
+
+    // ------------------ GETTERS ------------------
+    public int getEnemigosSpawneados() { return enemigosSpawneados; }
+    public int getMaxEnemigosTotales() { return maxEnemigosTotales; }
 }

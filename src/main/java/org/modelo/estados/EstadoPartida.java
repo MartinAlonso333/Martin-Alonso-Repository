@@ -51,20 +51,20 @@ public class EstadoPartida implements EstadoJuego {
         // Jugadores
         if (totalJugadores >= 1) {
             switch (input) {
-                case "J1_UP"    -> juego.moverJugador(0, Direccion.ARRIBA);
-                case "J1_DOWN"  -> juego.moverJugador(0, Direccion.ABAJO);
-                case "J1_LEFT"  -> juego.moverJugador(0, Direccion.IZQUIERDA);
-                case "J1_RIGHT" -> juego.moverJugador(0, Direccion.DERECHA);
-                case "J1_FIRE"  -> juego.dispararJugador(0);
+                case "J1_ARRIBA"    -> juego.moverJugador(0, Direccion.ARRIBA);
+                case "J1_ABAJO"  -> juego.moverJugador(0, Direccion.ABAJO);
+                case "J1_IZQUIERDA"  -> juego.moverJugador(0, Direccion.IZQUIERDA);
+                case "J1_DERECHA" -> juego.moverJugador(0, Direccion.DERECHA);
+                case "J1_DISPARO"  -> juego.dispararJugador(0);
             }
         }
         if (totalJugadores == 2) {
             switch (input) {
-                case "J2_UP"    -> juego.moverJugador(1, Direccion.ARRIBA);
-                case "J2_DOWN"  -> juego.moverJugador(1, Direccion.ABAJO);
-                case "J2_LEFT"  -> juego.moverJugador(1, Direccion.IZQUIERDA);
-                case "J2_RIGHT" -> juego.moverJugador(1, Direccion.DERECHA);
-                case "J2_FIRE"  -> juego.dispararJugador(1);
+                case "J2_ARRIBA"    -> juego.moverJugador(1, Direccion.ARRIBA);
+                case "J2_ABAJO"  -> juego.moverJugador(1, Direccion.ABAJO);
+                case "J2_IZQUIERDA"  -> juego.moverJugador(1, Direccion.IZQUIERDA);
+                case "J2_DERECHA" -> juego.moverJugador(1, Direccion.DERECHA);
+                case "J2_DISPARO"  -> juego.dispararJugador(1);
             }
         }
     }
@@ -72,7 +72,10 @@ public class EstadoPartida implements EstadoJuego {
     private boolean juegoTerminado() {
         return juego.getEntesDeTipo(TanqueJugador.class).isEmpty();
     }
+
     private boolean nivelTerminado() {
-        return juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty();
+        // Termina el nivel si no hay enemigos vivos y ya se spawneó la cantidad máxima
+        return juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty() &&
+                juego.getEnemigosSpawneados() >= juego.getMaxEnemigosTotales();
     }
 }

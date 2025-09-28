@@ -1,6 +1,7 @@
 package juego.entidades.tanques;
 
 
+import juego.entidades.TipoEnte;
 import juego.utilidades.Coordenada;
 import juego.utilidades.Dimensiones;
 import juego.utilidades.Direccion;
@@ -16,5 +17,6 @@ public class TanquePotente extends TanqueEnemigo {
         super.mover(dr);
     }
 
-
+    @Override
+    public TipoEnte getTipo() { return TipoEnte.TANQUE_POTENTE; }
 }

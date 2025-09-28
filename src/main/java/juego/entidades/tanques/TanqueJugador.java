@@ -8,9 +8,7 @@ import juego.utilidades.Direccion;
 public class TanqueJugador extends Tanque {
 
     private boolean invulnerable;
-    private long tiempoInvulnerable;
     private boolean disparoMejorado;
-    private long tiempoDisparoMejorado;
 
     public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccion, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
         super(posicion, dimensiones, 3, 1, 1,2,direccionInicial);

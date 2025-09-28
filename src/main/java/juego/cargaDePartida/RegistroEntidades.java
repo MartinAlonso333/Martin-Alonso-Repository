@@ -20,7 +20,8 @@ public class RegistroEntidades {
 
     static {
         // --- Map de string a TipoEnte ---
-        tipoStrToEnte.put("player", TipoEnte.JUGADOR);
+        tipoStrToEnte.put("player1", TipoEnte.JUGADOR);
+        tipoStrToEnte.put("player2", TipoEnte.JUGADOR);
         tipoStrToEnte.put("regularEnemy", TipoEnte.TANQUE_BASICO);
         tipoStrToEnte.put("fastEnemy", TipoEnte.TANQUE_RAPIDO);
         tipoStrToEnte.put("heavyEnemy", TipoEnte.TANQUE_BLINDADO);

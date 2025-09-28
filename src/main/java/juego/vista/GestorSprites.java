@@ -8,29 +8,38 @@ import java.util.Map;
 
 public class GestorSprites {
 
-    private static final String RUTA_SPRITES = "/sprites/";
     private static final Map<String, Image> cache = new HashMap<>();
+    private static final String RUTA_SPRITES = "/sprites/";
 
     /**
-     * Devuelve un sprite a partir del nombre real del archivo.
-     * Si ya está cargado, lo devuelve del cache.
+     * Devuelve el sprite correspondiente al nombre de archivo.
+     * Si ya se cargó, lo devuelve del cache.
      */
-    public static Image obtenerSprite(String archivo) {
-        if (cache.containsKey(archivo)) {
-            return cache.get(archivo);
+    public static Image obtenerSprite(String nombreArchivo) {
+        if (cache.containsKey(nombreArchivo)) {
+            return cache.get(nombreArchivo);
         }
 
-        try (InputStream is = GestorSprites.class.getResourceAsStream(RUTA_SPRITES + archivo)) {
+        try (InputStream is = GestorSprites.class.getResourceAsStream(RUTA_SPRITES + nombreArchivo)) {
             if (is == null) {
-                System.err.println("No se encontró el sprite: " + archivo);
+                System.err.println("No se encontró el sprite: " + nombreArchivo);
                 return null;
             }
             Image img = new Image(is);
-            cache.put(archivo, img);
+            cache.put(nombreArchivo, img);
             return img;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Devuelve las dimensiones del sprite como un arreglo [ancho, alto].
+     */
+    public static int[] obtenerDimensiones(String nombreArchivo) {
+        Image img = obtenerSprite(nombreArchivo);
+        if (img == null) return new int[]{32, 32};
+        return new int[]{(int) img.getWidth(), (int) img.getHeight()};
     }
 }

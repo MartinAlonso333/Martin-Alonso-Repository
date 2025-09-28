@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.modelo.estados.GestorEstados;
+import org.modelo.input.GestorInput;
 
 public class JuegoApp extends Application {
 
@@ -13,6 +14,7 @@ public class JuegoApp extends Application {
         stage.setScene(scene);
 
         GestorEstados gestor = new GestorEstados(scene, stage);
+        GestorInput gestorInput = new GestorInput(scene, gestor);
         gestor.cambiarAMenu();
 
         // 🔹 Configuración de la ventana

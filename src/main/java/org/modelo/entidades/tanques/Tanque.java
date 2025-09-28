@@ -5,18 +5,19 @@ import org.modelo.entidades.Ente;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
-
 public abstract class Tanque extends Ente {
     private int vida;
     private final int danio;
     private Coordenada ultimaPosicion;
     private long ultimoDisparo;
-    protected final int velocidad;
+    protected final int velocidad; // en píxeles por segundo
     protected final int velocidadDeDisparo;
     protected Direccion direccion;
     private long tiempoQuieto = 0;
 
-    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
+    private boolean estaMoviendo = false; // indica si el tanque debe moverse
+
+    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo, Direccion direccionInicial) {
         super(posicion, dimensiones);
         this.vida = vida;
         this.danio = danio;
@@ -40,17 +41,37 @@ public abstract class Tanque extends Ente {
         return direccion;
     }
 
+    /**
+     * Actualiza la dirección y activa el movimiento.
+     * No mueve la posición directamente.
+     */
     public void mover(Direccion dir) {
         if (System.currentTimeMillis() < tiempoQuieto) {
+            estaMoviendo = false;
             return;
         }
-
-        ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());
-        Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());
-        dir.aplicarMovimiento(nuevaPos, velocidad);
-        setPosicion(nuevaPos);
+        this.direccion = dir;
+        estaMoviendo = true;
     }
 
+    /**
+     * Detiene el movimiento del tanque.
+     */
+    public void detenerMovimiento() {
+        estaMoviendo = false;
+    }
+
+    /**
+     * Actualiza la posición del tanque según la dirección y velocidad.
+     * Debe llamarse cada frame con el deltaTime (segundos).
+     */
+    public void actualizar(double deltaTime) {
+        if (!estaMoviendo) return;
+        ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());
+        Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());
+        direccion.aplicarMovimiento(nuevaPos, velocidad * deltaTime);
+        setPosicion(nuevaPos);
+    }
 
     public void revertirMovimiento() {
         if (ultimaPosicion != null) {
@@ -60,6 +81,7 @@ public abstract class Tanque extends Ente {
 
     public void aturdir(long duracionMs) {
         tiempoQuieto = System.currentTimeMillis() + duracionMs;
+        estaMoviendo = false; // detener movimiento si está aturdido
     }
 
     public boolean puedeDisparar(int intervaloMs) {

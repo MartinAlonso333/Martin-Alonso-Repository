@@ -4,6 +4,7 @@ package org.modelo.estados;
 import javafx.stage.Stage;
 import org.vista.Pantalla;
 import org.vista.PantallaMenu;
+
 public class EstadoMenu implements EstadoJuego {
 
     public EstadoMenu(GestorEstados gestor, Stage stage) {

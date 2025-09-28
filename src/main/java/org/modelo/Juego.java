@@ -100,7 +100,7 @@ public class Juego {
 
         // --- Actualizar jugadores ---
         for (TanqueJugador jugador : getEntesDeTipo(TanqueJugador.class)) {
-            jugador.actualizar();
+            jugador.actualizar(deltaTime);
             sistemaColision.chequearColisiones(jugador);
 
             if (jugador.estaDestruido()) {
@@ -111,7 +111,7 @@ public class Juego {
 
         // --- Actualizar enemigos ---
         for (TanqueEnemigo enemigo : getEntesDeTipo(TanqueEnemigo.class)) {
-            enemigo.actualizar();
+            enemigo.actualizar(deltaTime);
             sistemaColision.chequearColisiones(enemigo);
 
             Bala b = enemigo.disparar();
@@ -169,7 +169,7 @@ public class Juego {
                     (int)(Math.random() * ANCHO_MAPA),
                     (int)(Math.random() * ALTO_MAPA)
             );
-            nuevo = new TanqueEnemigo(pos, new Dimensiones(32, 32), dir, tipo);
+            nuevo = new TanqueEnemigo(pos, new Dimensiones(20, 20), dir, tipo);
             if (esPosicionValida(nuevo)) {
                 return nuevo;
             }

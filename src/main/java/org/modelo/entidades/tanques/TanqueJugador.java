@@ -9,9 +9,10 @@ public class TanqueJugador extends Tanque {
 
     private boolean invulnerable;
     private boolean disparoMejorado;
-
-    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccion, int vida, int danio, int velocidad, int velocidadDeDisparo,Direccion direccionInicial) {
+    private int idJugador;
+    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccion, double vida, int danio, int velocidad, int velocidadDeDisparo, Direccion direccionInicial, int idJugador) {
         super(posicion, dimensiones, 3, 1, 1,2,direccionInicial);
+        this.idJugador = idJugador;
     }
 
     @Override
@@ -43,7 +44,9 @@ public class TanqueJugador extends Tanque {
     public void actualizar() {
 
     }
-
+    public int getId() {
+        return idJugador;
+    }
     @Override
     public void recibirDanio(int cantidad) {
         if (!invulnerable) super.recibirDanio(cantidad);
@@ -51,4 +54,8 @@ public class TanqueJugador extends Tanque {
 
     @Override
     public TipoEnte getTipo() { return TipoEnte.JUGADOR; }
+
+    public void setId(int idJugador) {
+        this.idJugador=idJugador;
+    }
 }

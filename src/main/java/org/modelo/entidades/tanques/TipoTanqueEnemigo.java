@@ -3,10 +3,10 @@ package org.modelo.entidades.tanques;
 import org.modelo.utilidades.Direccion;
 
 public enum TipoTanqueEnemigo {
-    BASICO(3, 1, 1, 1000),     // vida, danio, velocidad, velocidadDisparo (ms)
-    RAPIDO(2, 1, 3, 500),
-    POTENTE(5, 3, 1, 1500),
-    BLINDADO(8, 2, 1, 2000);
+    BASICO(1, 1, 1, 2000),     // vida, danio, velocidad, velocidadDisparo (ms)
+    RAPIDO(2, 1, 3, 2000),
+    POTENTE(2, 3, 1, 1000),
+    BLINDADO(3, 1, 1, 2000);
 
     private final int vida;
     private final int danio;

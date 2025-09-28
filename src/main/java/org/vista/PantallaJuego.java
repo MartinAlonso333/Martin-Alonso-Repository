@@ -1,99 +1,99 @@
 package org.vista;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.scene.input.KeyCode;
-import org.modelo.Juego;
-import org.modelo.entidades.Ente;
-import org.modelo.utilidades.Direccion;
 
-import java.util.List;
-import java.util.Map;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import org.modelo.estados.EstadoJuego;
+import org.modelo.estados.EstadoPartida;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
+import org.modelo.estados.GestorEstados;
+
 
 public class PantallaJuego extends Pantalla {
 
-    private final int jugadores;
-    private final Juego juego;
-    private final JuegoVista vista; // la fachada de lo gráfico
-    private AnimationTimer loop;
+    private final GestorEstados gestorEstados;
+    private final StackPane root;
+    private final Canvas canvas;
+    private final GraphicsContext gc;
+    private AnimationTimer timer;
+    private long ultimoTiempoNano = 0;
 
-    public PantallaJuego(Stage stage, int jugadores, Juego juego) {
+    public PantallaJuego(Stage stage, GestorEstados gestorEstados, int ancho, int alto) {
         super(stage);
-        this.jugadores = jugadores;
-        this.juego = juego;
-        this.vista = new JuegoVista();
+        this.gestorEstados = gestorEstados;
 
-        // Aquí podés inicializar las vistas de los entes del juego
-        for (Ente ente : juego.getEntes()) {
-            Map<Direccion, List<String>> rutas = FabricaSprites.obtenerRutas(ente);
-            // esa clase helper puede devolverte las rutas segun tipo de ente
-            vista.agregarEnteVista(new EnteVista(ente, rutas));
-        }
+        root = new StackPane();
+        canvas = new Canvas(ancho, alto);
+        gc = canvas.getGraphicsContext2D();
+        root.getChildren().add(canvas);
+
     }
 
     @Override
     public void mostrar() {
-        Canvas canvas = new Canvas(800, 600);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        // Cambiar root de la escena actual
+        stage.getScene().setRoot(root);
+        stage.setTitle("Juego - Nivel " + obtenerNivelActual());
 
-        Pane root = new Pane(canvas);
-        Scene scene = new Scene(root);
+        // Pedir foco para recibir input
+        stage.getScene().setRoot(root);
+        stage.getScene().getRoot().requestFocus();
 
-        configurarControles(scene);
-
-        stage.setScene(scene);
-        stage.setTitle("Yet Another Battle City");
-        stage.show();
-
-        loop = new AnimationTimer() {
-            private long ultimoFrame = 0;
-
+        // Iniciar loop de actualización y renderizado
+        timer = new AnimationTimer() {
             @Override
-            public void handle(long ahora) {
-                if (ultimoFrame == 0) {
-                    ultimoFrame = ahora;
+            public void handle(long now) {
+                if (ultimoTiempoNano == 0) {
+                    ultimoTiempoNano = now;
                     return;
                 }
-                double deltaTime = (ahora - ultimoFrame) / 1_000_000_000.0;
-                ultimoFrame = ahora;
+                double deltaTime = (now - ultimoTiempoNano) / 1_000_000_000.0;
+                ultimoTiempoNano = now;
 
-                // Lógica
-                juego.actualizar(deltaTime);
-
-                // Limpio pantalla y dibujo
-                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                vista.actualizar(deltaTime);
-                vista.dibujar(gc);
+                actualizarYRenderizar(deltaTime);
             }
         };
-        loop.start();
+        timer.start();
     }
 
-    private void configurarControles(Scene scene) {
-        scene.setOnKeyPressed(e -> {
-            KeyCode code = e.getCode();
+    private void actualizarYRenderizar(double deltaTime) {
+        EstadoJuego estado = gestorEstados.getEstadoActual();
 
-            switch (code) {
-                case UP -> juego.moverJugador(0, Direccion.ARRIBA);
-                case DOWN -> juego.moverJugador(0, Direccion.ABAJO);
-                case LEFT -> juego.moverJugador(0, Direccion.IZQUIERDA);
-                case RIGHT -> juego.moverJugador(0, Direccion.DERECHA);
-                case ENTER -> juego.dispararJugador(0);
-            }
+        if (estado == null) {
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            return;
+        }
 
-            if (jugadores == 2) {
-                switch (code) {
-                    case W -> juego.moverJugador(1, Direccion.ARRIBA);
-                    case S -> juego.moverJugador(1, Direccion.ABAJO);
-                    case A -> juego.moverJugador(1, Direccion.IZQUIERDA);
-                    case D -> juego.moverJugador(1, Direccion.DERECHA);
-                    case SPACE -> juego.dispararJugador(1);
-                }
-            }
-        });
+        // Actualizar estado
+        estado.actualizar(deltaTime);
+
+        // Limpiar pantalla
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        // Dibujar juego si es EstadoPartida
+        if (estado instanceof EstadoPartida ep) {
+            ep.getJuegoVista().dibujar(gc);
+        }
+    }
+
+
+    private int obtenerNivelActual() {
+        EstadoJuego estado = gestorEstados.getEstadoActual();
+        if (estado instanceof EstadoPartida ep) {
+            return ep.nivelActual;
+        }
+        return 0;
+    }
+
+    public void detener() {
+        if (timer != null) {
+            timer.stop();
+        }
     }
 }

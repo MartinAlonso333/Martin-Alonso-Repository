@@ -1,100 +1,119 @@
 package org.vista.cargaDePartida;
 
 import org.modelo.entidades.*;
+import org.modelo.entidades.bloques.Bloque;
+import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.tanques.*;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
 
-import javafx.scene.image.Image;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
 public class RegistroEntidades {
+    private static final int ANCHO = 20;
+    private static final int ALTO = 20;
 
     private static final Map<TipoEnte, BiFunction<Coordenada, Direccion, Ente>> registro = new HashMap<>();
     private static final Map<String, TipoEnte> tipoStrToEnte = new HashMap<>();
     private static final Map<String, TipoTanqueEnemigo> tipoStrToTanque = new HashMap<>();
+    private static final Map<String, TipoBloque> tipoStrToBloque = new HashMap<>();
 
     static {
-        // --- Map de string a TipoEnte ---
-        tipoStrToEnte.put("player", TipoEnte.JUGADOR);
+        // --- Map de string a TipoEnte (jugadores y generales) ---
+        tipoStrToEnte.put("player1", TipoEnte.JUGADOR);
+        tipoStrToEnte.put("player2", TipoEnte.JUGADOR);
+        tipoStrToEnte.put("bullet", TipoEnte.BALA);
+
+        // FIX: Enemigos - Agrega TODOS los tipos posibles de tu XML
         tipoStrToEnte.put("basicEnemy", TipoEnte.ENEMIGO);
         tipoStrToEnte.put("fastEnemy", TipoEnte.ENEMIGO);
         tipoStrToEnte.put("heavyEnemy", TipoEnte.ENEMIGO);
         tipoStrToEnte.put("powerfulEnemy", TipoEnte.ENEMIGO);
-        tipoStrToEnte.put("bullet", TipoEnte.BALA);
-        tipoStrToEnte.put("steelBlock", TipoEnte.BLOQUE);
+        tipoStrToEnte.put("regularEnemy", TipoEnte.ENEMIGO);  // FIX NUEVO: Para tu XML
+
+        // FIX: Bloques (para no fallar en tipoDesdeString)
         tipoStrToEnte.put("brickBlock", TipoEnte.BLOQUE);
+        tipoStrToEnte.put("steelBlock", TipoEnte.BLOQUE);
         tipoStrToEnte.put("waterBlock", TipoEnte.BLOQUE);
         tipoStrToEnte.put("forestBlock", TipoEnte.BLOQUE);
         tipoStrToEnte.put("baseBlock", TipoEnte.BLOQUE);
-        tipoStrToEnte.put("powerup", TipoEnte.POWERUP);
+        tipoStrToEnte.put("whiteBlock", TipoEnte.BLOQUE);  // Si usas "blanco" o similar
 
-        // --- Map de string a TipoTanqueEnemigo ---
+        // --- Map de string a TipoBloque ---
+        tipoStrToBloque.put("brickBlock", TipoBloque.LADRILLO);
+        tipoStrToBloque.put("steelBlock", TipoBloque.ACERO);
+        tipoStrToBloque.put("waterBlock", TipoBloque.AGUA);
+        tipoStrToBloque.put("forestBlock", TipoBloque.BOSQUE);
+        tipoStrToBloque.put("baseBlock", TipoBloque.BASE);
+        tipoStrToBloque.put("whiteBlock", TipoBloque.LADRILLO);  // Ejemplo default
+
+        // --- Map de string a TipoTanqueEnemigo (incluye regularEnemy) ---
         tipoStrToTanque.put("basicEnemy", TipoTanqueEnemigo.BASICO);
         tipoStrToTanque.put("fastEnemy", TipoTanqueEnemigo.RAPIDO);
         tipoStrToTanque.put("heavyEnemy", TipoTanqueEnemigo.BLINDADO);
         tipoStrToTanque.put("powerfulEnemy", TipoTanqueEnemigo.POTENTE);
+        tipoStrToTanque.put("regularEnemy", TipoTanqueEnemigo.BASICO);  // FIX NUEVO: Asume BASICO; cambia si tienes REGULAR
 
-        // --- Registro de constructores ---
-        registro.put(TipoEnte.JUGADOR, (pos, dir) ->
-                new TanqueJugador(pos, obtenerDimensionesSprite("player.png"), dir, 3, 1, 1, 2, dir)
+        // --- Registro de constructores para entidades que no son jugadores ---
+        registro.put(TipoEnte.BLOQUE, (pos, dir) ->
+                new Bloque(TipoBloque.LADRILLO, pos, new Dimensiones(ANCHO, ALTO))
         );
 
-        // Enemigos: un único constructor genérico
-        registro.put(TipoEnte.ENEMIGO, (pos, dir) -> {
-            // dirString debe ser conocido en contexto de carga de nivel
-            // Para ejemplo usamos BASICO como default; se reemplaza al cargar nivel real
-            return new TanqueEnemigo(pos, obtenerDimensionesSprite("enemy.png"), dir, TipoTanqueEnemigo.BASICO);
-        });
+        registro.put(TipoEnte.ENEMIGO, (pos, dir) ->
+                new TanqueEnemigo(pos, new Dimensiones(ANCHO, ALTO), dir, TipoTanqueEnemigo.BASICO)
+        );
+
+        // Nota: No registrar constructor para TipoEnte.JUGADOR aquí porque necesitan ID
     }
 
+    /**
+     * Crea un jugador con ID explícito.
+     * @param idJugador Identificador único del jugador (1, 2, ...)
+     * @param pos Posición inicial
+     * @param dir Dirección inicial
+     * @return TanqueJugador creado
+     */
+    public static TanqueJugador crearJugador(int idJugador, Coordenada pos, Direccion dir) {
+        return new TanqueJugador(pos, new Dimensiones(ANCHO, ALTO), dir, 3, 1, 1, 2, dir,idJugador);
+    }
+
+    /**
+     * Crea una entidad genérica (enemigos, bloques, balas, etc).
+     * No se debe usar para crear jugadores, para eso usar crearJugador().
+     * @param tipoStr String que representa el tipo de entidad
+     * @param pos Posición inicial
+     * @param dir Dirección inicial
+     * @return Entidad creada
+     */
     public static Ente crearEntidad(String tipoStr, Coordenada pos, Direccion dir) {
         TipoEnte tipo = tipoDesdeString(tipoStr);
 
-        if (tipo == TipoEnte.ENEMIGO) {
-            TipoTanqueEnemigo tipoTanque = tipoStrToTanque.get(tipoStr);
-            if (tipoTanque == null) tipoTanque = TipoTanqueEnemigo.BASICO; // default
-            Dimensiones dims = obtenerDimensionesSprite(tipoStr + ".png");
-            return new TanqueEnemigo(pos, dims, dir, tipoTanque);
+        if (tipo == TipoEnte.JUGADOR) {
+            throw new IllegalArgumentException("No crear jugador sin id desde crearEntidad(String). Usa crearJugador(id, pos, dir).");
+        } else if (tipo == TipoEnte.ENEMIGO) {
+            TipoTanqueEnemigo tipoTanque = tipoStrToTanque.getOrDefault(tipoStr, TipoTanqueEnemigo.BASICO);
+            return new TanqueEnemigo(pos, new Dimensiones(ANCHO, ALTO), dir, tipoTanque);
+        } else if (tipo == TipoEnte.BLOQUE) {
+            TipoBloque tipoBloque = tipoStrToBloque.getOrDefault(tipoStr, TipoBloque.LADRILLO);
+            return new Bloque(tipoBloque, pos, new Dimensiones(ANCHO, ALTO));
         } else {
-            return crearEntidad(tipo, pos, dir);
+            throw new IllegalArgumentException("Tipo de entidad no soportado para crearEntidad: " + tipo);
         }
     }
 
-    public static Ente crearEntidad(TipoEnte tipo, Coordenada pos, Direccion dir) {
-        BiFunction<Coordenada, Direccion, Ente> constructor = registro.get(tipo);
-        if (constructor == null) {
-            throw new IllegalArgumentException("Tipo de entidad desconocido: " + tipo);
-        }
-        return constructor.apply(pos, dir);
-    }
-
-    // Sobrecarga para bloques y objetos sin dirección
-    public static Ente crearEntidad(TipoEnte tipo, Coordenada pos) {
-        return crearEntidad(tipo, pos, null);
-    }
-
+    /**
+     * Convierte string a TipoEnte.
+     * @param str String tipo
+     * @return TipoEnte correspondiente
+     */
     public static TipoEnte tipoDesdeString(String str) {
         TipoEnte tipo = tipoStrToEnte.get(str);
-        if (tipo == null) throw new IllegalArgumentException("Tipo desconocido: " + str);
-        return tipo;
-    }
-
-    private static Dimensiones obtenerDimensionesSprite(String spritePath) {
-        try (InputStream is = RegistroEntidades.class.getResourceAsStream("/sprites/" + spritePath)) {
-            if (is == null) {
-                System.err.println("No se encontró el sprite: " + spritePath);
-                return new Dimensiones(32, 32);
-            }
-            Image img = new Image(is);
-            return new Dimensiones((int) img.getWidth(), (int) img.getHeight());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Dimensiones(20, 20);
+        if (tipo == null) {
+            throw new IllegalArgumentException("Tipo desconocido: " + str + ". Agrega al mapa tipoStrToEnte.");
         }
+        return tipo;
     }
 }

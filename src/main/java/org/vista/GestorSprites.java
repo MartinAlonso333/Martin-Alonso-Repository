@@ -34,12 +34,4 @@ public class GestorSprites {
         }
     }
 
-    /**
-     * Devuelve las dimensiones del sprite como un arreglo [ancho, alto].
-     */
-    public static int[] obtenerDimensiones(String nombreArchivo) {
-        Image img = obtenerSprite(nombreArchivo);
-        if (img == null) return new int[]{32, 32};
-        return new int[]{(int) img.getWidth(), (int) img.getHeight()};
-    }
 }

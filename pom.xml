@@ -53,7 +53,7 @@
                 <version>0.0.8</version>
                 <configuration>
                     <!-- Tu clase principal -->
-                    <mainClass>juego.JuegoApp</mainClass>
+                    <mainClass>org.JuegoApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

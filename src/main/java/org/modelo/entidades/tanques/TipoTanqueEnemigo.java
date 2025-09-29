@@ -1,6 +1,5 @@
 package org.modelo.entidades.tanques;
 
-import org.modelo.utilidades.Direccion;
 
 public enum TipoTanqueEnemigo {
     BASICO(1, 1, 1, 2000),     // vida, danio, velocidad, velocidadDisparo (ms)

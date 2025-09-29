@@ -7,34 +7,23 @@ import org.modelo.entidades.tanques.Tanque;
 import org.modelo.utilidades.Direccion;
 
 import javafx.scene.image.Image;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 public class EnteVista {
     private static final double ANCHO = 20;
     private static final double ALTO = 20;
 
     private final Ente ente;
-    private final Map<Direccion, List<Image>> animaciones = new HashMap<>();
+    private final Map<Direccion, List<Image>> animaciones;
     private Direccion direccionActual = Direccion.ARRIBA;
     private int indiceFrame = 0;
     private double tiempoAcumulado = 0;
     private final double tiempoPorFrame = 0.2; // segundos por frame
 
-    public EnteVista(Ente ente, Map<Direccion, List<String>> rutasFrames) {
+    public EnteVista(Ente ente, Map<Direccion, List<Image>> animaciones) {
         this.ente = ente;
-        cargarSprites(rutasFrames);
-    }
-
-    private void cargarSprites(Map<Direccion, List<String>> rutasFrames) {
-        for (Direccion dir : rutasFrames.keySet()) {
-            List<Image> frames = rutasFrames.get(dir).stream()
-                    .map(GestorSprites::obtenerSprite)
-                    .filter(Objects::nonNull)
-                    .toList();
-            animaciones.put(dir, frames);
-        }
+        this.animaciones = animaciones;
     }
 
     public void dibujar(GraphicsContext gc) {
@@ -44,13 +33,21 @@ public class EnteVista {
         }
         Image img = frames.get(indiceFrame);
 
-        double x = ente.getPosicion().getX();
-        double y = ente.getPosicion().getY();
+        // Usar coordenadas de celda para calcular posición en píxeles
+        int celdaX = ente.getPosicion().getX();
+        int celdaY = ente.getPosicion().getY();
+
+        final int TAM_CELDA = 20;
+        double x = celdaX * TAM_CELDA + TAM_CELDA / 2.0;
+        double y = celdaY * TAM_CELDA + TAM_CELDA / 2.0;
+
+        System.out.println("Dibujando ente en celda: (" + celdaX + "," + celdaY + ") -> píxeles: (" + x + "," + y + ")");
+
         double pivotX = ANCHO / 2.0;
         double pivotY = ALTO / 2.0;
 
         gc.save();
-        gc.translate(x + pivotX, y + pivotY);
+        gc.translate(x, y);
 
         double rotacion = switch (direccionActual) {
             case ARRIBA -> 0;
@@ -80,6 +77,8 @@ public class EnteVista {
     }
 
     public boolean estaVisible() {
-        return ente.estaActivo();
+        boolean activo = ente.estaActivo();
+        System.out.println("Entidad " + ente + " está activa? " + activo);
+        return activo;
     }
 }

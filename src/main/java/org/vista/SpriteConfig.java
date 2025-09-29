@@ -23,6 +23,7 @@ public class SpriteConfig {
         mapeoTiposXML.put("forestBlock", "bosque");
         mapeoTiposXML.put("baseBlock", "base");
         mapeoTiposXML.put("bullet", "disparo");
+        mapeoTiposXML.put("destroyedTank", "tanque_destruido");
         // Agrega más si tienes power-ups en XML
     }
 
@@ -117,4 +118,5 @@ public class SpriteConfig {
     public static String obtenerSpriteEscudo() {
         return "InvulnerableRing20x20.png";
     }
+
 }

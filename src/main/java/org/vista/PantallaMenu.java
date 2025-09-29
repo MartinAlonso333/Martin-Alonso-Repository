@@ -1,17 +1,19 @@
 package org.vista;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.geometry.Insets;
-import javafx.scene.effect.DropShadow;
+import javafx.stage.Stage;
+
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -28,15 +30,13 @@ public class PantallaMenu extends Pantalla {
 
     @Override
     public void mostrar() {
-        // 🔹 Fondo con la imagen del tanque
         ImageView fondo = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/imagen_tanque.png")))
         );
         fondo.setPreserveRatio(true);
-        fondo.setFitWidth(800); // ocupa el ancho de la ventana
+        fondo.setFitWidth(800);
         fondo.setFitHeight(600);
 
-        // 🔹 Botones del menú
         Button unJugadorBtn = crearBoton("Un Jugador");
         unJugadorBtn.setOnAction(e -> cantidadDeJugadores.accept(1));
 
@@ -49,11 +49,9 @@ public class PantallaMenu extends Pantalla {
         VBox menu = new VBox(25, unJugadorBtn, dosJugadoresBtn, salirBtn);
         menu.setAlignment(Pos.CENTER);
 
-        // 🔹 Contenedor principal: fondo + menú encima
         StackPane root = new StackPane(fondo, menu);
         root.setPadding(new Insets(50));
 
-        // 🔹 Usamos la misma Scene existente
         stage.getScene().setRoot(root);
         stage.setTitle("Menú Principal");
     }

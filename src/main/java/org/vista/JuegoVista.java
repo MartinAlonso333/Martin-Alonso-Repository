@@ -21,4 +21,8 @@ public class JuegoVista {
     public void actualizar(double deltaTime) {
         for (EnteVista ev : vistas) ev.actualizar(deltaTime);
     }
+
+    public void limpiar() {
+        vistas.clear();  // Limpia todas las EnteVista
+    }
 }

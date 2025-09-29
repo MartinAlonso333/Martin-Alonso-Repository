@@ -5,16 +5,19 @@ import org.modelo.entidades.Ente;
 import org.modelo.entidades.TipoEnte;
 import org.modelo.entidades.tanques.Bala;
 import org.modelo.utilidades.Direccion;
-import org.vista.EnteVista;
-import org.vista.JuegoVista;
-import org.vista.SpriteConfig;
 import org.vista.cargaDePartida.ParserXML;
 import org.modelo.entidades.tanques.TanqueEnemigo;
 import org.modelo.entidades.tanques.TanqueJugador;
 import org.vista.cargaDePartida.RegistroEntidades;
-
 import java.util.List;
-import java.util.Map;
+
+import org.modelo.*;
+
+import org.modelo.entidades.*;
+import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.TipoEvento;
+
+
 
 
 public class EstadoPartida implements EstadoJuego {
@@ -25,7 +28,7 @@ public class EstadoPartida implements EstadoJuego {
     private final int TOTAL_NIVELES = 3;
 
     private final Juego juego;
-    private final JuegoVista juegoVista = new JuegoVista();
+    private final EventoManager em = EventoManager.getInstancia();
 
     public EstadoPartida(GestorEstados gestor, int nivel, int numJugadores) {
         this.gestor = gestor;
@@ -48,45 +51,33 @@ public class EstadoPartida implements EstadoJuego {
                 // Crear jugador con id
                 TanqueJugador jugador = RegistroEntidades.crearJugador(idJugador, ente.getPosicion(), Direccion.ARRIBA);
                 juego.agregarJugador(jugador);
-
-                // Crear vista con sprites
-                try {
-                    Map<Direccion, List<String>> rutas = SpriteConfig.getConfig(tipoStr);
-                    EnteVista vista = new EnteVista(jugador, rutas);
-                    juegoVista.agregarEnteVista(vista);
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Sin config de sprites para: " + tipoStr + ". Error: " + e.getMessage());
-                }
-
+                em.notificar(TipoEvento.ENTE_AGREGADO, jugador);
                 idJugador++;
             } else {
                 // Crear entidad normal (enemigos, bloques, etc)
-                Ente entidad = RegistroEntidades.crearEntidad(tipoStr, ente.getPosicion(),Direccion.ARRIBA);
+                Ente entidad = RegistroEntidades.crearEntidad(tipoStr, ente.getPosicion(), Direccion.ARRIBA);
                 juego.agregarEnte(entidad);
-
-                // Crear vista con sprites
-                try {
-                    Map<Direccion, List<String>> rutas = SpriteConfig.getConfig(tipoStr);
-                    EnteVista vista = new EnteVista(entidad, rutas);
-                    juegoVista.agregarEnteVista(vista);
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Sin config de sprites para: " + tipoStr + ". Error: " + e.getMessage());
-                }
+                em.notificar(TipoEvento.ENTE_AGREGADO, entidad);
             }
         }
+
+        em.notificar(TipoEvento.NIVEL_CARGADO, juego.getEntes());
     }
 
     @Override
     public void actualizar(double deltaTime) {
-        // Actualizar tanques para que se muevan frame a frame
+        // Actualizar lógica de tanques y juego
         for (TanqueJugador jugador : juego.getEntesDeTipo(TanqueJugador.class)) {
             jugador.actualizar(deltaTime);
+            em.notificar(TipoEvento.TANQUE_MOVIDO, jugador);
         }
         for (TanqueEnemigo enemigo : juego.getEntesDeTipo(TanqueEnemigo.class)) {
             enemigo.actualizar(deltaTime);
+            em.notificar(TipoEvento.TANQUE_MOVIDO, enemigo);
         }
+
         juego.actualizar(deltaTime);
-        juegoVista.actualizar(deltaTime);
+
         if (nivelTerminado()) {
             if (nivelActual < TOTAL_NIVELES) {
                 gestor.cambiarANivel(nivelActual + 1, totalJugadores);
@@ -98,7 +89,7 @@ public class EstadoPartida implements EstadoJuego {
         }
     }
 
-
+    @Override
     public void manejarInput(String input) {
         switch (input) {
             case "J1_ARRIBA" -> moverJugador(1, Direccion.ARRIBA);
@@ -134,6 +125,7 @@ public class EstadoPartida implements EstadoJuego {
                 Bala bala = jugador.disparar();
                 if (bala != null) {
                     juego.agregarEnte(bala);
+                    em.notificar(TipoEvento.ENTE_AGREGADO, bala);
                 }
                 break;
             }
@@ -150,10 +142,6 @@ public class EstadoPartida implements EstadoJuego {
 
     public Juego getJuego() {
         return juego;
-    }
-
-    public JuegoVista getJuegoVista() {
-        return juegoVista;
     }
 
     public void detenerMovimientoJugador(int jugadorId) {

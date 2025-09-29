@@ -13,7 +13,7 @@ public class Coordenada {
         this.pixelX = x;
         this.pixelY = y;
         this.celdaX = (int)(x / TAM_CELDA);
-        this.celdaY = (int)(y / TAM_CELDA); // corregido: antes estaba x/x
+        this.celdaY = (int)(y / TAM_CELDA);
     }
 
     // Getters

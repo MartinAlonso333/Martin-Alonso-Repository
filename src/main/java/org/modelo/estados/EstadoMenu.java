@@ -1,21 +1,23 @@
 // EstadoMenu.java
 package org.modelo.estados;
 
-import javafx.stage.Stage;
-import org.vista.Pantalla;
-import org.vista.PantallaMenu;
+
 
 public class EstadoMenu implements EstadoJuego {
 
-    public EstadoMenu(GestorEstados gestor, Stage stage) {
-        // Pasamos un solo Consumer<Integer> para manejar 1 o 2 jugadores
-        Pantalla pantalla = new PantallaMenu(stage, gestor::iniciarPartida, stage::close);
-        pantalla.mostrar();
+    private final GestorEstados gestor;
+
+    public EstadoMenu(GestorEstados gestor) {
+        this.gestor = gestor;
     }
 
     @Override
-    public void actualizar(double deltaTime) { }
+    public void actualizar(double deltaTime) {
+        // No hay lógica de actualización en menú por ahora
+    }
 
     @Override
-    public void manejarInput(String input) { }
+    public void manejarInput(String input) {
+        // Si quieres, aquí puedes manejar input de menú (ejemplo: seleccionar opción)
+    }
 }

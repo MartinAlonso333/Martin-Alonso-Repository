@@ -7,21 +7,22 @@ import javafx.stage.Stage;
 import org.modelo.estados.GestorEstados;
 import org.modelo.input.GestorInput;
 
+
 public class JuegoApp extends Application {
 
+    @Override
     public void start(Stage stage) {
         Scene scene = new Scene(new StackPane(), 800, 600);
         stage.setScene(scene);
 
         GestorEstados gestor = new GestorEstados(scene, stage);
-        GestorInput gestorInput = new GestorInput(scene, gestor);
+        new GestorInput(scene, gestor);
         gestor.cambiarAMenu();
 
-        // 🔹 Configuración de la ventana
-        stage.setResizable(false);         // no se puede redimensionar
-        stage.setWidth(800);               // ancho fijo
-        stage.setHeight(600);              // alto fijo
-        stage.centerOnScreen();            // centrar ventana en la pantalla
+        stage.setResizable(false);
+        stage.setWidth(800);
+        stage.setHeight(600);
+        stage.centerOnScreen();
 
         stage.show();
     }

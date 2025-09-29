@@ -19,13 +19,13 @@ public class GestorSprites {
         if (cache.containsKey(nombreArchivo)) {
             return cache.get(nombreArchivo);
         }
-
         try (InputStream is = GestorSprites.class.getResourceAsStream(RUTA_SPRITES + nombreArchivo)) {
             if (is == null) {
                 System.err.println("No se encontró el sprite: " + nombreArchivo);
                 return null;
             }
             Image img = new Image(is);
+            System.out.println("Sprite cargado: " + nombreArchivo);
             cache.put(nombreArchivo, img);
             return img;
         } catch (Exception e) {

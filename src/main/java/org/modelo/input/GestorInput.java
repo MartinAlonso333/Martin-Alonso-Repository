@@ -3,6 +3,7 @@ package org.modelo.input;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import org.modelo.estados.GestorEstados;
+
 public class GestorInput {
 
     private final GestorEstados gestor;

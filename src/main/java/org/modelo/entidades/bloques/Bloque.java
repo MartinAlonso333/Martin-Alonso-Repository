@@ -15,7 +15,6 @@ public class Bloque extends Ente {
         this.vida = tipo.getVidaInicial();
     }
 
-    public TipoBloque getTipoBloque() { return tipo; }
     public int getVida() { return vida; }
     public boolean permitePaso() { return tipo.permitePaso(); }
     public boolean balaimpacta() { return tipo.balaimpacta(); }
@@ -37,5 +36,8 @@ public class Bloque extends Ente {
     public boolean estaDestruido() { return tipo.esDestructible() && vida <= 0; }
 
     @Override
-    public TipoEnte getTipo() { return TipoEnte.BLOQUE; }
+    public TipoEnte getTipoEnte() { return TipoEnte.BLOQUE; }
+
+    public TipoBloque getSubTipo() { return tipo;}
+
 }

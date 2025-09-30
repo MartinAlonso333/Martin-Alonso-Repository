@@ -30,37 +30,44 @@ public class SistemaColisionGrilla {
     // ------------------ AGREGAR / REMOVER ENTES ------------------
     public void agregarEnte(Ente e) {
         for (Coordenada c : celdasParaEnte(e)) {
-            celdas[c.getX()][c.getY()].add(e);
+            celdas[c.getCeldaX()][c.getCeldaY()].add(e);
         }
     }
 
     public void removerEnte(Ente e) {
         for (Coordenada c : celdasParaEnte(e)) {
-            celdas[c.getX()][c.getY()].remove(e);
+            celdas[c.getCeldaX()][c.getCeldaY()].remove(e);
         }
     }
 
     // ------------------ CELDAS OCUPADAS ------------------
     private List<Coordenada> celdasParaEnte(Ente e) {
         List<Coordenada> lista = new ArrayList<>();
+        int x1 = e.getPosicion().getCeldaX();
+        int y1 = e.getPosicion().getCeldaY();
 
-        int x1 = e.getPosicion().getX() / ANCHO_CELDA;
-        int y1 = e.getPosicion().getY() / ALTO_CELDA;
-        int x2 = (e.getPosicion().getX() + e.getDimensiones().getAncho() - 1) / ANCHO_CELDA;
-        int y2 = (e.getPosicion().getY() + e.getDimensiones().getAlto() - 1) / ALTO_CELDA;
+        double bordeDerecho = e.getPosicion().getPixelX() + e.getDimensiones().getAncho() - 1;
+        double bordeInferior = e.getPosicion().getPixelY() + e.getDimensiones().getAlto() - 1;
+        Coordenada esquinaInferiorDerecha = new Coordenada(bordeDerecho, bordeInferior);
 
-        for (int i = x1; i <= x2; i++)
-            for (int j = y1; j <= y2; j++)
-                if (i >= 0 && i < cols && j >= 0 && j < filas)
+        int x2 = esquinaInferiorDerecha.getCeldaX();
+        int y2 = esquinaInferiorDerecha.getCeldaY();
+
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                if (i >= 0 && i < cols && j >= 0 && j < filas) {
                     lista.add(new Coordenada(i, j));
-
+                }
+            }
+        }
         return lista;
     }
+
 
     // ------------------ CHEQUEO DE COLISION ------------------
     public void chequearColisiones(Ente mover) {
         for (Coordenada c : celdasParaEnte(mover)) {
-            for (Ente otro : new ArrayList<>(celdas[c.getX()][c.getY()])) {
+            for (Ente otro : new ArrayList<>(celdas[c.getCeldaX()][c.getCeldaY()])) {
                 if (otro != mover && mover.intersecta(otro)) {
                     colisionHandler.manejarColision(mover, otro);
                 }
@@ -70,10 +77,10 @@ public class SistemaColisionGrilla {
 
     // ------------------ ACTUALIZACION DE POSICION ------------------
     public void actualizarPosicion(Ente e, Coordenada anterior) {
-        int x1 = anterior.getX() / ANCHO_CELDA;
-        int y1 = anterior.getY() / ALTO_CELDA;
-        int x2 = (anterior.getX() + e.getDimensiones().getAncho() - 1) / ANCHO_CELDA;
-        int y2 = (anterior.getY() + e.getDimensiones().getAlto() - 1) / ALTO_CELDA;
+        int x1 = anterior.getCeldaX();
+        int y1 = anterior.getCeldaY();
+        int x2 = (anterior.getCeldaX() + e.getDimensiones().getAncho() - 1);
+        int y2 = (anterior.getCeldaY() + e.getDimensiones().getAlto() - 1);
 
         for (int i = x1; i <= x2; i++)
             for (int j = y1; j <= y2; j++)

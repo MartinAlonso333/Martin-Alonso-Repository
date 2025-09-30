@@ -2,9 +2,7 @@ package org.modelo;
 
 import org.modelo.entidades.*;
 import org.modelo.entidades.bloques.Bloque;
-import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.powerups.PowerUp;
-import org.modelo.entidades.powerups.TipoPowerUp;
 import org.modelo.entidades.tanques.*;
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.TipoEvento;
@@ -66,15 +64,12 @@ public class Juego {
     }
 
     // ------------------ ACCIONES ------------------
-    public void agregarJugador(TanqueJugador jugador) {
-        agregarEnte(jugador);
-    }
 
     public void moverJugador(int indice, Direccion dir) {
         List<TanqueJugador> jugadores = getEntesDeTipo(TanqueJugador.class);
         if (indice >= 0 && indice < jugadores.size()) {
             TanqueJugador jugador = jugadores.get(indice);
-            Coordenada antes = new Coordenada(jugador.getPosicion().getX(), jugador.getPosicion().getY());
+            Coordenada antes = new Coordenada(jugador.getPosicion().getPixelX(), jugador.getPosicion().getPixelY());
             jugador.mover(dir);
             sistemaColision.actualizarPosicion(jugador, antes);
             sistemaColision.chequearColisiones(jugador);
@@ -140,7 +135,7 @@ public class Juego {
 
         // --- Actualizar balas ---
         for (Bala bala : getEntesDeTipo(Bala.class)) {
-            Coordenada antes = new Coordenada(bala.getPosicion().getX(), bala.getPosicion().getY());
+            Coordenada antes = new Coordenada(bala.getPosicion().getPixelX(), bala.getPosicion().getPixelY());
             bala.actualizar();
             sistemaColision.actualizarPosicion(bala, antes);
             sistemaColision.chequearColisiones(bala);
@@ -159,7 +154,7 @@ public class Juego {
 
     // ------------------ MÉTODOS DE ENEMIGOS ------------------
     private TanqueEnemigo crearEnemigoAleatorio() {
-        TipoTanqueEnemigo tipo = TipoTanqueEnemigo.values()[(int)(Math.random() * TipoTanqueEnemigo.values().length)];
+        TipoTanque tipo = TipoTanque.values()[(int)(Math.random() * TipoTanque.values().length)];
         Direccion dir = Direccion.values()[(int)(Math.random() * Direccion.values().length)];
 
         TanqueEnemigo nuevo = null;

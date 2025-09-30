@@ -1,18 +1,18 @@
 package org.modelo.entidades.tanques;
 
-
-public enum TipoTanqueEnemigo {
-    BASICO(1, 1, 1, 2000),     // vida, danio, velocidad, velocidadDisparo (ms)
-    RAPIDO(2, 1, 3, 2000),
-    POTENTE(2, 3, 1, 1000),
-    BLINDADO(3, 1, 1, 2000);
+public enum TipoTanque {
+    JUGADOR(3, 1, 1.0, 2000),
+    BASICO(1, 1, 1.0, 2000),
+    RAPIDO(1, 1, 3.0, 1000),
+    POTENTE(3, 2, 1.0, 2000),
+    BLINDADO(5, 1, 1.0, 2000);
 
     private final int vida;
     private final int danio;
-    private final int velocidad;
+    private final double velocidad;
     private final int velocidadDisparo;
 
-    TipoTanqueEnemigo(int vida, int danio, int velocidad, int velocidadDisparo) {
+    TipoTanque(int vida, int danio, double velocidad, int velocidadDisparo) {
         this.vida = vida;
         this.danio = danio;
         this.velocidad = velocidad;
@@ -21,8 +21,6 @@ public enum TipoTanqueEnemigo {
 
     public int getVida() { return vida; }
     public int getDanio() { return danio; }
-    public int getVelocidad() { return velocidad; }
+    public double getVelocidad() { return velocidad; }
     public int getVelocidadDisparo() { return velocidadDisparo; }
-
-
 }

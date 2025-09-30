@@ -11,11 +11,11 @@ public class Bala extends Ente {
     private final Direccion direccion;
     private int danio;
     private boolean activo;
-    private final double velocidad;
+    private final int velocidad;
     private Tanque duenio;
 
 
-    public Bala(Direccion direccion, int danio, Coordenada posicion, Dimensiones dimensiones, double velocidad, Tanque duenio) {
+    public Bala(Direccion direccion, int danio, Coordenada posicion, Dimensiones dimensiones, int velocidad, Tanque duenio) {
         super(posicion, dimensiones);
         this.direccion = direccion;
         this.danio = danio;
@@ -36,8 +36,7 @@ public class Bala extends Ente {
     public void actualizar() { direccion.aplicarMovimiento(posicion, velocidad); }
 
     @Override
-    public TipoEnte getTipo() { return TipoEnte.BALA; }
-
+    public TipoEnte getTipoEnte() { return TipoEnte.BALA; }
     @Override
     public boolean estaDestruido() { return !activo; }
 }

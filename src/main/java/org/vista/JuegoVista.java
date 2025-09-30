@@ -1,28 +1,51 @@
 package org.vista;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import org.modelo.Juego;
+import org.modelo.entidades.Ente;
+import org.modelo.utilidades.Direccion;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class JuegoVista {
 
-    private final List<EnteVista> vistas = new ArrayList<>();
+    private final Juego juego;
+    private final List<EnteVista> entesVista = new ArrayList<>();
 
-    public void agregarEnteVista(EnteVista ev) {
-        vistas.add(ev);
+    public JuegoVista(Juego juego) {
+        this.juego = juego;
+        inicializarVistas();
     }
 
-    public void dibujar(GraphicsContext gc) {
-        for (EnteVista ev : vistas) {
-            if (ev.estaVisible()) ev.dibujar(gc);
+    private void inicializarVistas() {
+        entesVista.clear();
+        for (Ente e : juego.getEntes()) {
+            Map<Direccion, List<Image>> animaciones = GestorSprites.getAnimacionesPara(e);
+            entesVista.add(new EnteVista(e, animaciones));
         }
     }
 
     public void actualizar(double deltaTime) {
-        for (EnteVista ev : vistas) ev.actualizar(deltaTime);
+        // Eliminar entes destruidos
+        entesVista.removeIf(ev -> !juego.getEntes().contains(ev.getEnte()));
+
+        // Actualizar animaciones y dirección usando polimorfismo
+        for (EnteVista ev : entesVista) {
+            Direccion dir = ev.getEnte().getDireccion(); // Método polimórfico
+            if (dir != null) {
+                ev.setDireccion(dir);
+            }
+            ev.actualizar(deltaTime);
+        }
     }
 
-    public void limpiar() {
-        vistas.clear();  // Limpia todas las EnteVista
+    public List<EnteVista> getEntesVista() {
+        return new ArrayList<>(entesVista); // copia defensiva
+    }
+
+    public Juego getJuego() {
+        return juego;
     }
 }

@@ -9,9 +9,10 @@ public class TanqueJugador extends Tanque {
 
     private boolean invulnerable;
     private boolean disparoMejorado;
-    private int idJugador;
-    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccion, double vida, int danio, int velocidad, int velocidadDeDisparo, Direccion direccionInicial, int idJugador) {
-        super(posicion, dimensiones, 3, 1, 1,2,direccionInicial);
+    private int idJugador; // sigue existiendo para diferenciar Jugador 1, 2, etc.
+
+    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, int idJugador) {
+        super(posicion, dimensiones, TipoTanque.JUGADOR, direccionInicial); // 🔹 usamos el enum
         this.idJugador = idJugador;
     }
 
@@ -19,15 +20,12 @@ public class TanqueJugador extends Tanque {
     public Bala disparar() {
         if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
-
-            // Punto de salida del disparo
             Coordenada origen = new Coordenada(
-                    getPosicion().getX() + getDimensiones().getAncho() / 2,
-                    getPosicion().getY() + getDimensiones().getAlto() / 2
+                    getPosicion().getPixelX() + (double) getDimensiones().getAncho() / 2,
+                    getPosicion().getPixelY() + (double) getDimensiones().getAlto() / 2
             );
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();
-
-            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0, this);
+            return new Bala(getDireccion(), danioDisparo, origen, new Dimensiones(8, 8), 8, this);
         }
         return null;
     }
@@ -42,20 +40,30 @@ public class TanqueJugador extends Tanque {
 
     @Override
     public void actualizar() {
-
+        // lógica de actualización específica del jugador (powerups, efectos, etc.)
     }
-    public int getId() {
+
+    public int getIdJugador() {
         return idJugador;
     }
+
+    public void setIdJugador(int idJugador) {
+        this.idJugador = idJugador;
+    }
+
+
     @Override
     public void recibirDanio(int cantidad) {
         if (!invulnerable) super.recibirDanio(cantidad);
     }
 
     @Override
-    public TipoEnte getTipo() { return TipoEnte.JUGADOR; }
+    public TipoEnte getTipoEnte() {
+        return TipoEnte.JUGADOR;
+    }
 
-    public void setId(int idJugador) {
-        this.idJugador=idJugador;
+
+    public TipoTanque getSubtipo() {
+        return getTipoTanque();
     }
 }

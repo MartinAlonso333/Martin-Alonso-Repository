@@ -12,15 +12,13 @@ public class TanqueEnemigo extends Tanque {
     private Direccion direccion;
     private Coordenada ultimaPosicionChequear;
     private long ultimoTiempoQuieto;
-    private final TipoTanqueEnemigo tipo;
 
-    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, TipoTanqueEnemigo tipo) {
-        super(posicion, dimensiones, tipo.getVida(), tipo.getDanio(), tipo.getVelocidad(), tipo.getVelocidadDisparo(), direccionInicial);
-        this.tipo = tipo;
+    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, TipoTanque tipo) {
+        super(posicion, dimensiones, tipo, direccionInicial); // 🔹 usamos el enum directamente
         this.tiempoConducta = sortearTiempoConducta();
         this.inicioConducta = System.currentTimeMillis();
         this.direccion = direccionInicial;
-        this.ultimaPosicionChequear = new Coordenada(posicion.getX(), posicion.getY());
+        this.ultimaPosicionChequear = new Coordenada(posicion.getPixelX(), posicion.getPixelY());
         this.ultimoTiempoQuieto = System.currentTimeMillis();
     }
 
@@ -29,7 +27,7 @@ public class TanqueEnemigo extends Tanque {
         if (puedeDisparar(velocidadDeDisparo)) {
             registrarDisparo();
             Coordenada origen = getPuntoDeDisparo();
-            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8.0, this);
+            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8, this);
         }
         return null;
     }
@@ -38,20 +36,20 @@ public class TanqueEnemigo extends Tanque {
     public void actualizar() {
         long ahora = System.currentTimeMillis();
 
-        // Cambiar dirección si terminó tiempo de conducta
+        // Cambiar dirección si terminó el tiempo de conducta
         if (ahora - inicioConducta >= tiempoConducta) {
             direccion = sortearDireccion();
             tiempoConducta = sortearTiempoConducta();
             inicioConducta = ahora;
         }
 
-        // Cambiar dirección si se quedó quieto
+        // Cambiar dirección si se quedó quieto demasiado tiempo
         if (getPosicion().equals(ultimaPosicionChequear)) {
             if (ahora - ultimoTiempoQuieto >= 2000) {
                 direccion = sortearDireccion();
             }
         } else {
-            ultimaPosicionChequear = new Coordenada(getPosicion().getX(), getPosicion().getY());
+            ultimaPosicionChequear = new Coordenada(getPosicion().getPixelX(), getPosicion().getPixelY());
             ultimoTiempoQuieto = ahora;
         }
 
@@ -59,12 +57,13 @@ public class TanqueEnemigo extends Tanque {
     }
 
     @Override
-    public TipoEnte getTipo() {
+    public TipoEnte getTipoEnte() {
         return TipoEnte.ENEMIGO;
     }
 
-    public TipoTanqueEnemigo getTipoTanqueEnemigo() {
-        return tipo;
+
+    public TipoTanque getSubtipo() {
+        return getTipoTanque();
     }
 
     private long sortearTiempoConducta() {

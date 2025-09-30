@@ -2,6 +2,7 @@ package org.modelo.entidades;
 
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
+import org.modelo.utilidades.Direccion;
 
 public abstract class Ente {
     protected Coordenada posicion;
@@ -25,12 +26,21 @@ public abstract class Ente {
     public void setActivo(boolean activo) { this.activo = activo; }
 
     public boolean intersecta(Ente otro) {
-        return this.posicion.getX() < otro.posicion.getX() + otro.dimensiones.getAncho() &&
-                this.posicion.getX() + this.dimensiones.getAncho() > otro.posicion.getX() &&
-                this.posicion.getY() < otro.posicion.getY() + otro.dimensiones.getAlto() &&
-                this.posicion.getY() + this.dimensiones.getAlto() > otro.posicion.getY();
+        return this.posicion.getPixelX() < otro.posicion.getPixelX() + otro.dimensiones.getAncho() &&
+                this.posicion.getPixelX() + this.dimensiones.getAncho() > otro.posicion.getPixelX() &&
+                this.posicion.getPixelY() < otro.posicion.getPixelY() + otro.dimensiones.getAlto() &&
+                this.posicion.getPixelY() + this.dimensiones.getAlto() > otro.posicion.getPixelY();
     }
+
     public abstract void actualizar();
     public abstract boolean estaDestruido();
-    public abstract TipoEnte getTipo();
+    public abstract TipoEnte getTipoEnte();
+
+    public Enum<?> getSubtipo() {
+        return null; // Por defecto, no hay subtipo
+    }
+
+    public Direccion getDireccion() {
+        return null; // Por defecto, no hay dirección
+    }
 }

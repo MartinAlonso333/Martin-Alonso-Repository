@@ -48,16 +48,16 @@ public class ColisionHandler {
 
     // ------------------ FUNCIONES CONCRETAS ------------------
     private void colisionBalaConTanque(Bala bala, Tanque tanque) {
-        if (bala.getDuenio().getTipo() == tanque.getTipo() && tanque.getTipo() == TipoEnte.JUGADOR) {
+        if (bala.getDuenio().getTipoEnte() == tanque.getTipoEnte() && tanque.getTipoEnte() == TipoEnte.JUGADOR) {
             tanque.aturdir(TIEMPOATURDIDO);
             bala.setActivo(false);
             return;
         }
         tanque.recibirDanio(bala.getDanio());
         bala.setActivo(false);
-        if (tanque.getTipo() == TipoEnte.ENEMIGO){
+        if (tanque.getTipoEnte() == TipoEnte.ENEMIGO){
             TanqueEnemigo enemigo = (TanqueEnemigo) tanque;
-            if (enemigo.getTipoTanqueEnemigo() == TipoTanqueEnemigo.BLINDADO) {
+            if (enemigo.getTipoTanque() == TipoTanque.BLINDADO) {
                 EventoManager.getInstancia().notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO);
             }
         }
@@ -85,13 +85,13 @@ public class ColisionHandler {
 
         bala.setActivo(false);
         bloque.recibirDanio(bala.getDanio());
-        if (bloque.getTipoBloque() == TipoBloque.BASE) {
+        if (bloque.getSubtipo() == TipoBloque.BASE) {
             EventoManager.getInstancia().notificar(TipoEvento.BASE_DESTRUIDA);
         }
-        if (bloque.estaDestruido() && bloque.getTipoBloque() == TipoBloque.LADRILLO) {
+        if (bloque.estaDestruido() && bloque.getSubtipo() == TipoBloque.LADRILLO) {
             EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_DESTRUIDO);
         }
-        if (bloque.getTipoBloque() == TipoBloque.ACERO) {
+        if (bloque.getSubtipo() == TipoBloque.ACERO) {
             EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_ACERO_IMPACTADO);
         }
     }

@@ -16,9 +16,19 @@ public class Coordenada {
         this.celdaY = (int)(y / TAM_CELDA);
     }
 
+    // Constructor por celdas
+    public Coordenada(int celdaX, int celdaY) {
+        this.celdaX = celdaX;
+        this.celdaY = celdaY;
+        this.pixelX = celdaX * TAM_CELDA;
+        this.pixelY = celdaY * TAM_CELDA;
+    }
+
     // Getters
-    public int getX() { return celdaX; }
-    public int getY() { return celdaY; }
+    public double getPixelX() { return pixelX; }
+    public double getPixelY() { return pixelY; }
+    public int getCeldaX() { return celdaX; }
+    public int getCeldaY() { return celdaY; }
 
     // Setters
     public void setCoordenada(double x, double y) {
@@ -34,7 +44,15 @@ public class Coordenada {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Coordenada)) return false;
+        Coordenada other = (Coordenada) obj;
+        return this.celdaX == other.celdaX && this.celdaY == other.celdaY;
+    }
+
+    @Override
     public String toString() {
-        return "Celda(" + celdaX + "," + celdaY + ")";
+        return String.format("Celda(%d,%d) Pixel(%.2f,%.2f)", celdaX, celdaY, pixelX, pixelY);
     }
 }

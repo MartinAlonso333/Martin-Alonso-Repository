@@ -1,28 +1,31 @@
 package org.modelo.entidades.tanques;
 
-
 import org.modelo.entidades.Ente;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
+
 public abstract class Tanque extends Ente {
     private int vida;
     private final int danio;
     private Coordenada ultimaPosicion;
     private long ultimoDisparo;
-    protected final int velocidad; // en píxeles por segundo
+    protected final double velocidad; // en píxeles por segundo
     protected final int velocidadDeDisparo;
     protected Direccion direccion;
     private long tiempoQuieto = 0;
 
     private boolean estaMoviendo = false; // indica si el tanque debe moverse
 
-    public Tanque(Coordenada posicion, Dimensiones dimensiones, int vida, int danio, int velocidad, int velocidadDeDisparo, Direccion direccionInicial) {
+    protected final TipoTanque tipo; // 🔹 ahora guardamos el tipo
+
+    public Tanque(Coordenada posicion, Dimensiones dimensiones, TipoTanque tipo, Direccion direccionInicial) {
         super(posicion, dimensiones);
-        this.vida = vida;
-        this.danio = danio;
-        this.velocidad = velocidad;
-        this.velocidadDeDisparo = velocidadDeDisparo;
+        this.tipo = tipo;
+        this.vida = tipo.getVida();
+        this.danio = tipo.getDanio();
+        this.velocidad = tipo.getVelocidad();
+        this.velocidadDeDisparo = tipo.getVelocidadDisparo();
         this.ultimoDisparo = System.currentTimeMillis();
         this.posicion = posicion;
         this.direccion = direccionInicial;
@@ -32,19 +35,13 @@ public abstract class Tanque extends Ente {
 
     protected Coordenada getPuntoDeDisparo() {
         return new Coordenada(
-                getPosicion().getX() + getDimensiones().getAncho() / 2,
-                getPosicion().getY() + getDimensiones().getAlto() / 2
+                getPosicion().getPixelX() + getDimensiones().getAncho() / 2,
+                getPosicion().getPixelY() + getDimensiones().getAlto() / 2
         );
     }
 
-    public Direccion getDireccion() {
-        return direccion;
-    }
+    public Direccion getDireccion() { return direccion; }
 
-    /**
-     * Actualiza la dirección y activa el movimiento.
-     * No mueve la posición directamente.
-     */
     public void mover(Direccion dir) {
         if (System.currentTimeMillis() < tiempoQuieto) {
             estaMoviendo = false;
@@ -54,34 +51,27 @@ public abstract class Tanque extends Ente {
         estaMoviendo = true;
     }
 
-    /**
-     * Detiene el movimiento del tanque.
-     */
     public void detenerMovimiento() {
         estaMoviendo = false;
     }
 
-    /**
-     * Actualiza la posición del tanque según la dirección y velocidad.
-     * Debe llamarse cada frame con el deltaTime (segundos).
-     */
     public void actualizar(double deltaTime) {
         if (!estaMoviendo) return;
-        ultimaPosicion = new Coordenada(posicion.getX(), posicion.getY());
-        Coordenada nuevaPos = new Coordenada(posicion.getX(), posicion.getY());
+        ultimaPosicion = new Coordenada(posicion.getPixelX(), posicion.getPixelY());
+        Coordenada nuevaPos = new Coordenada(posicion.getPixelX(), posicion.getPixelY());
         direccion.aplicarMovimiento(nuevaPos, velocidad * deltaTime);
         setPosicion(nuevaPos);
     }
 
     public void revertirMovimiento() {
         if (ultimaPosicion != null) {
-            setPosicion(new Coordenada(ultimaPosicion.getX(), ultimaPosicion.getY()));
+            setPosicion(new Coordenada(ultimaPosicion.getPixelX(), ultimaPosicion.getPixelY()));
         }
     }
 
     public void aturdir(long duracionMs) {
         tiempoQuieto = System.currentTimeMillis() + duracionMs;
-        estaMoviendo = false; // detener movimiento si está aturdido
+        estaMoviendo = false;
     }
 
     public boolean puedeDisparar(int intervaloMs) {
@@ -94,6 +84,7 @@ public abstract class Tanque extends Ente {
 
     public int getVida() { return vida; }
     public int getDanio() { return danio; }
+    public TipoTanque getTipoTanque() { return tipo; } // 🔹 nuevo getter
 
     public void recibirDanio(int cantidad) {
         if (vida <= 0) return;

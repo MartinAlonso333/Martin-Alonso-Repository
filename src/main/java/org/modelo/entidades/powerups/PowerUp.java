@@ -13,7 +13,6 @@ public class PowerUp extends Ente {
         this.tipo = tipo;
     }
 
-    public TipoPowerUp getTipoPowerUp() { return tipo; }
 
     @Override
     public void actualizar() {}
@@ -22,5 +21,7 @@ public class PowerUp extends Ente {
     public boolean estaDestruido() { return !estaActivo(); }
 
     @Override
-    public TipoEnte getTipo() { return TipoEnte.POWERUP; }
+    public TipoEnte getTipoEnte() { return TipoEnte.POWERUP; }
+
+    public TipoPowerUp getSubTipo() { return tipo; }
 }

@@ -1,4 +1,4 @@
-package org.vista;
+package org.vista.pantallas;
 
 import javafx.stage.Stage;
 

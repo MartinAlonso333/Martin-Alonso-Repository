@@ -84,7 +84,7 @@ public abstract class Tanque extends Ente {
 
     public int getVida() { return vida; }
     public int getDanio() { return danio; }
-    public TipoTanque getTipoTanque() { return tipo; } // 🔹 nuevo getter
+    public TipoTanque getTipoTanque() { return tipo; }
 
     public void recibirDanio(int cantidad) {
         if (vida <= 0) return;

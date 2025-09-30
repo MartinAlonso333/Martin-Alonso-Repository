@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.function.Function;
 import org.vista.GestorSprites;
 import org.modelo.entidades.TipoEnte;
-
 public class RegistroEntidades {
 
     private final Map<String, Function<Element, Ente>> registro = new HashMap<>();
@@ -29,24 +28,24 @@ public class RegistroEntidades {
 
     private void inicializarRegistro() {
         // BLOQUES
-        registrarBloque("steelBlock", TipoBloque.ACERO);
-        registrarBloque("brickBlock", TipoBloque.LADRILLO);
-        registrarBloque("baseBlock", TipoBloque.BASE);
-        registrarBloque("forestBlock", TipoBloque.BOSQUE);
-        registrarBloque("waterBlock", TipoBloque.AGUA);
+        registrarBloque("steelBlock");
+        registrarBloque("brickBlock");
+        registrarBloque("baseBlock");
+        registrarBloque("forestBlock");
+        registrarBloque("waterBlock");
 
         // ENEMIGOS
-        registrarTanqueEnemigo("regularEnemy", TipoTanque.BASICO);
-        registrarTanqueEnemigo("enemyFast", TipoTanque.RAPIDO);
-        registrarTanqueEnemigo("enemyStrong", TipoTanque.POTENTE);
-        registrarTanqueEnemigo("enemyArmored", TipoTanque.BLINDADO);
+        registrarTanqueEnemigo("regularEnemy");
+        registrarTanqueEnemigo("enemyFast");
+        registrarTanqueEnemigo("enemyStrong");
+        registrarTanqueEnemigo("enemyArmored");
     }
 
-    private void registrarBloque(String clave, TipoBloque tipo) {
+    private void registrarBloque(String clave) {
         registro.put(clave, elem -> {
-            Dimensiones dim = GestorSprites.getDimensionesPara(TipoEnte.BLOQUE, tipo);
+            Dimensiones dim = GestorSprites.getDimensionesPara(clave);
             return new Bloque(
-                    tipo,
+                    TipoBloque.valueOf(clave.toUpperCase()), // o un mapeo si no coincide
                     new Coordenada(
                             Integer.parseInt(elem.getAttribute("x")),
                             Integer.parseInt(elem.getAttribute("y"))
@@ -56,9 +55,16 @@ public class RegistroEntidades {
         });
     }
 
-    private void registrarTanqueEnemigo(String clave, TipoTanque tipo) {
+    private void registrarTanqueEnemigo(String clave) {
         registro.put(clave, elem -> {
-            Dimensiones dim = GestorSprites.getDimensionesPara(TipoEnte.ENEMIGO, tipo);
+            Dimensiones dim = GestorSprites.getDimensionesPara(clave);
+            TipoTanque tipo = switch (clave) {
+                case "regularEnemy" -> TipoTanque.BASICO;
+                case "enemyFast" -> TipoTanque.RAPIDO;
+                case "enemyStrong" -> TipoTanque.POTENTE;
+                case "enemyArmored" -> TipoTanque.BLINDADO;
+                default -> throw new IllegalArgumentException("Enemigo no reconocido: " + clave);
+            };
             return new TanqueEnemigo(
                     new Coordenada(
                             Integer.parseInt(elem.getAttribute("x")),
@@ -76,10 +82,10 @@ public class RegistroEntidades {
 
         // JUGADORES
         if (tipo.startsWith("player")) {
-            int idJugador = Integer.parseInt(tipo.substring(6)); // player1 -> 1
+            int idJugador = Integer.parseInt(tipo.substring(6)); // player1 → 1
             if (idJugador > jugadoresMaximos) return null;
 
-            Dimensiones dim = GestorSprites.getDimensionesPara(TipoEnte.JUGADOR, null);
+            Dimensiones dim = GestorSprites.getDimensionesPara(tipo);
 
             return new TanqueJugador(
                     new Coordenada(

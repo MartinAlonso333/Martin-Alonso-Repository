@@ -1,10 +1,14 @@
 package org.vista.pantallas;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.modelo.Juego;
 import org.modelo.entidades.Ente;
+import org.vista.EnteVista;
+import org.vista.JuegoVista;
 
 public class PantallaJuego {
 
@@ -16,8 +20,11 @@ public class PantallaJuego {
         this.root = root;
     }
 
+    private JuegoVista juegoVista; // la inicializas cuando seteás el juego
+
     public void setJuego(Juego juego) {
         this.juego = juego;
+        this.juegoVista = new JuegoVista(juego);
     }
 
     public void setOnJuegoTerminado(Runnable callback) {
@@ -25,13 +32,11 @@ public class PantallaJuego {
     }
 
     public void mostrar() {
-        root.getChildren().clear();
         dibujar();
     }
 
     public void actualizar(double deltaTime) {
         if (juego != null) {
-            juego.actualizar(deltaTime);
             dibujar();
             if (juego.getEntesDeTipo(org.modelo.entidades.tanques.TanqueJugador.class).isEmpty() ||
                     juego.getEntesDeTipo(org.modelo.entidades.tanques.TanqueEnemigo.class).isEmpty()) {
@@ -44,15 +49,16 @@ public class PantallaJuego {
         root.getChildren().clear();
         if (juego == null) return;
 
-        for (Ente e : juego.getEntes()) {
-            Rectangle r = new Rectangle(
-                    e.getPosicion().getPixelX(),
-                    e.getPosicion().getPixelY(),
-                    e.getDimensiones().getAncho(),
-                    e.getDimensiones().getAlto()
-            );
-            r.setFill(Color.GRAY);
-            root.getChildren().add(r);
+        for (EnteVista ev : juegoVista.getEntesVista()) {
+            Image img = ev.getFrameActual();
+            if (img != null) {
+                ImageView iv = new ImageView(img);
+                iv.setX(ev.getX());
+                iv.setY(ev.getY());
+                iv.setFitWidth(ev.getAncho());
+                iv.setFitHeight(ev.getAlto());
+                root.getChildren().add(iv);
+            }
         }
     }
 }

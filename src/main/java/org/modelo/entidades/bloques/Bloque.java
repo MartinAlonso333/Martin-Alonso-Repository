@@ -38,6 +38,6 @@ public class Bloque extends Ente {
     @Override
     public TipoEnte getTipoEnte() { return TipoEnte.BLOQUE; }
 
-    public TipoBloque getSubTipo() { return tipo;}
+    public TipoBloque getTipoBloque() { return tipo;}
 
 }

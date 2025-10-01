@@ -3,19 +3,21 @@ package org.vista.cargaDePartida;
 import org.modelo.entidades.Ente;
 import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.bloques.TipoBloque;
+import org.modelo.entidades.powerups.PowerUp;
+import org.modelo.entidades.powerups.TipoPowerUp;
 import org.modelo.entidades.tanques.TanqueEnemigo;
 import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.entidades.tanques.TipoTanque;
+import org.modelo.entidades.tanques.Bala;
 import org.modelo.utilidades.Coordenada;
-import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
+import org.modelo.utilidades.Dimensiones;
 import org.w3c.dom.Element;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import org.vista.GestorSprites;
-import org.modelo.entidades.TipoEnte;
+
 public class RegistroEntidades {
 
     private final Map<String, Function<Element, Ente>> registro = new HashMap<>();
@@ -28,80 +30,96 @@ public class RegistroEntidades {
 
     private void inicializarRegistro() {
         // BLOQUES
-        registrarBloque("steelBlock");
-        registrarBloque("brickBlock");
-        registrarBloque("baseBlock");
-        registrarBloque("forestBlock");
-        registrarBloque("waterBlock");
+        registrarBloque("steelBlock", TipoBloque.ACERO);
+        registrarBloque("brickBlock", TipoBloque.LADRILLO);
+        registrarBloque("baseBlock", TipoBloque.BASE);
+        registrarBloque("forestBlock", TipoBloque.BOSQUE);
+        registrarBloque("waterBlock", TipoBloque.AGUA);
 
         // ENEMIGOS
-        registrarTanqueEnemigo("regularEnemy");
-        registrarTanqueEnemigo("enemyFast");
-        registrarTanqueEnemigo("enemyStrong");
-        registrarTanqueEnemigo("enemyArmored");
+        registrarTanqueEnemigo("regularEnemy", TipoTanque.BASICO);
+        registrarTanqueEnemigo("enemyFast", TipoTanque.RAPIDO);
+        registrarTanqueEnemigo("enemyStrong", TipoTanque.POTENTE);
+        registrarTanqueEnemigo("enemyArmored", TipoTanque.BLINDADO);
+
+        // POWERUPS
+        registrarPowerUp("helmetPowerUp", TipoPowerUp.CASCO);
+        registrarPowerUp("starPowerUp", TipoPowerUp.ESTRELLA);
+        registrarPowerUp("grenadePowerUp", TipoPowerUp.GRANADA);
+
+        // BALA
+        registro.put("bullet", elem -> new Bala(
+                Direccion.ABAJO,
+                1,
+                new Coordenada(
+                        Integer.parseInt(elem.getAttribute("x")),
+                        Integer.parseInt(elem.getAttribute("y"))
+                ),
+                new Dimensiones(6, 6),
+                3,
+                null // el dueño se asigna al disparar
+        ));
     }
 
-    private void registrarBloque(String clave) {
-        registro.put(clave, elem -> {
-            Dimensiones dim = GestorSprites.getDimensionesPara(clave);
-            return new Bloque(
-                    TipoBloque.valueOf(clave.toUpperCase()), // o un mapeo si no coincide
-                    new Coordenada(
-                            Integer.parseInt(elem.getAttribute("x")),
-                            Integer.parseInt(elem.getAttribute("y"))
-                    ),
-                    dim
-            );
-        });
+    private void registrarBloque(String clave, TipoBloque tipo) {
+        registro.put(clave, elem -> new Bloque(
+                tipo,
+                new Coordenada(
+                        Integer.parseInt(elem.getAttribute("x")),
+                        Integer.parseInt(elem.getAttribute("y"))
+                ),
+                new Dimensiones(20, 20) // después GestorSprites da la real
+        ));
     }
 
-    private void registrarTanqueEnemigo(String clave) {
-        registro.put(clave, elem -> {
-            Dimensiones dim = GestorSprites.getDimensionesPara(clave);
-            TipoTanque tipo = switch (clave) {
-                case "regularEnemy" -> TipoTanque.BASICO;
-                case "enemyFast" -> TipoTanque.RAPIDO;
-                case "enemyStrong" -> TipoTanque.POTENTE;
-                case "enemyArmored" -> TipoTanque.BLINDADO;
-                default -> throw new IllegalArgumentException("Enemigo no reconocido: " + clave);
-            };
-            return new TanqueEnemigo(
-                    new Coordenada(
-                            Integer.parseInt(elem.getAttribute("x")),
-                            Integer.parseInt(elem.getAttribute("y"))
-                    ),
-                    dim,
-                    Direccion.ABAJO,
-                    tipo
-            );
-        });
+    private void registrarTanqueEnemigo(String clave, TipoTanque tipo) {
+        registro.put(clave, elem -> new TanqueEnemigo(
+                new Coordenada(
+                        Integer.parseInt(elem.getAttribute("x")),
+                        Integer.parseInt(elem.getAttribute("y"))
+                ),
+                new Dimensiones(20, 20),
+                Direccion.ABAJO,
+                tipo
+        ));
+    }
+
+    private void registrarPowerUp(String clave, TipoPowerUp tipo) {
+        registro.put(clave, elem -> new PowerUp(
+                new Coordenada(
+                        Integer.parseInt(elem.getAttribute("x")),
+                        Integer.parseInt(elem.getAttribute("y"))
+                )
+                , new Dimensiones(20, 20),
+                tipo
+        ));
     }
 
     public Ente crearEnte(Element elem) {
         String tipo = elem.getAttribute("type");
 
-        // JUGADORES
+        // --- JUGADORES ---
         if (tipo.startsWith("player")) {
             int idJugador = Integer.parseInt(tipo.substring(6)); // player1 → 1
             if (idJugador > jugadoresMaximos) return null;
-
-            Dimensiones dim = GestorSprites.getDimensionesPara(tipo);
 
             return new TanqueJugador(
                     new Coordenada(
                             Integer.parseInt(elem.getAttribute("x")),
                             Integer.parseInt(elem.getAttribute("y"))
                     ),
-                    dim,
+                    new Dimensiones(20, 20),
                     Direccion.ARRIBA,
                     idJugador
             );
         }
 
-        // BLOQUES / ENEMIGOS
+        // --- RESTO (bloques, enemigos, powerups, bala) ---
         Function<Element, Ente> constructor = registro.get(tipo);
-        if (constructor != null) return constructor.apply(elem);
+        if (constructor != null) {
+            return constructor.apply(elem);
+        }
 
-        throw new IllegalArgumentException("Tipo de ente desconocido: " + tipo);
+        throw new IllegalArgumentException("Tipo de ente desconocido en XML: " + tipo);
     }
 }

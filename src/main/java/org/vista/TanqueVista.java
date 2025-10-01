@@ -10,7 +10,6 @@ import java.util.Map;
 public class TanqueVista extends EnteVista {
 
     private final Tanque tanque;
-    private Direccion direccionActual = Direccion.ABAJO;
 
     public TanqueVista(Tanque tanque, Map<Direccion, List<Image>> animaciones) {
         super(tanque, animaciones);
@@ -19,7 +18,11 @@ public class TanqueVista extends EnteVista {
 
     @Override
     public void actualizar(double deltaTime) {
-        this.direccionActual = tanque.getDireccion();
+        Direccion nuevaDir = tanque.getDireccion();
+        if (nuevaDir != direccionActual) {
+            direccionActual = nuevaDir;
+            frameActual = 0;
+        }
         super.actualizar(deltaTime);
     }
 }

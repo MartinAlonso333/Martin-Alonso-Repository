@@ -14,7 +14,7 @@ public class TanqueEnemigo extends Tanque {
     private long ultimoTiempoQuieto;
 
     public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, TipoTanque tipo) {
-        super(posicion, dimensiones, tipo, direccionInicial); // 🔹 usamos el enum directamente
+        super(posicion, dimensiones, tipo, direccionInicial);
         this.tiempoConducta = sortearTiempoConducta();
         this.inicioConducta = System.currentTimeMillis();
         this.direccion = direccionInicial;

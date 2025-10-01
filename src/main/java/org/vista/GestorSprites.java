@@ -1,62 +1,131 @@
 package org.vista;
 
+import javafx.scene.image.Image;
 import org.modelo.entidades.Ente;
-import org.modelo.entidades.TipoEnte;
+import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.bloques.TipoBloque;
+import org.modelo.entidades.powerups.PowerUp;
 import org.modelo.entidades.powerups.TipoPowerUp;
+import org.modelo.entidades.tanques.TanqueEnemigo;
+import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.entidades.tanques.TipoTanque;
+import org.modelo.entidades.tanques.Bala;
 import org.modelo.utilidades.Direccion;
 import org.modelo.utilidades.Dimensiones;
-import javafx.scene.image.Image;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Function;
+
 public class GestorSprites {
 
     private static final Map<String, SpriteConfig> configs = new HashMap<>();
+    private static final Map<Class<? extends Ente>, Function<Ente, String>> mapeadores = new HashMap<>();
     private static final Map<String, Image> cache = new HashMap<>();
     private static final String RUTA_SPRITES = "/sprites/";
 
     static {
         // --- BLOQUES ---
-        configs.put("steelBlock", new SpriteConfig("SteelBlock", 1));
-        configs.put("brickBlock", new SpriteConfig("BrickBlock", 1));
-        configs.put("baseBlock", new SpriteConfig("BaseBlock", 1));
-        configs.put("forestBlock", new SpriteConfig("ForestBlock", 1));
-        configs.put("waterBlock", new SpriteConfig("WaterBlock", 1));
+        configs.put("SteelBlock", new SpriteConfig("SteelBlock", 1));
+        configs.put("BrickBlock", new SpriteConfig("BrickBlock", 1));
+        configs.put("BaseBlock", new SpriteConfig("BaseBlock", 1));
+        configs.put("ForestBlock", new SpriteConfig("ForestBlock", 1));
+        configs.put("WaterBlock", new SpriteConfig("WaterBlock", 1));
+        configs.put("TankDestroyed", new SpriteConfig("TankDestroyed", 1));
 
         // --- ENEMIGOS ---
-        configs.put("regularEnemy", new SpriteConfig("EnemyTankRegular", 2));
-        configs.put("enemyFast", new SpriteConfig("EnemyTankFast", 2));
-        configs.put("enemyStrong", new SpriteConfig("EnemyTankPowerful", 2));
-        configs.put("enemyArmored", new SpriteConfig("EnemyTankHeavy", 2));
+        configs.put("EnemyTankRegular", new SpriteConfig("EnemyTankRegular", 2));
+        configs.put("EnemyTankFast", new SpriteConfig("EnemyTankFast", 2));
+        configs.put("EnemyTankPowerful", new SpriteConfig("EnemyTankPowerful", 2));
+        configs.put("EnemyTankHeavy", new SpriteConfig("EnemyTankHeavy", 2));
 
-        // --- JUGADOR ---
-        configs.put("player", new SpriteConfig("PlayerTank", 2));
+        // --- JUGADORES ---
+        configs.put("player1", new SpriteConfig("Player1Tank", 2));
+        configs.put("player2", new SpriteConfig("Player2Tank", 2));
+
 
         // --- BALA ---
         configs.put("bullet", new SpriteConfig("Shot", 1));
 
         // --- POWERUPS ---
-        configs.put("helmetPowerUp", new SpriteConfig("PowerUp-Helmet", 1));
-        configs.put("starPowerUp", new SpriteConfig("PowerUp-Star", 1));
-        configs.put("grenadePowerUp", new SpriteConfig("PowerUp-Grenade", 1));
+        configs.put("PowerUp-Helmet", new SpriteConfig("PowerUp-Helmet", 1));
+        configs.put("PowerUp-Star", new SpriteConfig("PowerUp-Star", 1));
+        configs.put("PowerUp-Grenade", new SpriteConfig("PowerUp-Grenade", 1));
+
+        inicializarMapeadores();
     }
 
-    public static Map<Direccion, List<Image>> getAnimacionesPara(String tipo) {
+    private static void inicializarMapeadores() {
+        // Bloques → según TipoBloque
+        mapeadores.put(Bloque.class, e -> {
+            TipoBloque tipo = ((Bloque) e).getTipoBloque();
+            return switch (tipo) {
+                case ACERO -> "SteelBlock";
+                case LADRILLO -> "BrickBlock";
+                case BASE -> "BaseBlock";
+                case BOSQUE -> "ForestBlock";
+                case AGUA -> "WaterBlock";
+                case TANQUE_DESTRUIDO -> "TankDestroyed";
+            };
+        });
+
+        // Jugadores → normalizamos a "player" para animaciones
+        mapeadores.put(TanqueJugador.class, e -> "player");
+
+        mapeadores.put(TanqueEnemigo.class, e -> {
+            TipoTanque tipo = ((TanqueEnemigo) e).getTipoTanque();
+            return switch (tipo) {
+                case BASICO -> "EnemyTankRegular";
+                case RAPIDO -> "EnemyTankFast";
+                case POTENTE -> "EnemyTankPowerful";
+                case BLINDADO -> "EnemyTankHeavy";
+                default -> throw new IllegalStateException("Tipo de tanque enemigo inválido: " + tipo);
+            };
+        });
+
+
+        // Bala
+        mapeadores.put(Bala.class, e -> "bullet");
+
+        // PowerUps
+        mapeadores.put(PowerUp.class, e -> {
+            TipoPowerUp tipo = ((PowerUp) e).getTipoPowerUp();
+            return switch (tipo) {
+                case CASCO -> "PowerUp-Helmet";
+                case ESTRELLA -> "PowerUp-Star";
+                case GRANADA -> "PowerUp-Grenade";
+            };
+        });
+    }
+
+    private static String obtenerClave(Ente ente) {
+        Function<Ente, String> fn = mapeadores.get(ente.getClass());
+        if (fn == null) {
+            throw new IllegalArgumentException("No hay mapeador de sprite para la clase: " + ente.getClass());
+        }
+        String clave = fn.apply(ente);
+
+        if (!configs.containsKey(clave)) {
+            throw new IllegalArgumentException("❌ No hay sprite configurado para la clave generada: " + clave +
+                    " (ente: " + ente.getClass() + ")");
+        }
+        return clave;
+    }
+
+    public static Map<Direccion, List<Image>> getAnimacionesPara(Ente ente) {
+        String clave = obtenerClave(ente);
+
+        // Normalizamos jugadores a la animación "player"
+        if (clave.startsWith("player")) clave = "player";
+
+        SpriteConfig config = configs.get(clave);
         Map<Direccion, List<Image>> animaciones = new EnumMap<>(Direccion.class);
-
-        // jugadores: "player1", "player2", etc. → usar "player"
-        String clave = tipo.startsWith("player") ? "player" : tipo;
-
-        SpriteConfig config = configs.getOrDefault(clave, new SpriteConfig("default", 1));
 
         for (Direccion dir : Direccion.values()) {
             List<Image> frames = new ArrayList<>();
             if (config.frames > 1) {
                 for (int i = 0; i < config.frames; i++) {
-                    String nombre = config.nombreBase + i + ".png";
-                    frames.add(obtenerSprite(nombre));
+                    frames.add(obtenerSprite(config.nombreBase + i + ".png"));
                 }
             } else {
                 frames.add(obtenerSprite(config.nombreBase + ".png"));
@@ -66,14 +135,15 @@ public class GestorSprites {
         return animaciones;
     }
 
-    public static Dimensiones getDimensionesPara(String tipo) {
-        // jugadores: "player1", "player2", etc. → usar "player"
-        String clave = tipo.startsWith("player") ? "player" : tipo;
+    public static Dimensiones getDimensionesPara(Ente ente) {
+        String clave = obtenerClave(ente);
+        if (clave.startsWith("player")) clave = "player";
+        SpriteConfig config = configs.get(clave);
 
-        SpriteConfig config = configs.getOrDefault(clave, new SpriteConfig("default", 1));
         String nombreArchivo = (config.frames > 1)
                 ? config.nombreBase + "0.png"
                 : config.nombreBase + ".png";
+
         Image img = obtenerSprite(nombreArchivo);
         if (img != null) {
             return new Dimensiones((int) img.getWidth(), (int) img.getHeight());
@@ -86,7 +156,7 @@ public class GestorSprites {
         String ruta = RUTA_SPRITES + nombreArchivo;
         try (InputStream is = GestorSprites.class.getResourceAsStream(ruta)) {
             if (is == null) {
-                System.err.println("❌ No se encontró el sprite en: " + ruta);
+                System.err.println("No se encontró el sprite en: " + ruta);
                 return null;
             }
             Image img = new Image(is);

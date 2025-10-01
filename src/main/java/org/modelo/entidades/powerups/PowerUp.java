@@ -23,5 +23,5 @@ public class PowerUp extends Ente {
     @Override
     public TipoEnte getTipoEnte() { return TipoEnte.POWERUP; }
 
-    public TipoPowerUp getTipoPoweup() { return tipo; }
+    public TipoPowerUp getTipoPowerUp() { return tipo; }
 }

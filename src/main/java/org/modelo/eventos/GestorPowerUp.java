@@ -13,7 +13,7 @@ public class GestorPowerUp {
     private final List<PowerUpActivo> activos = new ArrayList<>();
 
     public void activarPowerUp(TanqueJugador jugador, PowerUp powerUp) {
-        PowerUpActivo pa = new PowerUpActivo(jugador, powerUp.getTipoPoweup());
+        PowerUpActivo pa = new PowerUpActivo(jugador, powerUp.getTipoPowerUp());
         activos.add(pa);
         pa.aplicar();
     }

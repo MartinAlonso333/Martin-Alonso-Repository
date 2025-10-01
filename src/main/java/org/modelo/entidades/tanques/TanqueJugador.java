@@ -9,10 +9,10 @@ public class TanqueJugador extends Tanque {
 
     private boolean invulnerable;
     private boolean disparoMejorado;
-    private int idJugador; // sigue existiendo para diferenciar Jugador 1, 2, etc.
+    private int idJugador;
 
     public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, int idJugador) {
-        super(posicion, dimensiones, TipoTanque.JUGADOR, direccionInicial); // 🔹 usamos el enum
+        super(posicion, dimensiones, TipoTanque.JUGADOR, direccionInicial);
         this.idJugador = idJugador;
     }
 

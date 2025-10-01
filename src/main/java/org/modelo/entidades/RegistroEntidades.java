@@ -1,6 +1,5 @@
-package org.vista.cargaDePartida;
+package org.modelo.entidades;
 
-import org.modelo.entidades.Ente;
 import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.powerups.PowerUp;
@@ -95,31 +94,28 @@ public class RegistroEntidades {
         ));
     }
 
-    public Ente crearEnte(Element elem) {
-        String tipo = elem.getAttribute("type");
+    public Ente crearJugador(Element elem) {
+        String id = elem.getAttribute("id"); // player1, player2
+        int numJugador = Integer.parseInt(id.replace("player", ""));
+        if (numJugador > jugadoresMaximos) return null;
 
-        // --- JUGADORES ---
-        if (tipo.startsWith("player")) {
-            int idJugador = Integer.parseInt(tipo.substring(6)); // player1 → 1
-            if (idJugador > jugadoresMaximos) return null;
+        double x = Double.parseDouble(elem.getAttribute("x"));
+        double y = Double.parseDouble(elem.getAttribute("y"));
 
-            return new TanqueJugador(
-                    new Coordenada(
-                            Double.parseDouble(elem.getAttribute("x")),
-                            Double.parseDouble(elem.getAttribute("y"))
-                    ),
-                    new Dimensiones(20, 20),
-                    Direccion.ARRIBA,
-                    idJugador
-            );
-        }
+        return new TanqueJugador(
+                new Coordenada(x, y),
+                new Dimensiones(20, 20),
+                Direccion.ARRIBA,
+                numJugador
+        );
+    }
 
-        // --- RESTO (bloques, enemigos, powerups, bala) ---
+    public Ente crearEnteConTipo(Element elem, String tipo) {
         Function<Element, Ente> constructor = registro.get(tipo);
         if (constructor != null) {
             return constructor.apply(elem);
         }
-
         throw new IllegalArgumentException("Tipo de ente desconocido en XML: " + tipo);
     }
+
 }

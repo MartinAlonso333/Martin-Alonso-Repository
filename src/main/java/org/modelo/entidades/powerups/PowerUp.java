@@ -13,9 +13,10 @@ public class PowerUp extends Ente {
         this.tipo = tipo;
     }
 
-
     @Override
-    public void actualizar() {}
+    public void actualizar(double deltaTime) {
+        // Los powerups no se mueven, no hay nada que actualizar
+    }
 
     @Override
     public boolean estaDestruido() { return !estaActivo(); }

@@ -6,13 +6,13 @@ import org.modelo.entidades.tanques.TanqueEnemigo;
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.TipoEvento;
 import org.modelo.utilidades.Direccion;
-import org.vista.cargaDePartida.ParserXML;
-import org.vista.cargaDePartida.RegistroEntidades;
+import org.modelo.cargaDePartida.ParserXML;
+import org.modelo.entidades.RegistroEntidades;
 
 public class EstadoPartida implements EstadoJuego {
 
     private static final int CANTIDAD_NIVELES = 3;
-    private Juego juego = null;
+    private Juego juego;
     private final int numJugadores;
     private int nivelActual;
     private RegistroEntidades registro;
@@ -28,12 +28,8 @@ public class EstadoPartida implements EstadoJuego {
     public void actualizar(double deltaTime) {
         juego.actualizar(deltaTime);
 
-        if (nivelTerminado()) {
-            cambiarNivel();
-        }
-        if (derrota()) {
-            partidaPerdida();
-        }
+        if (nivelTerminado()) cambiarNivel();
+        if (derrota()) partidaPerdida();
     }
 
     private void iniciarNivel(int nivelActual) {
@@ -53,6 +49,7 @@ public class EstadoPartida implements EstadoJuego {
     private boolean nivelTerminado() {
         return juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty();
     }
+
     private boolean derrota() {
         return juego.getEntesDeTipo(TanqueJugador.class).isEmpty();
     }
@@ -67,7 +64,18 @@ public class EstadoPartida implements EstadoJuego {
 
     @Override
     public void manejarInput(String input, boolean presionada) {
-        if (!presionada) return;
+        if (!presionada) {
+            // Detener movimiento del jugador correspondiente
+            switch (input) {
+                case "J1_ARRIBA", "J1_ABAJO", "J1_IZQUIERDA", "J1_DERECHA" ->
+                        juego.getEntesDeTipo(TanqueJugador.class).get(0).detenerMovimiento();
+                case "J2_ARRIBA", "J2_ABAJO", "J2_IZQUIERDA", "J2_DERECHA" -> {
+                    if (numJugadores > 1)
+                        juego.getEntesDeTipo(TanqueJugador.class).get(1).detenerMovimiento();
+                }
+            }
+            return;
+        }
 
         // Jugador 1
         switch (input) {
@@ -78,7 +86,7 @@ public class EstadoPartida implements EstadoJuego {
             case "J1_DISPARO" -> juego.dispararJugador(0);
         }
 
-        // Jugador 2 solo si hay 2
+        // Jugador 2
         if (numJugadores > 1) {
             switch (input) {
                 case "J2_ARRIBA" -> juego.moverJugador(1, Direccion.ARRIBA);
@@ -90,7 +98,6 @@ public class EstadoPartida implements EstadoJuego {
         }
     }
 
-    public Juego getJuego() {
-        return juego;
-    }
+
+    public Juego getJuego() { return juego; }
 }

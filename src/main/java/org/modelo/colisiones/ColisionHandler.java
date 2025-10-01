@@ -1,15 +1,12 @@
 package org.modelo.colisiones;
 
-import org.modelo.entidades.Ente;
-import org.modelo.entidades.TipoEnte;
+import org.modelo.entidades.*;
 import org.modelo.entidades.bloques.Bloque;
-import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.powerups.PowerUp;
 import org.modelo.entidades.tanques.*;
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.GestorPowerUp;
 import org.modelo.eventos.TipoEvento;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +26,8 @@ public class ColisionHandler {
         registrarRegla(TanqueJugador.class, PowerUp.class, (a, b) -> colisionTanqueConPowerUp((TanqueJugador) a, (PowerUp) b));
         registrarRegla(Bala.class, Bala.class, (a, b) -> colisionBalaConBala((Bala) a, (Bala) b));
         registrarRegla(Tanque.class, Tanque.class, (a, b) -> colisionTanqueConTanque((Tanque) a, (Tanque) b));
-        registrarRegla(Bala.class, Bloque.class, (a, b) -> colisionbalaConBloque((Bala) a, (Bloque) b));
+        registrarRegla(Tanque.class, Bloque.class, (a, b) -> colisionTanqueConBloque((Tanque) a, (Bloque) b));
+        registrarRegla(Bala.class, Bloque.class, (a, b) -> colisionBalaConBloque((Bala) a, (Bloque) b));
     }
 
     public void registrarRegla(Class<? extends Ente> c1, Class<? extends Ente> c2,
@@ -48,18 +46,16 @@ public class ColisionHandler {
 
     // ------------------ FUNCIONES CONCRETAS ------------------
     private void colisionBalaConTanque(Bala bala, Tanque tanque) {
-        if (bala.getDuenio().getTipoEnte() == tanque.getTipoEnte() && tanque.getTipoEnte() == TipoEnte.JUGADOR) {
+        if (bala.getDuenio().getTipoEnte() == TipoEnte.JUGADOR && tanque.getTipoEnte() == TipoEnte.JUGADOR) {
             tanque.aturdir(TIEMPOATURDIDO);
             bala.setActivo(false);
             return;
         }
         tanque.recibirDanio(bala.getDanio());
         bala.setActivo(false);
-        if (tanque.getTipoEnte() == TipoEnte.ENEMIGO){
-            TanqueEnemigo enemigo = (TanqueEnemigo) tanque;
-            if (enemigo.getTipoTanque() == TipoTanque.BLINDADO) {
-                EventoManager.getInstancia().notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO);
-            }
+
+        if (tanque instanceof TanqueEnemigo enemigo && enemigo.getTipoTanque() == TipoTanque.BLINDADO) {
+            EventoManager.getInstancia().notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO);
         }
     }
 
@@ -68,7 +64,6 @@ public class ColisionHandler {
         gestorPowerUp.activarPowerUp(tanque, powerUp);
         powerUp.setActivo(false);
     }
-
 
     private void colisionBalaConBala(Bala a, Bala b) {
         a.setActivo(false);
@@ -80,19 +75,24 @@ public class ColisionHandler {
         b.revertirMovimiento();
     }
 
-    private void colisionbalaConBloque(Bala bala, Bloque bloque) {
+    private void colisionTanqueConBloque(Tanque tanque, Bloque bloque) {
+        if (!bloque.permitePaso()) {
+            tanque.revertirMovimiento();
+        }
+    }
+
+    private void colisionBalaConBloque(Bala bala, Bloque bloque) {
         if (!bloque.balaimpacta()) return;
 
         bala.setActivo(false);
         bloque.recibirDanio(bala.getDanio());
-        if (bloque.getSubtipo() == TipoBloque.BASE) {
-            EventoManager.getInstancia().notificar(TipoEvento.BASE_DESTRUIDA);
-        }
-        if (bloque.estaDestruido() && bloque.getSubtipo() == TipoBloque.LADRILLO) {
-            EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_DESTRUIDO);
-        }
-        if (bloque.getSubtipo() == TipoBloque.ACERO) {
-            EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_ACERO_IMPACTADO);
+
+        switch (bloque.getTipoBloque()) {
+            case BASE -> EventoManager.getInstancia().notificar(TipoEvento.BASE_DESTRUIDA);
+            case LADRILLO -> {
+                if (bloque.estaDestruido()) EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_DESTRUIDO);
+            }
+            case ACERO -> EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_ACERO_IMPACTADO);
         }
     }
 
@@ -102,10 +102,13 @@ public class ColisionHandler {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || o.getClass() != EntesInvolucrados.class) return false;
-            EntesInvolucrados e = (EntesInvolucrados) o;
+            if (!(o instanceof EntesInvolucrados e)) return false;
             return c1.equals(e.c1) && c2.equals(e.c2);
         }
 
+        @Override
+        public int hashCode() {
+            return c1.hashCode() * 31 + c2.hashCode();
+        }
     }
 }

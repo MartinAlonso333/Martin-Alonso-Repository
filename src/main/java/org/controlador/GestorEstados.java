@@ -23,13 +23,4 @@ public class GestorEstados {
     public void cambiarAEstado(EstadoJuego nuevo) {
         estadoActual = nuevo;
     }
-
-    public EstadoJuego getEstadoActual() {
-        return estadoActual;
-    }
-
-    public void mostrarPartida(int numJugadores) {
-        EstadoPartida partida = new EstadoPartida(numJugadores);
-        cambiarAEstado(partida);
-    }
 }

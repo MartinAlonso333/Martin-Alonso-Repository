@@ -10,14 +10,12 @@ public abstract class Tanque extends Ente {
     private final int danio;
     private Coordenada ultimaPosicion;
     private long ultimoDisparo;
-    protected final double velocidad; // en píxeles por segundo
-    protected final int velocidadDeDisparo;
+    protected final double velocidad;         // px/s
+    protected final int velocidadDeDisparo;   // ms
     protected Direccion direccion;
     private long tiempoQuieto = 0;
-
-    private boolean estaMoviendo = false; // indica si el tanque debe moverse
-
-    protected final TipoTanque tipo; // 🔹 ahora guardamos el tipo
+    private boolean estaMoviendo = false;
+    protected final TipoTanque tipo;
 
     public Tanque(Coordenada posicion, Dimensiones dimensiones, TipoTanque tipo, Direccion direccionInicial) {
         super(posicion, dimensiones);
@@ -27,7 +25,6 @@ public abstract class Tanque extends Ente {
         this.velocidad = tipo.getVelocidad();
         this.velocidadDeDisparo = tipo.getVelocidadDisparo();
         this.ultimoDisparo = System.currentTimeMillis();
-        this.posicion = posicion;
         this.direccion = direccionInicial;
     }
 
@@ -40,8 +37,6 @@ public abstract class Tanque extends Ente {
         );
     }
 
-    public Direccion getDireccion() { return direccion; }
-
     public void mover(Direccion dir) {
         if (System.currentTimeMillis() < tiempoQuieto) {
             estaMoviendo = false;
@@ -51,22 +46,23 @@ public abstract class Tanque extends Ente {
         estaMoviendo = true;
     }
 
-    public void detenerMovimiento() {
-        estaMoviendo = false;
-    }
+    public void detenerMovimiento() { estaMoviendo = false; }
 
+    @Override
     public void actualizar(double deltaTime) {
         if (!estaMoviendo) return;
+
         ultimaPosicion = new Coordenada(posicion.getPixelX(), posicion.getPixelY());
         Coordenada nuevaPos = new Coordenada(posicion.getPixelX(), posicion.getPixelY());
+
         direccion.aplicarMovimiento(nuevaPos, velocidad * deltaTime);
-        setPosicion(nuevaPos);
+        posicion.setCoordenada(nuevaPos.getPixelX(), nuevaPos.getPixelY());
     }
 
+
     public void revertirMovimiento() {
-        if (ultimaPosicion != null) {
+        if (ultimaPosicion != null)
             setPosicion(new Coordenada(ultimaPosicion.getPixelX(), ultimaPosicion.getPixelY()));
-        }
     }
 
     public void aturdir(long duracionMs) {
@@ -74,17 +70,20 @@ public abstract class Tanque extends Ente {
         estaMoviendo = false;
     }
 
-    public boolean puedeDisparar(int intervaloMs) {
-        return System.currentTimeMillis() - ultimoDisparo >= intervaloMs;
+    public boolean puedeDisparar() {
+        return System.currentTimeMillis() - ultimoDisparo >= velocidadDeDisparo;
     }
 
-    protected void registrarDisparo() {
-        ultimoDisparo = System.currentTimeMillis();
-    }
+    protected void registrarDisparo() { ultimoDisparo = System.currentTimeMillis(); }
 
     public int getVida() { return vida; }
     public int getDanio() { return danio; }
     public TipoTanque getTipoTanque() { return tipo; }
+    public Direccion getDireccion() { return direccion; }
+
+    public Coordenada getUltimaPosicion() {
+        return ultimaPosicion;
+    }
 
     public void recibirDanio(int cantidad) {
         if (vida <= 0) return;
@@ -92,13 +91,7 @@ public abstract class Tanque extends Ente {
         if (vida <= 0) destruir();
     }
 
-    public void destruir() {
-        vida = 0;
-        setActivo(false);
-    }
-
+    public void destruir() { vida = 0; setActivo(false); }
     @Override
-    public boolean estaDestruido() {
-        return vida <= 0;
-    }
+    public boolean estaDestruido() { return vida <= 0; }
 }

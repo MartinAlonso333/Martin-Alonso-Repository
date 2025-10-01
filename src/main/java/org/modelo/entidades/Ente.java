@@ -15,13 +15,8 @@ public abstract class Ente {
     }
 
     public Coordenada getPosicion() { return posicion; }
-
-    public void setPosicion(Coordenada nuevaPos) {
-        this.posicion = nuevaPos;
-    }
-
+    public void setPosicion(Coordenada nuevaPos) { this.posicion = nuevaPos; }
     public Dimensiones getDimensiones() { return dimensiones; }
-
     public boolean estaActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
@@ -32,15 +27,14 @@ public abstract class Ente {
                 this.posicion.getPixelY() + this.dimensiones.getAlto() > otro.posicion.getPixelY();
     }
 
-    public abstract void actualizar();
+    public void revertirMovimiento(Coordenada ultimaPosicion) {
+        if (ultimaPosicion != null)
+            posicion.setCoordenada(ultimaPosicion.getPixelX(), ultimaPosicion.getPixelY());
+    }
+
+    public abstract void actualizar(double deltaTime);
     public abstract boolean estaDestruido();
     public abstract TipoEnte getTipoEnte();
-
-    public Enum<?> getSubtipo() {
-        return null; // Por defecto, no hay subtipo
-    }
-
-    public Direccion getDireccion() {
-        return null; // Por defecto, no hay dirección
-    }
+    public Direccion getDireccion() { return null; }
+    public Enum<?> getSubtipo() { return null; }
 }

@@ -23,14 +23,14 @@ public class Bloque extends Ente {
     public void recibirDanio(int cantidad) {
         if (tipo.esDestructible()) {
             vida -= cantidad;
-            if (estaDestruido()) {
-                setActivo(false);
-            }
+            if (estaDestruido()) setActivo(false);
         }
     }
 
     @Override
-    public void actualizar() {}
+    public void actualizar(double deltaTime) {
+        // Los bloques no se mueven, no hay nada que actualizar
+    }
 
     @Override
     public boolean estaDestruido() { return tipo.esDestructible() && vida <= 0; }
@@ -38,6 +38,5 @@ public class Bloque extends Ente {
     @Override
     public TipoEnte getTipoEnte() { return TipoEnte.BLOQUE; }
 
-    public TipoBloque getTipoBloque() { return tipo;}
-
+    public TipoBloque getTipoBloque() { return tipo; }
 }

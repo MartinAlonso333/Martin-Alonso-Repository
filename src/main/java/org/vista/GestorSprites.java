@@ -69,8 +69,10 @@ public class GestorSprites {
             };
         });
 
-        // Jugadores → normalizamos a "player" para animaciones
-        mapeadores.put(TanqueJugador.class, e -> "player");
+        mapeadores.put(TanqueJugador.class, e -> {
+            int id = ((TanqueJugador) e).getIdJugador();
+            return "player" + id; // devuelve "player1" o "player2"
+        });
 
         mapeadores.put(TanqueEnemigo.class, e -> {
             TipoTanque tipo = ((TanqueEnemigo) e).getTipoTanque();
@@ -115,10 +117,7 @@ public class GestorSprites {
     public static Map<Direccion, List<Image>> getAnimacionesPara(Ente ente) {
         String clave = obtenerClave(ente);
 
-        // Normalizamos jugadores a la animación "player"
-        if (clave.startsWith("player")) clave = "player";
-
-        SpriteConfig config = configs.get(clave);
+        SpriteConfig config = configs.get(clave); // ya es "player1" o "player2"
         Map<Direccion, List<Image>> animaciones = new EnumMap<>(Direccion.class);
 
         for (Direccion dir : Direccion.values()) {
@@ -135,9 +134,9 @@ public class GestorSprites {
         return animaciones;
     }
 
+
     public static Dimensiones getDimensionesPara(Ente ente) {
         String clave = obtenerClave(ente);
-        if (clave.startsWith("player")) clave = "player";
         SpriteConfig config = configs.get(clave);
 
         String nombreArchivo = (config.frames() > 1)
@@ -150,6 +149,7 @@ public class GestorSprites {
         }
         return new Dimensiones(20, 20);
     }
+
 
     private static Image obtenerSprite(String nombreArchivo) {
         if (cache.containsKey(nombreArchivo)) return cache.get(nombreArchivo);

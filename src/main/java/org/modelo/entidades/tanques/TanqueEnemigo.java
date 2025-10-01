@@ -9,7 +9,6 @@ public class TanqueEnemigo extends Tanque {
 
     private long tiempoConducta;
     private long inicioConducta;
-    private Direccion direccion;
     private Coordenada ultimaPosicionChequear;
     private long ultimoTiempoQuieto;
 
@@ -17,58 +16,48 @@ public class TanqueEnemigo extends Tanque {
         super(posicion, dimensiones, tipo, direccionInicial);
         this.tiempoConducta = sortearTiempoConducta();
         this.inicioConducta = System.currentTimeMillis();
-        this.direccion = direccionInicial;
         this.ultimaPosicionChequear = new Coordenada(posicion.getPixelX(), posicion.getPixelY());
         this.ultimoTiempoQuieto = System.currentTimeMillis();
     }
 
     @Override
     public Bala disparar() {
-        if (puedeDisparar(velocidadDeDisparo)) {
+        if (puedeDisparar()) {
             registrarDisparo();
-            Coordenada origen = getPuntoDeDisparo();
-            return new Bala(getDireccion(), getDanio(), origen, new Dimensiones(8, 8), 8, this);
+            return new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(8, 8), 8, this);
         }
         return null;
     }
 
     @Override
-    public void actualizar() {
+    public void actualizar(double deltaTime) {
         long ahora = System.currentTimeMillis();
 
-        // Cambiar dirección si terminó el tiempo de conducta
+        // Cambiar dirección cada tiempo aleatorio
         if (ahora - inicioConducta >= tiempoConducta) {
-            direccion = sortearDireccion();
+            mover(sortearDireccion());
             tiempoConducta = sortearTiempoConducta();
             inicioConducta = ahora;
         }
 
-        // Cambiar dirección si se quedó quieto demasiado tiempo
+        // Cambiar dirección si está atascado
         if (getPosicion().equals(ultimaPosicionChequear)) {
             if (ahora - ultimoTiempoQuieto >= 2000) {
-                direccion = sortearDireccion();
+                mover(sortearDireccion());
             }
         } else {
             ultimaPosicionChequear = new Coordenada(getPosicion().getPixelX(), getPosicion().getPixelY());
             ultimoTiempoQuieto = ahora;
         }
 
-        mover(direccion);
+        super.actualizar(deltaTime);
     }
 
     @Override
-    public TipoEnte getTipoEnte() {
-        return TipoEnte.ENEMIGO;
-    }
+    public TipoEnte getTipoEnte() { return TipoEnte.ENEMIGO; }
+    public TipoTanque getSubtipo() { return getTipoTanque(); }
 
-
-    public TipoTanque getSubtipo() {
-        return getTipoTanque();
-    }
-
-    private long sortearTiempoConducta() {
-        return (1 + (int)(Math.random() * 5)) * 1000L;
-    }
+    private long sortearTiempoConducta() { return (1 + (int)(Math.random() * 5)) * 1000L; }
 
     private Direccion sortearDireccion() {
         Direccion[] direcciones = Direccion.values();

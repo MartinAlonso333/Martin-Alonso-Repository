@@ -5,10 +5,14 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.controlador.*;
+import org.modelo.Juego;
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.TipoEvento;
 import org.modelo.input.GestorInput;
-import org.vista.pantallas.*;
+import org.vista.JuegoVista;
+import org.vista.pantallas.PantallaFinPartida;
+import org.vista.pantallas.PantallaJuego;
+import org.vista.pantallas.PantallaMenu;
 
 public class JuegoApp extends Application {
 
@@ -20,12 +24,12 @@ public class JuegoApp extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
 
-
         // Gestor de estados
         GestorEstados gestor = new GestorEstados();
         EstadoMenu estadoMenu = new EstadoMenu();
         gestor.cambiarAEstado(estadoMenu);
         gestor.setGestorInput(new GestorInput(scene, gestor));
+
         // Pantallas
         PantallaMenu pantallaMenu = new PantallaMenu(root, estadoMenu);
         PantallaJuego pantallaJuego = new PantallaJuego(root);
@@ -34,23 +38,28 @@ public class JuegoApp extends Application {
         // Suscripción a eventos
         EventoManager em = EventoManager.getInstancia();
 
-        em.registrar(TipoEvento.MOSTRAR_MENU, o -> pantallaMenu.mostrar());gestor.cambiarAEstado(estadoMenu);
+        em.registrar(TipoEvento.MOSTRAR_MENU, o -> pantallaMenu.mostrar());
+
         em.registrar(TipoEvento.MOSTRAR_PARTIDA, o -> {
             int numJugadores = o != null ? (int) o : 1;
             EstadoPartida partida = new EstadoPartida(numJugadores);
             gestor.cambiarAEstado(partida);
-            pantallaJuego.setJuego(partida.getJuego());
+
+            // Creamos el JuegoVista a partir del juego de EstadoPartida
+            Juego juego = partida.getJuego();
+            JuegoVista juegoVista = new JuegoVista(juego);
+            pantallaJuego.setJuego(juegoVista);
             pantallaJuego.mostrar();
         });
-        em.registrar(TipoEvento.MOSTRAR_FIN_PARTIDA, o ->{
+
+        em.registrar(TipoEvento.MOSTRAR_FIN_PARTIDA, o -> {
             pantallaFin.mostrar((Boolean) o);
-            gestor.cambiarAEstado(new EstadoFinPartida((Boolean)o));
+            gestor.cambiarAEstado(new EstadoFinPartida((Boolean) o));
         });
 
         // Mostrar menú inicial
         pantallaMenu.mostrar();
 
-        stage.setScene(scene);
         stage.setTitle("Yet Another Battle City");
         stage.show();
 

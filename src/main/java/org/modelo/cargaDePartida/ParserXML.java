@@ -1,7 +1,8 @@
-package org.vista.cargaDePartida;
+package org.modelo.cargaDePartida;
 
 import org.modelo.Juego;
 import org.modelo.entidades.Ente;
+import org.modelo.entidades.RegistroEntidades;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,19 +26,26 @@ public class ParserXML {
     }
 
     private static void procesarNodo(Element elem, RegistroEntidades registro, Juego juego) {
-        // Solo procesar elementos que tengan atributo "type"
-        if (elem.hasAttribute("type")) {
-            try {
-                Ente ente = registro.crearEnte(elem);
-                if (ente != null) {
-                    juego.agregarEnte(ente);
-                }
-            } catch (IllegalArgumentException ex) {
-                System.out.println("Tipo de ente desconocido: " + elem.getAttribute("type"));
-            }
+        String tag = elem.getTagName(); // player, enemy o staticObject
+        Ente ente = null;
+
+        if (tag.equals("player")) {
+            ente = registro.crearJugador(elem);
+
+        } else if (tag.equals("enemy")) {
+            String tipo = elem.getAttribute("type");
+            ente = registro.crearEnteConTipo(elem, tipo);
+
+        } else if (tag.equals("staticObject")) {
+            String tipo = elem.getAttribute("type");
+            ente = registro.crearEnteConTipo(elem, tipo);
         }
 
-        // Procesar hijos recursivamente
+        if (ente != null) {
+            juego.agregarEnte(ente);
+        }
+
+        // procesar hijos recursivamente (para <players>, <enemies>, etc.)
         NodeList hijos = elem.getChildNodes();
         for (int i = 0; i < hijos.getLength(); i++) {
             Node hijo = hijos.item(i);
@@ -46,4 +54,5 @@ public class ParserXML {
             }
         }
     }
+
 }

@@ -1,6 +1,5 @@
 package org.vista.pantallas;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -8,7 +7,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.vista.EnteVista;
 import org.vista.JuegoVista;
-import org.modelo.Juego;
 
 public class PantallaJuego {
 
@@ -19,8 +17,8 @@ public class PantallaJuego {
         this.root = root;
     }
 
-    public void setJuego(Juego juego) {
-        this.juegoVista = new JuegoVista(juego);
+    public void setJuego(JuegoVista juegoVista) {
+        this.juegoVista = juegoVista;
     }
 
     public void actualizar(double deltaTime) {
@@ -29,16 +27,26 @@ public class PantallaJuego {
         root.getChildren().clear();
 
         for (EnteVista ev : juegoVista.getEntesVista()) {
-            Image img = ev.getFrameActual();
+            javafx.scene.image.Image img = ev.getFrameActual();
             if (img != null) {
                 ImageView iv = new ImageView(img);
                 iv.setX(ev.getX());
                 iv.setY(ev.getY());
                 iv.setFitWidth(ev.getAncho());
                 iv.setFitHeight(ev.getAlto());
-                root.getChildren().add(iv);
 
-                System.out.println(ev.getEnte() + " x=" + ev.getX() + " y=" + ev.getY());
+                // ROTACIÓN según dirección
+                if (ev.getEnte().getDireccion() != null) {
+                    double angulo = switch (ev.getDireccion()) {
+                        case ARRIBA -> 0;
+                        case DERECHA -> 90;
+                        case ABAJO -> 180;
+                        case IZQUIERDA -> 270;
+                    };
+                    iv.setRotate(angulo);
+                }
+
+                root.getChildren().add(iv);
             }
         }
     }

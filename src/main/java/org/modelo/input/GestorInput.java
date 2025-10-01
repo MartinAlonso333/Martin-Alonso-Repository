@@ -3,6 +3,7 @@ package org.modelo.input;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import org.controlador.GestorEstados;
+import org.modelo.entidades.tanques.TanqueJugador;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class GestorInput {
             String input = traducirTecla(e.getCode());
             if (input != null) {
                 teclasPresionadas.remove(input);
-                gestor.manejarInput(input, false); // detener movimiento al soltar
+                gestor.manejarInput(input, false); // detener movimiento
             }
         });
     }
@@ -32,7 +33,7 @@ public class GestorInput {
     public void procesarInput() {
         // Llamar cada frame para mover jugadores
         for (String input : teclasPresionadas) {
-            gestor.manejarInput(input, true);
+            gestor.manejarInput(input, true); // mover
         }
     }
 

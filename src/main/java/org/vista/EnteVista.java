@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * Vista de un ente del juego. Maneja animación y rotación según dirección si aplica.
  */
+
 public class EnteVista {
 
     protected final Ente ente;

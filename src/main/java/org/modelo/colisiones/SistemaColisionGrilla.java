@@ -1,17 +1,17 @@
 package org.modelo.colisiones;
 
 import org.modelo.entidades.Ente;
-import org.modelo.entidades.tanques.Tanque;
+
 import org.modelo.utilidades.Coordenada;
 
 import java.util.HashSet;
 import java.util.Set;
-
 public class SistemaColisionGrilla {
 
     private static final int FILAS = 30;
     private static final int COLS = 40;
     private final Set<Ente>[][] celdas;
+    private final ColisionHandler colisionHandler = new ColisionHandler();
 
     public SistemaColisionGrilla() {
         celdas = new HashSet[COLS][FILAS];
@@ -47,15 +47,14 @@ public class SistemaColisionGrilla {
 
         for (Ente otro : posibles) {
             if (otro != e && otro.estaActivo() && e.intersecta(otro)) {
-                if (e instanceof Tanque) {
-                    Tanque t = (Tanque) e;
-                    t.revertirMovimiento(); // usa la última posición guardada dentro del tanque
-                }
+                colisionHandler.manejarColision(e, otro);
             }
         }
     }
 
-    private boolean dentroGrilla(int x, int y) { return x >= 0 && x < COLS && y >= 0 && y < FILAS; }
+    private boolean dentroGrilla(int x, int y) {
+        return x >= 0 && x < COLS && y >= 0 && y < FILAS;
+    }
 
     // ---------- Helpers para celdas usando los bordes del ente ----------
     private int getCeldaXFinal(Ente e) {

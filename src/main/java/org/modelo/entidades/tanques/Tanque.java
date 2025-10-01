@@ -32,8 +32,8 @@ public abstract class Tanque extends Ente {
 
     protected Coordenada getPuntoDeDisparo() {
         return new Coordenada(
-                getPosicion().getPixelX() + getDimensiones().getAncho() / 2,
-                getPosicion().getPixelY() + getDimensiones().getAlto() / 2
+                getPosicion().getPixelX() + (double) getDimensiones().getAncho() / 2,
+                getPosicion().getPixelY() + (double) getDimensiones().getAlto() / 2
         );
     }
 

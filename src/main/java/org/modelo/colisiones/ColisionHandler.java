@@ -25,8 +25,11 @@ public class ColisionHandler {
         registrarRegla(Bala.class, Tanque.class, (a, b) -> colisionBalaConTanque((Bala) a, (Tanque) b));
         registrarRegla(TanqueJugador.class, PowerUp.class, (a, b) -> colisionTanqueConPowerUp((TanqueJugador) a, (PowerUp) b));
         registrarRegla(Bala.class, Bala.class, (a, b) -> colisionBalaConBala((Bala) a, (Bala) b));
-        registrarRegla(Tanque.class, Tanque.class, (a, b) -> colisionTanqueConTanque((Tanque) a, (Tanque) b));
-        registrarRegla(Tanque.class, Bloque.class, (a, b) -> colisionTanqueConBloque((Tanque) a, (Bloque) b));
+        registrarRegla(TanqueJugador.class, TanqueJugador.class, (a, b) -> colisionTanqueConTanque((Tanque) a, (Tanque) b));
+        registrarRegla(TanqueJugador.class, TanqueEnemigo.class, (a, b) -> colisionTanqueConTanque((Tanque) a, (Tanque) b));
+        registrarRegla(TanqueEnemigo.class, TanqueEnemigo.class, (a, b) -> colisionTanqueConTanque((Tanque) a, (Tanque) b));
+        registrarRegla(TanqueJugador.class, Bloque.class, (a, b) -> colisionTanqueConBloque((Tanque) a, (Bloque) b));
+        registrarRegla(TanqueEnemigo.class, Bloque.class, (a, b) -> colisionTanqueConBloque((Tanque) a, (Bloque) b));
         registrarRegla(Bala.class, Bloque.class, (a, b) -> colisionBalaConBloque((Bala) a, (Bloque) b));
     }
 
@@ -71,13 +74,13 @@ public class ColisionHandler {
     }
 
     private void colisionTanqueConTanque(Tanque a, Tanque b) {
-        a.revertirMovimiento();
-        b.revertirMovimiento();
+        a.revertirMovimiento(a.getUltimaPosicion());
+        b.revertirMovimiento(b.getUltimaPosicion());
     }
 
     private void colisionTanqueConBloque(Tanque tanque, Bloque bloque) {
         if (!bloque.permitePaso()) {
-            tanque.revertirMovimiento();
+            tanque.revertirMovimiento(tanque.getUltimaPosicion());
         }
     }
 

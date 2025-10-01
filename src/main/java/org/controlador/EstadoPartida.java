@@ -11,26 +11,58 @@ import org.vista.cargaDePartida.RegistroEntidades;
 
 public class EstadoPartida implements EstadoJuego {
 
-    private final Juego juego;
+    private static final int CANTIDAD_NIVELES = 3;
+    private Juego juego = null;
     private final int numJugadores;
+    private int nivelActual;
+    private RegistroEntidades registro;
 
     public EstadoPartida(int numJugadores) {
         this.numJugadores = numJugadores;
-        this.juego = new Juego();
-        RegistroEntidades registro = new RegistroEntidades(numJugadores);
-        ParserXML.cargarNivel("nivel1", juego, registro);
+        this.registro = new RegistroEntidades(numJugadores);
+        this.nivelActual = 1;
+        iniciarNivel(nivelActual);
     }
 
     @Override
     public void actualizar(double deltaTime) {
         juego.actualizar(deltaTime);
 
-        if (juego.getEntesDeTipo(TanqueJugador.class).isEmpty() ||
-                juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty()) {
-
-            boolean victoria = juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty();
-            EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, victoria);
+        if (nivelTerminado()) {
+            cambiarNivel();
         }
+        if (derrota()) {
+            partidaPerdida();
+        }
+    }
+
+    private void iniciarNivel(int nivelActual) {
+        this.juego = new Juego();
+        ParserXML.cargarNivel("nivel" + nivelActual, juego, registro);
+    }
+
+    private void cambiarNivel() {
+        if (nivelActual >= CANTIDAD_NIVELES) {
+            partidaGanada();
+            return;
+        }
+        nivelActual++;
+        iniciarNivel(nivelActual);
+    }
+
+    private boolean nivelTerminado() {
+        return juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty();
+    }
+    private boolean derrota() {
+        return juego.getEntesDeTipo(TanqueJugador.class).isEmpty();
+    }
+
+    private void partidaGanada() {
+        EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, true);
+    }
+
+    private void partidaPerdida() {
+        EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, false);
     }
 
     @Override

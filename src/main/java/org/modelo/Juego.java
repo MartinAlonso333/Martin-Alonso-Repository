@@ -60,9 +60,6 @@ public class Juego {
     }
 
     public List<Ente> getEntes() {
-        for (Ente e : entes) {
-            System.out.printf("Agrego ente: "+ e);
-        }
         return new ArrayList<>(entes);
     }
 

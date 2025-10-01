@@ -2,7 +2,10 @@ package org.vista.pantallas;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import org.vista.EnteVista;
 import org.vista.JuegoVista;
 import org.modelo.Juego;
@@ -43,5 +46,6 @@ public class PantallaJuego {
     public void mostrar() {
         root.setVisible(true);
         root.toFront();
+        root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
     }
 }

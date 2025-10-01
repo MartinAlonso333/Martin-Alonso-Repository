@@ -2,12 +2,11 @@ package org.controlador;
 
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.TipoEvento;
-
 public class EstadoMenu implements EstadoJuego {
 
     @Override
     public void actualizar(double deltaTime) {
-        // Sin lógica de actualización
+        // No hay lógica de actualización
     }
 
     @Override

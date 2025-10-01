@@ -17,20 +17,24 @@ public class JuegoApp extends Application {
         Pane root = new Pane();
         root.setPrefSize(800, 600);
         Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(false);
 
-        // Pantallas
-        PantallaMenu pantallaMenu = new PantallaMenu(root);
-        PantallaJuego pantallaJuego = new PantallaJuego(root);
-        PantallaFinPartida pantallaFin = new PantallaFinPartida(root);
 
         // Gestor de estados
         GestorEstados gestor = new GestorEstados();
+        EstadoMenu estadoMenu = new EstadoMenu();
+        gestor.cambiarAEstado(estadoMenu);
         gestor.setGestorInput(new GestorInput(scene, gestor));
+        // Pantallas
+        PantallaMenu pantallaMenu = new PantallaMenu(root, estadoMenu);
+        PantallaJuego pantallaJuego = new PantallaJuego(root);
+        PantallaFinPartida pantallaFin = new PantallaFinPartida(root);
 
         // Suscripción a eventos
         EventoManager em = EventoManager.getInstancia();
 
-        em.registrar(TipoEvento.MOSTRAR_MENU, o -> pantallaMenu.mostrar());
+        em.registrar(TipoEvento.MOSTRAR_MENU, o -> pantallaMenu.mostrar());gestor.cambiarAEstado(estadoMenu);
         em.registrar(TipoEvento.MOSTRAR_PARTIDA, o -> {
             int numJugadores = o != null ? (int) o : 1;
             EstadoPartida partida = new EstadoPartida(numJugadores);
@@ -38,7 +42,10 @@ public class JuegoApp extends Application {
             pantallaJuego.setJuego(partida.getJuego());
             pantallaJuego.mostrar();
         });
-        em.registrar(TipoEvento.MOSTRAR_FIN_PARTIDA, o -> pantallaFin.mostrar((Boolean) o));
+        em.registrar(TipoEvento.MOSTRAR_FIN_PARTIDA, o ->{
+            pantallaFin.mostrar((Boolean) o);
+            gestor.cambiarAEstado(new EstadoFinPartida((Boolean)o));
+        });
 
         // Mostrar menú inicial
         pantallaMenu.mostrar();

@@ -1,6 +1,6 @@
 package org.controlador;
-
 import org.modelo.input.GestorInput;
+
 
 public class GestorEstados {
 
@@ -26,5 +26,10 @@ public class GestorEstados {
 
     public EstadoJuego getEstadoActual() {
         return estadoActual;
+    }
+
+    public void mostrarPartida(int numJugadores) {
+        EstadoPartida partida = new EstadoPartida(numJugadores);
+        cambiarAEstado(partida);
     }
 }

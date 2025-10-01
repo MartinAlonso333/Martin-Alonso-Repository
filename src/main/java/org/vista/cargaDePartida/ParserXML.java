@@ -6,12 +6,13 @@ import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.util.Objects;
 
 public class ParserXML {
 
     public static void cargarNivel(String nombreArchivo, Juego juego, RegistroEntidades registro) {
         try {
-            File file = new File(ParserXML.class.getResource("/levels/GeneratedLevels/" + nombreArchivo + ".xml").toURI());
+            File file = new File(Objects.requireNonNull(ParserXML.class.getResource("/levels/GeneratedLevels/" + nombreArchivo + ".xml")).toURI());
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
             Element root = doc.getDocumentElement();
 

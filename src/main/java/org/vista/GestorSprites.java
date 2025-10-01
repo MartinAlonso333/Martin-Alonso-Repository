@@ -123,12 +123,12 @@ public class GestorSprites {
 
         for (Direccion dir : Direccion.values()) {
             List<Image> frames = new ArrayList<>();
-            if (config.frames > 1) {
-                for (int i = 0; i < config.frames; i++) {
-                    frames.add(obtenerSprite(config.nombreBase + i + ".png"));
+            if (config.frames() > 1) {
+                for (int i = 0; i < config.frames(); i++) {
+                    frames.add(obtenerSprite(config.nombreBase() + i + ".png"));
                 }
             } else {
-                frames.add(obtenerSprite(config.nombreBase + ".png"));
+                frames.add(obtenerSprite(config.nombreBase() + ".png"));
             }
             animaciones.put(dir, frames);
         }
@@ -140,9 +140,9 @@ public class GestorSprites {
         if (clave.startsWith("player")) clave = "player";
         SpriteConfig config = configs.get(clave);
 
-        String nombreArchivo = (config.frames > 1)
-                ? config.nombreBase + "0.png"
-                : config.nombreBase + ".png";
+        String nombreArchivo = (config.frames() > 1)
+                ? config.nombreBase() + "0.png"
+                : config.nombreBase() + ".png";
 
         Image img = obtenerSprite(nombreArchivo);
         if (img != null) {

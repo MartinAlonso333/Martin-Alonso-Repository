@@ -16,14 +16,6 @@ public class Coordenada {
         this.celdaY = (int)(y / TAM_CELDA);
     }
 
-    // Constructor por celdas
-    public Coordenada(int celdaX, int celdaY) {
-        this.celdaX = celdaX;
-        this.celdaY = celdaY;
-        this.pixelX = celdaX * TAM_CELDA;
-        this.pixelY = celdaY * TAM_CELDA;
-    }
-
     // Getters
     public double getPixelX() { return pixelX; }
     public double getPixelY() { return pixelY; }

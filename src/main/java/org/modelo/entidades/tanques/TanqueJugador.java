@@ -40,17 +40,7 @@ public class TanqueJugador extends Tanque {
 
     @Override
     public void actualizar() {
-        // lógica de actualización específica del jugador (powerups, efectos, etc.)
     }
-
-    public int getIdJugador() {
-        return idJugador;
-    }
-
-    public void setIdJugador(int idJugador) {
-        this.idJugador = idJugador;
-    }
-
 
     @Override
     public void recibirDanio(int cantidad) {

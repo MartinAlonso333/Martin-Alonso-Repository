@@ -52,8 +52,8 @@ public class RegistroEntidades {
                 Direccion.ABAJO,
                 1,
                 new Coordenada(
-                        Integer.parseInt(elem.getAttribute("x")),
-                        Integer.parseInt(elem.getAttribute("y"))
+                        Double.parseDouble(elem.getAttribute("x")),
+                        Double.parseDouble(elem.getAttribute("y"))
                 ),
                 new Dimensiones(6, 6),
                 3,
@@ -65,8 +65,8 @@ public class RegistroEntidades {
         registro.put(clave, elem -> new Bloque(
                 tipo,
                 new Coordenada(
-                        Integer.parseInt(elem.getAttribute("x")),
-                        Integer.parseInt(elem.getAttribute("y"))
+                        Double.parseDouble(elem.getAttribute("x")),
+                        Double.parseDouble(elem.getAttribute("y"))
                 ),
                 new Dimensiones(20, 20) // después GestorSprites da la real
         ));
@@ -75,8 +75,8 @@ public class RegistroEntidades {
     private void registrarTanqueEnemigo(String clave, TipoTanque tipo) {
         registro.put(clave, elem -> new TanqueEnemigo(
                 new Coordenada(
-                        Integer.parseInt(elem.getAttribute("x")),
-                        Integer.parseInt(elem.getAttribute("y"))
+                        Double.parseDouble(elem.getAttribute("x")),
+                        Double.parseDouble(elem.getAttribute("y"))
                 ),
                 new Dimensiones(20, 20),
                 Direccion.ABAJO,
@@ -87,8 +87,8 @@ public class RegistroEntidades {
     private void registrarPowerUp(String clave, TipoPowerUp tipo) {
         registro.put(clave, elem -> new PowerUp(
                 new Coordenada(
-                        Integer.parseInt(elem.getAttribute("x")),
-                        Integer.parseInt(elem.getAttribute("y"))
+                        Double.parseDouble(elem.getAttribute("x")),
+                        Double.parseDouble(elem.getAttribute("y"))
                 )
                 , new Dimensiones(20, 20),
                 tipo
@@ -105,8 +105,8 @@ public class RegistroEntidades {
 
             return new TanqueJugador(
                     new Coordenada(
-                            Integer.parseInt(elem.getAttribute("x")),
-                            Integer.parseInt(elem.getAttribute("y"))
+                            Double.parseDouble(elem.getAttribute("x")),
+                            Double.parseDouble(elem.getAttribute("y"))
                     ),
                     new Dimensiones(20, 20),
                     Direccion.ARRIBA,

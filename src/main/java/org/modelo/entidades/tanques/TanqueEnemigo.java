@@ -4,6 +4,7 @@ import org.modelo.entidades.TipoEnte;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
+
 public class TanqueEnemigo extends Tanque {
 
     private long tiempoConducta;
@@ -33,17 +34,24 @@ public class TanqueEnemigo extends Tanque {
     public void actualizar(double deltaTime) {
         long ahora = System.currentTimeMillis();
 
-        // Cambiar dirección cada tiempo aleatorio
         if (ahora - inicioConducta >= tiempoConducta) {
-            mover(sortearDireccion());
+            Direccion nueva = sortearDireccion();
+            while (nueva == getDireccion()) {
+                nueva = sortearDireccion();
+            }
+            mover(nueva);
             tiempoConducta = sortearTiempoConducta();
             inicioConducta = ahora;
         }
-
-        // Cambiar dirección si está atascado
         if (getPosicion().equals(ultimaPosicionChequear)) {
             if (ahora - ultimoTiempoQuieto >= 2000) {
-                mover(sortearDireccion());
+                Direccion nueva = sortearDireccion();
+                while (nueva == getDireccion()) {
+                    nueva = sortearDireccion();
+                }
+                mover(nueva);
+                ultimaPosicionChequear = new Coordenada(getPosicion().getPixelX(), getPosicion().getPixelY());
+                ultimoTiempoQuieto = ahora;
             }
         } else {
             ultimaPosicionChequear = new Coordenada(getPosicion().getPixelX(), getPosicion().getPixelY());

@@ -49,6 +49,11 @@ public abstract class Tanque extends Ente {
     public void detenerMovimiento() { estaMoviendo = false; }
 
     @Override
+    public boolean estaMoviendo() {
+        return estaMoviendo;
+    }
+
+    @Override
     public void actualizar(double deltaTime) {
         if (!estaMoviendo) return;
 

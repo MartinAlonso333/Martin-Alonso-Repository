@@ -13,7 +13,9 @@ public abstract class Ente {
         this.posicion = posicion;
         this.dimensiones = dimensiones;
     }
-
+    public boolean estaMoviendo() {
+        return false;
+    }
     public Coordenada getPosicion() { return posicion; }
     public void setPosicion(Coordenada nuevaPos) { this.posicion = nuevaPos; }
     public Dimensiones getDimensiones() { return dimensiones; }

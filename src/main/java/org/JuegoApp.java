@@ -13,6 +13,7 @@ import org.vista.JuegoVista;
 import org.vista.pantallas.PantallaFinPartida;
 import org.vista.pantallas.PantallaJuego;
 import org.vista.pantallas.PantallaMenu;
+import org.vista.sonidos.GestorSonidos;
 
 public class JuegoApp extends Application {
 
@@ -38,6 +39,8 @@ public class JuegoApp extends Application {
         PantallaJuego pantallaJuego = new PantallaJuego(stage, root);
         PantallaFinPartida pantallaFin = new PantallaFinPartida(stage, root);
 
+        GestorSonidos gestorSonidos = new GestorSonidos();
+
         // Suscripción a eventos
         EventoManager em = EventoManager.getInstancia();
 
@@ -59,15 +62,12 @@ public class JuegoApp extends Application {
             juegoActivo = true;
         });
 
-
         em.registrar(TipoEvento.MOSTRAR_FIN_PARTIDA, o -> {
             juegoActivo = false;
             pantallaJuego.ocultar();
             gestor.cambiarAEstado(new EstadoFinPartida((Boolean) o));
             pantallaFin.mostrar((Boolean) o);
-
         });
-
 
         em.registrar(TipoEvento.NIVEL_CARGADO, o -> {
             Juego juegoNuevo = (Juego) o;
@@ -75,6 +75,7 @@ public class JuegoApp extends Application {
             pantallaJuego.setJuego(juegoVistaNuevo);
             pantallaJuego.mostrar();
         });
+
         // Mostrar menú inicial
         pantallaMenu.mostrar();
 
@@ -98,7 +99,6 @@ public class JuegoApp extends Application {
                 }
             }
         }.start();
-
     }
 
     public static void main(String[] args) {

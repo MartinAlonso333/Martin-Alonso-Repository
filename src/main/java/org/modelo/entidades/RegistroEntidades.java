@@ -102,11 +102,21 @@ public class RegistroEntidades {
         double x = Double.parseDouble(elem.getAttribute("x"));
         double y = Double.parseDouble(elem.getAttribute("y"));
 
+        TipoTanque tipo;
+        if (numJugador == 1) {
+            tipo = TipoTanque.JUGADOR1;
+        } else if (numJugador == 2) {
+            tipo = TipoTanque.JUGADOR2;
+        } else {
+            tipo = TipoTanque.JUGADOR1;
+        }
+
         return new TanqueJugador(
                 new Coordenada(x, y),
                 new Dimensiones(20, 20),
                 Direccion.ARRIBA,
-                numJugador
+                numJugador,
+                tipo
         );
     }
 

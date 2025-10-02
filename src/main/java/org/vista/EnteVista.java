@@ -38,21 +38,22 @@ public class EnteVista {
             tiempoAcumulado = 0;
         }
 
-        // Animación solo si tiene varios frames
-        List<Image> frames = animaciones.getOrDefault(
-                (nuevaDir != null) ? direccionActual : Direccion.ABAJO,
-                List.of()
-        );
-
-        if (!frames.isEmpty() && frames.size() > 1) {
-            tiempoAcumulado += deltaTime;
-            if (tiempoAcumulado >= 0.2) { // cambiar frame cada 0.2s
-                frameActual = (frameActual + 1) % frames.size();
-                tiempoAcumulado = 0;
+        // Animación solo si es un tipo de tanque
+        if (ente.getTipoEnte() == TipoEnte.ENEMIGO || ente.getTipoEnte() == TipoEnte.JUGADOR) {
+            if (ente.estaMoviendo()) {
+                List<Image> frames = animaciones.getOrDefault(direccionActual, List.of());
+                if (!frames.isEmpty() && frames.size() > 1) {
+                    tiempoAcumulado += deltaTime;
+                    if (tiempoAcumulado >= 0.2) {
+                        frameActual = (frameActual + 1) % frames.size();
+                        tiempoAcumulado = 0;
+                    }
+                }
+            } else {
+                frameActual = 0;
             }
         }
     }
-
     /**
      * Obtiene el frame actual, rotado si corresponde.
      */

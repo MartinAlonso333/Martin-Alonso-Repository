@@ -4,13 +4,14 @@ import org.modelo.entidades.TipoEnte;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
+
 public class TanqueJugador extends Tanque {
     private boolean invulnerable;
     private boolean disparoMejorado;
     private final int idJugador;
 
-    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, int idJugador) {
-        super(posicion, dimensiones, TipoTanque.JUGADOR, direccionInicial);
+    public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, int idJugador, TipoTanque tipoTanque) {
+        super(posicion, dimensiones, tipoTanque, direccionInicial);
         this.idJugador = idJugador;
     }
 

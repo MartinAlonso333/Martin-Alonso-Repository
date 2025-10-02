@@ -128,7 +128,7 @@ public class Juego {
                 removerEnte(bloque);
             }
         }
-
+        /*
         // Spawn enemigos
         if (System.currentTimeMillis() - ultimoSpawnEnemigo > INTERVALO_SPAWN_ENEMIGO
                 && enemigosSpawneados < maxEnemigosTotales) {
@@ -139,7 +139,7 @@ public class Juego {
             }
             ultimoSpawnEnemigo = System.currentTimeMillis();
         }
-
+        */
         // Actualizar balas
         for (Bala bala : getEntesDeTipo(Bala.class)) {
             Coordenada antes = new Coordenada(bala.getPosicion().getPixelX(), bala.getPosicion().getPixelY());
@@ -162,10 +162,11 @@ public class Juego {
     }
 
     // ------------------ SPAWN ------------------
+    /*
     private TanqueEnemigo crearEnemigoAleatorio() {
         // Tomar solo los tipos que no sean JUGADOR
         TipoTanque[] tiposEnemigos = Arrays.stream(TipoTanque.values())
-                .filter(t -> t != TipoTanque.JUGADOR)
+                .filter(t -> t != TipoTanque.JUGADOR1 || t != TipoTanque.JUGADOR2)
                 .toArray(TipoTanque[]::new);
 
         TipoTanque tipo = tiposEnemigos[(int) (Math.random() * tiposEnemigos.length)];
@@ -183,7 +184,7 @@ public class Juego {
         }
         return null;
     }
-
+*/
 
     private PowerUp spawnPowerUpAleatorio() {
         if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).size() < 1) { // 20% de probabilidad y max 1 powerup en mapa

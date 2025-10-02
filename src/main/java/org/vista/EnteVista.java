@@ -2,6 +2,7 @@ package org.vista;
 
 import javafx.scene.image.Image;
 import org.modelo.entidades.Ente;
+import org.modelo.entidades.TipoEnte;
 import org.modelo.entidades.tanques.Tanque;
 import org.modelo.utilidades.Direccion;
 

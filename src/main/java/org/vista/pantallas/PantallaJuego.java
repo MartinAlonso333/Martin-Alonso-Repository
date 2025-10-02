@@ -5,24 +5,25 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.modelo.entidades.tanques.Bala;
+import javafx.stage.Stage;
+import org.modelo.utilidades.Direccion;
 import org.vista.EnteVista;
 import org.vista.JuegoVista;
 
-
-public class PantallaJuego {
+public class PantallaJuego extends Pantalla {
 
     private final Pane root;
     private JuegoVista juegoVista;
 
-    public PantallaJuego(Pane root) {
+    public PantallaJuego(Stage stage, Pane root) {
+        super(stage);
         this.root = root;
-
     }
 
     public void setJuego(JuegoVista juegoVista) {
         this.juegoVista = juegoVista;
     }
+
     public JuegoVista getJuegoVista() {
         return juegoVista;
     }
@@ -41,7 +42,6 @@ public class PantallaJuego {
                 iv.setFitWidth(ev.getAncho());
                 iv.setFitHeight(ev.getAlto());
 
-                // ROTACIÓN según dirección
                 if (ev.getEnte().getDireccion() != null) {
                     double angulo = switch (ev.getDireccion()) {
                         case ARRIBA -> 0;
@@ -57,9 +57,16 @@ public class PantallaJuego {
         }
     }
 
+    @Override
     public void mostrar() {
         root.setVisible(true);
         root.toFront();
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
     }
+
+    public void ocultar() {
+        root.getChildren().clear();
+        root.setVisible(false);
+    }
+
 }

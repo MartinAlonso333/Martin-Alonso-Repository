@@ -62,7 +62,7 @@ public class ColisionHandler {
         tanque.recibirDanio(bala.getDanio());
         bala.setActivo(false);
 
-        if (tanque instanceof TanqueEnemigo enemigo && enemigo.getTipoTanque() == TipoTanque.BLINDADO) {
+        if (tanque.getTipoTanque() == TipoTanque.BLINDADO) {
             EventoManager.getInstancia().notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO);
         }
     }

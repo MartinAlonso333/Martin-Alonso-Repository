@@ -16,6 +16,8 @@ import org.vista.pantallas.PantallaMenu;
 
 public class JuegoApp extends Application {
 
+    private boolean juegoActivo = false;
+
     @Override
     public void start(Stage stage) {
         Pane root = new Pane();
@@ -23,6 +25,7 @@ public class JuegoApp extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
+        stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/sprites/logo.png")));
 
         // Gestor de estados
         GestorEstados gestor = new GestorEstados();
@@ -31,31 +34,40 @@ public class JuegoApp extends Application {
         gestor.setGestorInput(new GestorInput(scene, gestor));
 
         // Pantallas
-        PantallaMenu pantallaMenu = new PantallaMenu(root, estadoMenu);
-        PantallaJuego pantallaJuego = new PantallaJuego(root);
-        PantallaFinPartida pantallaFin = new PantallaFinPartida(root);
+        PantallaMenu pantallaMenu = new PantallaMenu(stage, root, estadoMenu);
+        PantallaJuego pantallaJuego = new PantallaJuego(stage, root);
+        PantallaFinPartida pantallaFin = new PantallaFinPartida(stage, root);
 
         // Suscripción a eventos
         EventoManager em = EventoManager.getInstancia();
 
-        em.registrar(TipoEvento.MOSTRAR_MENU, o -> pantallaMenu.mostrar());
+        em.registrar(TipoEvento.MOSTRAR_MENU, o -> {
+            gestor.cambiarAEstado(estadoMenu);
+            pantallaMenu.mostrar();
+        });
 
         em.registrar(TipoEvento.MOSTRAR_PARTIDA, o -> {
             int numJugadores = o != null ? (int) o : 1;
             EstadoPartida partida = new EstadoPartida(numJugadores);
             gestor.cambiarAEstado(partida);
 
-            // Creamos el JuegoVista a partir del juego de EstadoPartida
             Juego juego = partida.getJuego();
             JuegoVista juegoVista = new JuegoVista(juego);
             pantallaJuego.setJuego(juegoVista);
             pantallaJuego.mostrar();
+
+            juegoActivo = true;
         });
 
+
         em.registrar(TipoEvento.MOSTRAR_FIN_PARTIDA, o -> {
+            juegoActivo = false;
+            pantallaJuego.ocultar();
             gestor.cambiarAEstado(new EstadoFinPartida((Boolean) o));
             pantallaFin.mostrar((Boolean) o);
+
         });
+
 
         em.registrar(TipoEvento.NIVEL_CARGADO, o -> {
             Juego juegoNuevo = (Juego) o;
@@ -80,7 +92,7 @@ public class JuegoApp extends Application {
                 gestor.actualizar(deltaTime);
 
                 JuegoVista juegoVista = pantallaJuego.getJuegoVista();
-                if (juegoVista != null) {
+                if (juegoVista != null && juegoActivo) {
                     juegoVista.actualizar(deltaTime);
                     pantallaJuego.actualizar(deltaTime);
                 }

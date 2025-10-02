@@ -5,6 +5,7 @@ import org.modelo.entidades.*;
 import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.powerups.PowerUp;
+import org.modelo.entidades.powerups.TipoPowerUp;
 import org.modelo.entidades.tanques.*;
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.TipoEvento;
@@ -113,8 +114,10 @@ public class Juego {
                 Coordenada posBloque = new Coordenada(enemigo.getPosicion().getPixelX(), enemigo.getPosicion().getPixelY());
                 Dimensiones dimBloque = new Dimensiones(20, 20);
                 Bloque bloqueNuevo = new Bloque(TipoBloque.TANQUE_DESTRUIDO, posBloque,dimBloque );
-                agregarEnte(bloqueNuevo);
                 removerEnte(enemigo);
+                agregarEnte(bloqueNuevo);
+                PowerUp nuevo = spawnPowerUpAleatorio();
+                if (nuevo != null) agregarEnte(nuevo);
                 em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
             }
         }
@@ -127,7 +130,6 @@ public class Juego {
         }
 
         // Spawn enemigos
-        /*
         if (System.currentTimeMillis() - ultimoSpawnEnemigo > INTERVALO_SPAWN_ENEMIGO
                 && enemigosSpawneados < maxEnemigosTotales) {
             TanqueEnemigo nuevo = crearEnemigoAleatorio();
@@ -138,7 +140,6 @@ public class Juego {
             ultimoSpawnEnemigo = System.currentTimeMillis();
         }
 
-         */
         // Actualizar balas
         for (Bala bala : getEntesDeTipo(Bala.class)) {
             Coordenada antes = new Coordenada(bala.getPosicion().getPixelX(), bala.getPosicion().getPixelY());
@@ -160,9 +161,14 @@ public class Juego {
         for (Bala b : nuevasBalas) agregarEnte(b);
     }
 
-    // ------------------ ENEMIGOS ------------------
+    // ------------------ SPAWN ------------------
     private TanqueEnemigo crearEnemigoAleatorio() {
-        TipoTanque tipo = TipoTanque.values()[(int) (Math.random() * TipoTanque.values().length)];
+        // Tomar solo los tipos que no sean JUGADOR
+        TipoTanque[] tiposEnemigos = Arrays.stream(TipoTanque.values())
+                .filter(t -> t != TipoTanque.JUGADOR)
+                .toArray(TipoTanque[]::new);
+
+        TipoTanque tipo = tiposEnemigos[(int) (Math.random() * tiposEnemigos.length)];
         Direccion dir = Direccion.values()[(int) (Math.random() * Direccion.values().length)];
 
         int intentos = 0;
@@ -174,6 +180,25 @@ public class Juego {
             TanqueEnemigo nuevo = new TanqueEnemigo(pos, new Dimensiones(20, 20), dir, tipo);
             if (esPosicionValida(nuevo)) return nuevo;
             intentos++;
+        }
+        return null;
+    }
+
+
+    private PowerUp spawnPowerUpAleatorio() {
+        if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).size() < 1) { // 20% de probabilidad y max 1 powerup en mapa
+            TipoPowerUp tipo = TipoPowerUp.values()[(int) (Math.random() * TipoPowerUp.values().length)];
+
+            int intentos = 0;
+            while (intentos < 50) {
+                PowerUp pu = new PowerUp(new Coordenada(
+                        (int) (Math.random() * (ANCHO_MAPA - 20)),
+                        (int) (Math.random() * (ALTO_MAPA - 20))
+                ), new Dimensiones(20, 20),
+                        tipo);
+                if (esPosicionValida(pu)) return pu;
+                intentos++;
+            }
         }
         return null;
     }

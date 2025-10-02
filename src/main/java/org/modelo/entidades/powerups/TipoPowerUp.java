@@ -1,6 +1,8 @@
 package org.modelo.entidades.powerups;
 
 import org.modelo.entidades.tanques.TanqueJugador;
+import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.TipoEvento;
 
 public enum TipoPowerUp {
 
@@ -20,7 +22,9 @@ public enum TipoPowerUp {
 
     GRANADA(0) { // efecto global, no se maneja en GestorPowerUp
         @Override
-        public void aplicar(TanqueJugador jugador) { /* no hace nada */ }
+        public void aplicar(TanqueJugador jugador) {
+            EventoManager.getInstancia().notificar(TipoEvento.GRANADA_RECOGIDA);
+        }
         @Override
         public void remover(TanqueJugador jugador) { /* no hace nada */ }
     };

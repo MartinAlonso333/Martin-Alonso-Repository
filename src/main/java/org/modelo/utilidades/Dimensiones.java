@@ -1,8 +1,8 @@
 package org.modelo.utilidades;
 
 public class Dimensiones {
-    public final int ancho;
-    public final int alto;
+    private final int ancho;
+    private final int alto;
 
     public Dimensiones(int ancho, int alto) {
         if (ancho <= 0 || alto <= 0) {
@@ -18,9 +18,5 @@ public class Dimensiones {
 
     public int getAlto() {
         return alto;
-    }
-
-    public int getArea() {
-        return ancho * alto;
     }
 }

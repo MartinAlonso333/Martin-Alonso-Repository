@@ -9,6 +9,8 @@ public abstract class Ente {
     protected Dimensiones dimensiones;
     private boolean activo = true;
 
+    private static final int MARGEN = 1;// píxeles a reducir en cada lado
+
     public Ente(Coordenada posicion, Dimensiones dimensiones) {
         this.posicion = posicion;
         this.dimensiones = dimensiones;
@@ -23,11 +25,13 @@ public abstract class Ente {
     public void setActivo(boolean activo) { this.activo = activo; }
 
     public boolean intersecta(Ente otro) {
-        return this.posicion.getPixelX() < otro.posicion.getPixelX() + otro.dimensiones.getAncho() &&
-                this.posicion.getPixelX() + this.dimensiones.getAncho() > otro.posicion.getPixelX() &&
-                this.posicion.getPixelY() < otro.posicion.getPixelY() + otro.dimensiones.getAlto() &&
-                this.posicion.getPixelY() + this.dimensiones.getAlto() > otro.posicion.getPixelY();
+        return this.posicion.getPixelX() + MARGEN < otro.posicion.getPixelX() + otro.dimensiones.getAncho() - MARGEN &&
+                this.posicion.getPixelX() + this.dimensiones.getAncho() - MARGEN > otro.posicion.getPixelX() + MARGEN &&
+                this.posicion.getPixelY() + MARGEN < otro.posicion.getPixelY() + otro.dimensiones.getAlto() - MARGEN &&
+                this.posicion.getPixelY() + this.dimensiones.getAlto() - MARGEN > otro.posicion.getPixelY() + MARGEN;
     }
+
+
 
     public void revertirMovimiento(Coordenada ultimaPosicion) {
         if (ultimaPosicion != null)

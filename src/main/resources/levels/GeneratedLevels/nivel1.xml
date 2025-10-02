@@ -327,6 +327,9 @@
             <staticObject type="brickBlock" x="430" y="530"/>
             <staticObject type="brickBlock" x="450" y="530"/>
             <staticObject type="steelBlock" x="550" y="530"/>
+            <staticObject type="brickBlock" x="730" y="530"/>
+            <staticObject type="brickBlock" x="750" y="530"/>
+            <staticObject type="brickBlock" x="770" y="530"/>
             <staticObject type="steelBlock" x="790" y="530"/>
             <staticObject type="steelBlock" x="10" y="550"/>
             <staticObject type="brickBlock" x="30" y="550"/>
@@ -353,6 +356,9 @@
             <staticObject type="brickBlock" x="450" y="550"/>
             <staticObject type="steelBlock" x="550" y="550"/>
             <staticObject type="brickBlock" x="630" y="550"/>
+            <staticObject type="brickBlock" x="730" y="550"/>
+            <staticObject type="baseBlock" x="750" y="550"/>
+            <staticObject type="brickBlock" x="770" y="550"/>
             <staticObject type="steelBlock" x="790" y="550"/>
             <staticObject type="steelBlock" x="10" y="570"/>
             <staticObject type="brickBlock" x="30" y="570"/>
@@ -378,7 +384,9 @@
             <staticObject type="brickBlock" x="430" y="570"/>
             <staticObject type="brickBlock" x="450" y="570"/>
             <staticObject type="brickBlock" x="630" y="570"/>
-            <staticObject type="baseBlock" x="770" y="570"/>
+            <staticObject type="brickBlock" x="730" y="570"/>
+            <staticObject type="brickBlock" x="750" y="570"/>
+            <staticObject type="brickBlock" x="770" y="570"/>
             <staticObject type="steelBlock" x="790" y="570"/>
             <staticObject type="steelBlock" x="10" y="590"/>
             <staticObject type="steelBlock" x="30" y="590"/>

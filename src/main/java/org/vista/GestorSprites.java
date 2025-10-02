@@ -108,7 +108,7 @@ public class GestorSprites {
         String clave = fn.apply(ente);
 
         if (!configs.containsKey(clave)) {
-            throw new IllegalArgumentException("❌ No hay sprite configurado para la clave generada: " + clave +
+            throw new IllegalArgumentException("No hay sprite configurado para la clave generada: " + clave +
                     " (ente: " + ente.getClass() + ")");
         }
         return clave;
@@ -133,23 +133,6 @@ public class GestorSprites {
         }
         return animaciones;
     }
-
-
-    public static Dimensiones getDimensionesPara(Ente ente) {
-        String clave = obtenerClave(ente);
-        SpriteConfig config = configs.get(clave);
-
-        String nombreArchivo = (config.frames() > 1)
-                ? config.nombreBase() + "0.png"
-                : config.nombreBase() + ".png";
-
-        Image img = obtenerSprite(nombreArchivo);
-        if (img != null) {
-            return new Dimensiones((int) img.getWidth(), (int) img.getHeight());
-        }
-        return new Dimensiones(20, 20);
-    }
-
 
     private static Image obtenerSprite(String nombreArchivo) {
         if (cache.containsKey(nombreArchivo)) return cache.get(nombreArchivo);

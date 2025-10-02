@@ -1,6 +1,5 @@
 package org.modelo;
 
-import org.controlador.EstadoPartida;
 import org.modelo.entidades.*;
 import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.bloques.TipoBloque;

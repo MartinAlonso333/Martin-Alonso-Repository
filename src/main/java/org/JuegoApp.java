@@ -95,7 +95,7 @@ public class JuegoApp extends Application {
                 JuegoVista juegoVista = pantallaJuego.getJuegoVista();
                 if (juegoVista != null && juegoActivo) {
                     juegoVista.actualizar(deltaTime);
-                    pantallaJuego.actualizar(deltaTime);
+                    pantallaJuego.actualizar();
                 }
             }
         }.start();

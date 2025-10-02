@@ -61,7 +61,7 @@ public class EstadoPartida implements EstadoJuego {
         EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, true);
     }
 
-    public static void partidaPerdida() {
+    private void partidaPerdida() {
         EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, false);
     }
 

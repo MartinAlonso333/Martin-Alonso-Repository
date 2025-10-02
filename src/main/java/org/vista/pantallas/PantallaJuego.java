@@ -27,7 +27,7 @@ public class PantallaJuego extends Pantalla {
         return juegoVista;
     }
 
-    public void actualizar(double deltaTime) {
+    public void actualizar() {
         if (juegoVista == null) return;
 
         root.getChildren().clear();

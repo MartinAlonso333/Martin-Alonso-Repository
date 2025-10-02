@@ -1,7 +1,9 @@
 package org.modelo;
 
+import org.controlador.EstadoPartida;
 import org.modelo.entidades.*;
 import org.modelo.entidades.bloques.Bloque;
+import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.powerups.PowerUp;
 import org.modelo.entidades.tanques.*;
 import org.modelo.eventos.EventoManager;
@@ -26,7 +28,7 @@ public class Juego {
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
     private final EventoManager em = EventoManager.getInstancia();
 
-    private final int INTERVALO_SPAWN_ENEMIGO = 5000; // ms
+    private final int INTERVALO_SPAWN_ENEMIGO = 10000; // ms
     private long ultimoSpawnEnemigo = 0;
 
     private final int maxEnemigosTotales = 3;
@@ -73,7 +75,6 @@ public class Juego {
     public void dispararJugador(int indice) {
         List<TanqueJugador> jugadores = getEntesDeTipo(TanqueJugador.class);
         if (indice < 0 || indice >= jugadores.size()) return;
-
         Bala bala = jugadores.get(indice).disparar();
         if (bala != null) {
             agregarEnte(bala);
@@ -104,17 +105,29 @@ public class Juego {
             enemigo.actualizar(deltaTime);
             sistemaColision.actualizarPosicion(enemigo, antes);
             sistemaColision.chequearColisiones(enemigo);
-
             Bala b = enemigo.disparar();
-            if (b != null) nuevasBalas.add(b);
-
+            if (b != null) {
+                nuevasBalas.add(b);
+            }
             if (enemigo.estaDestruido()) {
+                Coordenada posBloque = new Coordenada(enemigo.getPosicion().getPixelX(), enemigo.getPosicion().getPixelY());
+                Dimensiones dimBloque = new Dimensiones(20, 20);
+                Bloque bloqueNuevo = new Bloque(TipoBloque.TANQUE_DESTRUIDO, posBloque,dimBloque );
+                agregarEnte(bloqueNuevo);
                 removerEnte(enemigo);
                 em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
             }
         }
 
+        //Actualizar bloques
+        for (Bloque bloque : getEntesDeTipo(Bloque.class)) {
+            if (bloque.estaDestruido()) {
+                removerEnte(bloque);
+            }
+        }
+
         // Spawn enemigos
+        /*
         if (System.currentTimeMillis() - ultimoSpawnEnemigo > INTERVALO_SPAWN_ENEMIGO
                 && enemigosSpawneados < maxEnemigosTotales) {
             TanqueEnemigo nuevo = crearEnemigoAleatorio();
@@ -125,13 +138,16 @@ public class Juego {
             ultimoSpawnEnemigo = System.currentTimeMillis();
         }
 
+         */
         // Actualizar balas
         for (Bala bala : getEntesDeTipo(Bala.class)) {
             Coordenada antes = new Coordenada(bala.getPosicion().getPixelX(), bala.getPosicion().getPixelY());
             bala.actualizar(deltaTime);
             sistemaColision.actualizarPosicion(bala, antes);
             sistemaColision.chequearColisiones(bala);
-            if (bala.estaDestruido()) removerEnte(bala);
+            if (bala.estaDestruido()) {
+                removerEnte(bala);
+            }
         }
 
         // Actualizar powerups

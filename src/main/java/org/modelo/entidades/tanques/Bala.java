@@ -10,14 +10,13 @@ public class Bala extends Ente {
     private final Direccion direccion;
     private int danio;
     private boolean activo;
-    private final int velocidad;
+    private final int velocidad=400;
     private final Tanque duenio;
 
-    public Bala(Direccion direccion, int danio, Coordenada posicion, Dimensiones dimensiones, int velocidad, Tanque duenio) {
+    public Bala(Direccion direccion, int danio, Coordenada posicion, Dimensiones dimensiones, Tanque duenio) {
         super(posicion, dimensiones);
         this.direccion = direccion;
         this.danio = danio;
-        this.velocidad = velocidad;
         this.activo = true;
         this.duenio = duenio;
     }

@@ -2,7 +2,7 @@ package org.modelo.entidades.tanques;
 
 public enum TipoTanque {
     JUGADOR(3, 1, 100.0, 2000),
-    BASICO(1, 1, 50.0, 2000),
+    BASICO(1, 1, 50.0, 3000),
     RAPIDO(1, 1, 150.0, 1000),
     POTENTE(3, 2, 50.0, 2000),
     BLINDADO(5, 1, 50.0, 2000);

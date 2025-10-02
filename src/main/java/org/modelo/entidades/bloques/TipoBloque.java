@@ -1,11 +1,11 @@
 package org.modelo.entidades.bloques;
 
 public enum TipoBloque {
-    LADRILLO(true, false, false, 3),
-    BASE(true, false, false, 1),
-    BOSQUE(false, true, true, 0),
-    AGUA(false, false, true, 0),
-    ACERO(false, false, false, 0),
+    LADRILLO(true, false, true, 3),
+    BASE(true, false, true, 1),
+    BOSQUE(false, true, false, 0),
+    AGUA(false, false, false, 0),
+    ACERO(false, false, true, 0),
     TANQUE_DESTRUIDO(false, false, false, 0 );
 
     private final boolean destructible;

@@ -5,8 +5,10 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.modelo.entidades.tanques.Bala;
 import org.vista.EnteVista;
 import org.vista.JuegoVista;
+
 
 public class PantallaJuego {
 
@@ -15,10 +17,14 @@ public class PantallaJuego {
 
     public PantallaJuego(Pane root) {
         this.root = root;
+
     }
 
     public void setJuego(JuegoVista juegoVista) {
         this.juegoVista = juegoVista;
+    }
+    public JuegoVista getJuegoVista() {
+        return juegoVista;
     }
 
     public void actualizar(double deltaTime) {

@@ -4,7 +4,6 @@ import org.modelo.entidades.TipoEnte;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
-
 public class TanqueEnemigo extends Tanque {
 
     private long tiempoConducta;
@@ -24,7 +23,8 @@ public class TanqueEnemigo extends Tanque {
     public Bala disparar() {
         if (puedeDisparar()) {
             registrarDisparo();
-            return new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(8, 8), 8, this);
+            Bala bala = new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(6, 6), this);
+            return bala;
         }
         return null;
     }

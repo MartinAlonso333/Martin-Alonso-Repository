@@ -22,6 +22,7 @@ public class EstadoPartida implements EstadoJuego {
         this.registro = new RegistroEntidades(numJugadores);
         this.nivelActual = 1;
         iniciarNivel(nivelActual);
+        EventoManager.getInstancia().registrar(TipoEvento.BASE_DESTRUIDA, (obj) -> partidaPerdida());
     }
 
     @Override
@@ -44,6 +45,8 @@ public class EstadoPartida implements EstadoJuego {
         }
         nivelActual++;
         iniciarNivel(nivelActual);
+
+        EventoManager.getInstancia().notificar(TipoEvento.NIVEL_CARGADO, juego);
     }
 
     private boolean nivelTerminado() {
@@ -58,7 +61,7 @@ public class EstadoPartida implements EstadoJuego {
         EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, true);
     }
 
-    private void partidaPerdida() {
+    public static void partidaPerdida() {
         EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, false);
     }
 

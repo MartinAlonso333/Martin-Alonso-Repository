@@ -4,7 +4,6 @@ import org.modelo.entidades.TipoEnte;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
-
 public class TanqueJugador extends Tanque {
     private boolean invulnerable;
     private boolean disparoMejorado;
@@ -20,7 +19,8 @@ public class TanqueJugador extends Tanque {
         if (puedeDisparar()) {
             registrarDisparo();
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();
-            return new Bala(getDireccion(), danioDisparo, getPuntoDeDisparo(), new Dimensiones(8, 8), 8, this);
+            Bala bala = new Bala(getDireccion(), danioDisparo, getPuntoDeDisparo(), new Dimensiones(6, 6),this);
+            return bala;
         }
         return null;
     }

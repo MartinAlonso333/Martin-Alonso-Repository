@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.TipoEvento;
-
 public class PantallaFinPartida {
 
     private final Pane root;
@@ -15,7 +14,7 @@ public class PantallaFinPartida {
     }
 
     public void mostrar(boolean victoria) {
-        root.getChildren().clear();
+        root.getChildren().clear();  // Limpia todo lo que haya antes
 
         Label lbl = new Label(victoria ? "¡Ganaste!" : "Perdiste");
         lbl.setLayoutX(350);
@@ -29,5 +28,10 @@ public class PantallaFinPartida {
         root.getChildren().addAll(lbl, btnMenu);
         root.setVisible(true);
         root.toFront();
+    }
+
+    public void ocultar() {
+        root.getChildren().clear();
+        root.setVisible(false);
     }
 }

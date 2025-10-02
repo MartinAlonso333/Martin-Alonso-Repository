@@ -22,7 +22,8 @@ public class ColisionHandler {
     public ColisionHandler() { registrarReglas(); }
 
     private void registrarReglas() {
-        registrarRegla(Bala.class, Tanque.class, (a, b) -> colisionBalaConTanque((Bala) a, (Tanque) b));
+        registrarRegla(Bala.class, TanqueJugador.class, (a, b) -> colisionBalaConTanque((Bala) a, (TanqueJugador) b));
+        registrarRegla(Bala.class, TanqueEnemigo.class, (a, b) -> colisionBalaConTanque((Bala) a, (TanqueEnemigo) b));
         registrarRegla(TanqueJugador.class, PowerUp.class, (a, b) -> colisionTanqueConPowerUp((TanqueJugador) a, (PowerUp) b));
         registrarRegla(Bala.class, Bala.class, (a, b) -> colisionBalaConBala((Bala) a, (Bala) b));
         registrarRegla(TanqueJugador.class, TanqueJugador.class, (a, b) -> colisionTanqueConTanque((Tanque) a, (Tanque) b));
@@ -49,6 +50,10 @@ public class ColisionHandler {
 
     // ------------------ FUNCIONES CONCRETAS ------------------
     private void colisionBalaConTanque(Bala bala, Tanque tanque) {
+        if(bala.getDuenio()==tanque){
+            return;
+        }
+
         if (bala.getDuenio().getTipoEnte() == TipoEnte.JUGADOR && tanque.getTipoEnte() == TipoEnte.JUGADOR) {
             tanque.aturdir(TIEMPOATURDIDO);
             bala.setActivo(false);
@@ -87,8 +92,9 @@ public class ColisionHandler {
     private void colisionBalaConBloque(Bala bala, Bloque bloque) {
         if (!bloque.balaimpacta()) return;
 
-        bala.setActivo(false);
         bloque.recibirDanio(bala.getDanio());
+        bala.setActivo(false);
+
 
         switch (bloque.getTipoBloque()) {
             case BASE -> EventoManager.getInstancia().notificar(TipoEvento.BASE_DESTRUIDA);

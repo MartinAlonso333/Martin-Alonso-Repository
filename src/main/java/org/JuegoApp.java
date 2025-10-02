@@ -53,10 +53,16 @@ public class JuegoApp extends Application {
         });
 
         em.registrar(TipoEvento.MOSTRAR_FIN_PARTIDA, o -> {
-            pantallaFin.mostrar((Boolean) o);
             gestor.cambiarAEstado(new EstadoFinPartida((Boolean) o));
+            pantallaFin.mostrar((Boolean) o);
         });
 
+        em.registrar(TipoEvento.NIVEL_CARGADO, o -> {
+            Juego juegoNuevo = (Juego) o;
+            JuegoVista juegoVistaNuevo = new JuegoVista(juegoNuevo);
+            pantallaJuego.setJuego(juegoVistaNuevo);
+            pantallaJuego.mostrar();
+        });
         // Mostrar menú inicial
         pantallaMenu.mostrar();
 
@@ -72,9 +78,15 @@ public class JuegoApp extends Application {
                 lastTime[0] = now;
 
                 gestor.actualizar(deltaTime);
-                pantallaJuego.actualizar(deltaTime);
+
+                JuegoVista juegoVista = pantallaJuego.getJuegoVista();
+                if (juegoVista != null) {
+                    juegoVista.actualizar(deltaTime);
+                    pantallaJuego.actualizar(deltaTime);
+                }
             }
         }.start();
+
     }
 
     public static void main(String[] args) {

@@ -34,12 +34,13 @@ public class RegistroEntidades {
         registrarBloque("baseBlock", TipoBloque.BASE);
         registrarBloque("forestBlock", TipoBloque.BOSQUE);
         registrarBloque("waterBlock", TipoBloque.AGUA);
+        registrarBloque("tankDestroyed", TipoBloque.AGUA);
 
         // ENEMIGOS
         registrarTanqueEnemigo("regularEnemy", TipoTanque.BASICO);
-        registrarTanqueEnemigo("enemyFast", TipoTanque.RAPIDO);
-        registrarTanqueEnemigo("enemyStrong", TipoTanque.POTENTE);
-        registrarTanqueEnemigo("enemyArmored", TipoTanque.BLINDADO);
+        registrarTanqueEnemigo("fastEnemy", TipoTanque.RAPIDO);
+        registrarTanqueEnemigo("powerfulEnemy", TipoTanque.POTENTE);
+        registrarTanqueEnemigo("heavyEnemy", TipoTanque.BLINDADO);
 
         // POWERUPS
         registrarPowerUp("helmetPowerUp", TipoPowerUp.CASCO);
@@ -55,7 +56,6 @@ public class RegistroEntidades {
                         Double.parseDouble(elem.getAttribute("y"))
                 ),
                 new Dimensiones(6, 6),
-                3,
                 null // el dueño se asigna al disparar
         ));
     }

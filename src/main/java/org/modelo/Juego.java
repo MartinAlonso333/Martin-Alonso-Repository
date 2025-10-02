@@ -31,8 +31,8 @@ public class Juego {
 
     private final int INTERVALO_SPAWN_ENEMIGO = 10000; // ms
     private long ultimoSpawnEnemigo = 0;
-
-    private final int maxEnemigosTotales = 3;
+    private final int MAX_ENEMIGOS_SIMULTANEOS = 5;
+    private final int MAX_ENEMIGOS_SPAWNEADOS = 3;
     private int enemigosSpawneados = 0;
 
     public Juego() {
@@ -128,10 +128,12 @@ public class Juego {
                 removerEnte(bloque);
             }
         }
-        /*
+
         // Spawn enemigos
+        List<TanqueEnemigo> enemigosActivos = getEntesDeTipo(TanqueEnemigo.class);
         if (System.currentTimeMillis() - ultimoSpawnEnemigo > INTERVALO_SPAWN_ENEMIGO
-                && enemigosSpawneados < maxEnemigosTotales) {
+                && enemigosSpawneados < MAX_ENEMIGOS_SPAWNEADOS
+                && enemigosActivos.size() < MAX_ENEMIGOS_SIMULTANEOS) {
             TanqueEnemigo nuevo = crearEnemigoAleatorio();
             if (nuevo != null) {
                 agregarEnte(nuevo);
@@ -139,7 +141,8 @@ public class Juego {
             }
             ultimoSpawnEnemigo = System.currentTimeMillis();
         }
-        */
+
+
         // Actualizar balas
         for (Bala bala : getEntesDeTipo(Bala.class)) {
             Coordenada antes = new Coordenada(bala.getPosicion().getPixelX(), bala.getPosicion().getPixelY());
@@ -162,11 +165,10 @@ public class Juego {
     }
 
     // ------------------ SPAWN ------------------
-    /*
     private TanqueEnemigo crearEnemigoAleatorio() {
         // Tomar solo los tipos que no sean JUGADOR
         TipoTanque[] tiposEnemigos = Arrays.stream(TipoTanque.values())
-                .filter(t -> t != TipoTanque.JUGADOR1 || t != TipoTanque.JUGADOR2)
+                .filter(t -> t != TipoTanque.JUGADOR1 && t != TipoTanque.JUGADOR2)
                 .toArray(TipoTanque[]::new);
 
         TipoTanque tipo = tiposEnemigos[(int) (Math.random() * tiposEnemigos.length)];
@@ -184,7 +186,7 @@ public class Juego {
         }
         return null;
     }
-*/
+
 
     private PowerUp spawnPowerUpAleatorio() {
         if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).size() < 1) { // 20% de probabilidad y max 1 powerup en mapa
@@ -219,8 +221,4 @@ public class Juego {
             em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
         }
     }
-
-    // ------------------ GETTERS ------------------
-    public int getEnemigosSpawneados() { return enemigosSpawneados; }
-    public int getMaxEnemigosTotales() { return maxEnemigosTotales; }
 }

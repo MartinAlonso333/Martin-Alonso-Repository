@@ -4,9 +4,9 @@ public enum TipoTanque {
     JUGADOR1(3, 1, 100.0, 1500),
     JUGADOR2(3, 1, 100.0, 1500),
     BASICO(1, 1, 50.0, 3000),
-    RAPIDO(1, 1, 150.0, 1000),
-    POTENTE(2, 2, 50.0, 2000),
-    BLINDADO(5, 1, 50.0, 2000);
+    RAPIDO(1, 1, 150.0, 2000),
+    POTENTE(1, 1, 100, 1000),
+    BLINDADO(3, 1, 100, 2000);
 
     private final int vida;
     private final int danio;

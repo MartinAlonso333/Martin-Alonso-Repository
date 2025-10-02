@@ -1,7 +1,8 @@
-package org.modelo.colisiones;
+package org.modelo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelo.colisiones.SistemaColisionGrilla;
 import org.modelo.entidades.powerups.TipoPowerUp;
 import org.modelo.entidades.tanques.Tanque;
 import org.modelo.entidades.tanques.TanqueJugador;

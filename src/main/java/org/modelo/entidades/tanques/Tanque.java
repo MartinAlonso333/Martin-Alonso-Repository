@@ -63,13 +63,6 @@ public abstract class Tanque extends Ente {
         direccion.aplicarMovimiento(nuevaPos, velocidad * deltaTime);
         posicion.setCoordenada(nuevaPos.getPixelX(), nuevaPos.getPixelY());
     }
-
-
-    public void revertirMovimiento() {
-        if (ultimaPosicion != null)
-            setPosicion(new Coordenada(ultimaPosicion.getPixelX(), ultimaPosicion.getPixelY()));
-    }
-
     public void aturdir(long duracionMs) {
         tiempoQuieto = System.currentTimeMillis() + duracionMs;
         estaMoviendo = false;

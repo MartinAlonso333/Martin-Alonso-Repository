@@ -43,9 +43,7 @@ public class PantallaFinPartida extends Pantalla {
 
         // Centrar el label
         lbl.setLayoutX((root.getPrefWidth() - lbl.getWidth()) / 2);
-        lbl.setLayoutY(150); // Ajusta verticalmente
-
-        // Para que el label se centre correctamente, mejor usar binding
+        lbl.setLayoutY(150);
         lbl.layoutXProperty().bind(root.widthProperty().subtract(lbl.widthProperty()).divide(2));
 
         Button btnMenu = crearBoton("Volver al Menú");

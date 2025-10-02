@@ -24,8 +24,7 @@ public class TanqueEnemigo extends Tanque {
     public Bala disparar() {
         if (puedeDisparar()) {
             registrarDisparo();
-            Bala bala = new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(6, 6), this);
-            return bala;
+            return new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(6, 6), this);
         }
         return null;
     }

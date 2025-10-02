@@ -53,7 +53,7 @@ public class EnteVista {
                 frameActual = 0;
             }
         }
-    }
+}
     /**
      * Obtiene el frame actual, rotado si corresponde.
      */

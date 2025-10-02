@@ -1,7 +1,6 @@
 package org.modelo.eventos;
 
 public enum TipoEvento {
-    // Tus eventos existentes
     TANQUE_MOVIDO,
     BALA_DISPARADA,
     TANQUE_DESTRUIDO,
@@ -15,6 +14,8 @@ public enum TipoEvento {
     NIVEL_CARGADO,
     MOSTRAR_MENU,
     MOSTRAR_PARTIDA,
-    MOSTRAR_FIN_PARTIDA
+    MOSTRAR_FIN_PARTIDA,
+    CASCO_RECOGIDO,
+    EFECTO_CASCO_TERMINADO
 }
 

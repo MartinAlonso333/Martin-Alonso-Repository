@@ -4,7 +4,6 @@ import org.modelo.entidades.TipoEnte;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
-
 public class TanqueJugador extends Tanque {
     private boolean invulnerable;
     private boolean disparoMejorado;
@@ -20,20 +19,28 @@ public class TanqueJugador extends Tanque {
         if (puedeDisparar()) {
             registrarDisparo();
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();
-            Bala bala = new Bala(getDireccion(), danioDisparo, getPuntoDeDisparo(), new Dimensiones(6, 6),this);
-            return bala;
+            return new Bala(getDireccion(), danioDisparo, getPuntoDeDisparo(), new Dimensiones(6, 6), this);
         }
         return null;
     }
 
-    public void setInvulnerabilidad(boolean estado) { invulnerable = estado; }
+    public void setInvulnerabilidad(boolean estado) {
+        invulnerable = estado;
+    }
+
+    public boolean isInvulnerable() {
+        return invulnerable;
+    }
+
     public void setDisparoMejorado(boolean estado) { disparoMejorado = estado; }
 
     @Override
     public void actualizar(double deltaTime) { super.actualizar(deltaTime); }
 
     @Override
-    public void recibirDanio(int cantidad) { if (!invulnerable) super.recibirDanio(cantidad); }
+    public void recibirDanio(int cantidad) {
+        if (!invulnerable) super.recibirDanio(cantidad);
+    }
 
     @Override
     public TipoEnte getTipoEnte() { return TipoEnte.JUGADOR; }

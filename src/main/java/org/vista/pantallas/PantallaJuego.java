@@ -6,7 +6,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.modelo.utilidades.Direccion;
 import org.vista.EnteVista;
 import org.vista.JuegoVista;
 

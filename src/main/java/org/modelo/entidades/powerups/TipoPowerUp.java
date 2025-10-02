@@ -8,19 +8,29 @@ public enum TipoPowerUp {
 
     CASCO(5000) {
         @Override
-        public void aplicar(TanqueJugador jugador) { jugador.setInvulnerabilidad(true); }
+        public void aplicar(TanqueJugador jugador) {
+            jugador.setInvulnerabilidad(true);
+            EventoManager.getInstancia().notificar(TipoEvento.CASCO_RECOGIDO);
+        }
         @Override
-        public void remover(TanqueJugador jugador) { jugador.setInvulnerabilidad(false); }
+        public void remover(TanqueJugador jugador) {
+            jugador.setInvulnerabilidad(false);
+            EventoManager.getInstancia().notificar(TipoEvento.EFECTO_CASCO_TERMINADO);
+        }
     },
 
     ESTRELLA(7000) {
         @Override
-        public void aplicar(TanqueJugador jugador) { jugador.setDisparoMejorado(true); }
+        public void aplicar(TanqueJugador jugador) {
+            jugador.setDisparoMejorado(true);
+        }
         @Override
-        public void remover(TanqueJugador jugador) { jugador.setDisparoMejorado(false); }
+        public void remover(TanqueJugador jugador) {
+            jugador.setDisparoMejorado(false);
+        }
     },
 
-    GRANADA(0) { // efecto global, no se maneja en GestorPowerUp
+    GRANADA(0) {
         @Override
         public void aplicar(TanqueJugador jugador) {
             EventoManager.getInstancia().notificar(TipoEvento.GRANADA_RECOGIDA);

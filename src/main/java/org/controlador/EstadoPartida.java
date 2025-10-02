@@ -68,7 +68,6 @@ public class EstadoPartida implements EstadoJuego {
     @Override
     public void manejarInput(String input, boolean presionada) {
         if (!presionada) {
-            // Detener movimiento del jugador correspondiente
             switch (input) {
                 case "J1_ARRIBA", "J1_ABAJO", "J1_IZQUIERDA", "J1_DERECHA" ->
                         juego.getEntesDeTipo(TanqueJugador.class).get(0).detenerMovimiento();

@@ -47,9 +47,16 @@ public class Juego {
 
     public void removerEnte(Ente e) {
         entes.remove(e);
-        porTipo.getOrDefault(e.getClass(), List.of()).remove(e);
+        List<Ente> lista = porTipo.get(e.getClass());
+        if (lista != null) {
+            lista.remove(e);
+            if (lista.isEmpty()) {
+                porTipo.remove(e.getClass());
+            }
+        }
         sistemaColision.removerEnte(e);
     }
+
 
     public <T extends Ente> List<T> getEntesDeTipo(Class<T> tipo) {
         return porTipo.getOrDefault(tipo, List.of()).stream()
@@ -155,7 +162,9 @@ public class Juego {
         // Actualizar powerups
         gestorPowerUp.actualizar(deltaTime);
         for (PowerUp pu : getEntesDeTipo(PowerUp.class)) {
-            if (pu.estaDestruido()) removerEnte(pu);
+            if (pu.estaDestruido()) {
+                removerEnte(pu);
+            }
         }
 
         // Agregar nuevas balas

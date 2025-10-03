@@ -5,7 +5,6 @@ import org.modelo.eventos.TipoEvento;
 import javafx.scene.media.AudioClip;
 import java.net.URL;
 
-
 public class GestorSonidos {
 
     private AudioClip musicaFondo;

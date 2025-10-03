@@ -1,7 +1,6 @@
 package org.modelo.eventos;
 
 import org.modelo.entidades.powerups.PowerUp;
-import org.modelo.entidades.powerups.TipoPowerUp;
 import org.modelo.entidades.tanques.TanqueJugador;
 
 import java.util.ArrayList;

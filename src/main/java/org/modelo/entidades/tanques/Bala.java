@@ -26,7 +26,6 @@ public class Bala extends Ente {
     public boolean estaActivo() { return activo; }
     public Direccion getDireccion() { return direccion; }
     public void setActivo(boolean activo) { this.activo = activo; }
-
     @Override
     public void actualizar(double deltaTime) {
         direccion.aplicarMovimiento(posicion, velocidad * deltaTime);

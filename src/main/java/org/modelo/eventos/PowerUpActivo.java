@@ -11,7 +11,7 @@ public class PowerUpActivo {
     PowerUpActivo(TanqueJugador jugador, TipoPowerUp tipo) {
         this.jugador = jugador;
         this.tipo = tipo;
-        this.tiempoRestante = tipo.getDuracionMs();
+        this.tiempoRestante = tipo.getDuracion();
     }
 
     void aplicar() { tipo.aplicar(jugador); }

@@ -11,7 +11,6 @@ import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.entidades.tanques.TipoTanque;
 import org.modelo.entidades.tanques.Bala;
 import org.modelo.utilidades.Direccion;
-import org.modelo.utilidades.Dimensiones;
 
 import java.io.InputStream;
 import java.util.*;

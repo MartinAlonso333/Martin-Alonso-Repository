@@ -17,11 +17,15 @@ public class Coordenada {
     public int getCeldaY() { return celdaY; }
 
     public void setCoordenada(double x, double y) {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Las coordenadas no pueden ser negativas: x=" + x + ", y=" + y);
+        }
         this.pixelX = x;
         this.pixelY = y;
-        this.celdaX = (int) (x / TAM_CELDA);
-        this.celdaY = (int) (y / TAM_CELDA);
+        this.celdaX = (int) (pixelX / TAM_CELDA);
+        this.celdaY = (int) (pixelY / TAM_CELDA);
     }
+
 
     @Override
     public boolean equals(Object obj) {

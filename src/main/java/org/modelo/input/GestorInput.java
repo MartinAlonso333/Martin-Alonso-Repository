@@ -3,7 +3,6 @@ package org.modelo.input;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import org.controlador.GestorEstados;
-import org.modelo.entidades.tanques.TanqueJugador;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -2,6 +2,7 @@ package org.controlador;
 
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.TipoEvento;
+
 public class EstadoMenu implements EstadoJuego {
 
     @Override

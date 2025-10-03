@@ -6,7 +6,7 @@ import org.modelo.eventos.TipoEvento;
 
 public enum TipoPowerUp {
 
-    CASCO(5000) {
+    CASCO(5) {
         @Override
         public void aplicar(TanqueJugador jugador) {
             jugador.setInvulnerabilidad(true);
@@ -19,7 +19,7 @@ public enum TipoPowerUp {
         }
     },
 
-    ESTRELLA(7000) {
+    ESTRELLA(7) {
         @Override
         public void aplicar(TanqueJugador jugador) {
             jugador.setDisparoMejorado(true);
@@ -40,10 +40,10 @@ public enum TipoPowerUp {
         public void remover(TanqueJugador jugador) { /* no hace nada */ }
     };
 
-    private final double duracionMs;
+    private final double duracion;
 
-    TipoPowerUp(double duracionMs) { this.duracionMs = duracionMs; }
-    public double getDuracionMs() { return duracionMs; }
+    TipoPowerUp(double duracion) { this.duracion = duracion; }
+    public double getDuracion() { return duracion; }
 
     public abstract void aplicar(TanqueJugador jugador);
     public abstract void remover(TanqueJugador jugador);

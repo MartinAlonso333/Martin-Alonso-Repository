@@ -1,7 +1,7 @@
 package org.modelo.utilidades;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CoordenadaTest {
@@ -14,23 +14,33 @@ class CoordenadaTest {
     }
 
     @Test
-    void cambiarCoordenadaX() {
-        coord.setCoordenada(coord.getPixelX() + 3, coord.getPixelY());
-        assertEquals(8, coord.getPixelX());
-        assertEquals(10, coord.getPixelY());
+    void cambiarCoordenadaValida() {
+        coord.setCoordenada(15, 25);
+        assertEquals(15, coord.getPixelX());
+        assertEquals(25, coord.getPixelY());
     }
 
     @Test
-    void cambiarCoordenadaY() {
-        coord.setCoordenada(coord.getPixelX(), coord.getPixelY() - 4);
-        assertEquals(10, coord.getPixelX());
-        assertEquals(6, coord.getPixelY());
+    void lanzaExcepcionSiXNegativo() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            coord.setCoordenada(-1, 5);
+        });
+        assertTrue(exception.getMessage().contains("x=-1"));
     }
 
     @Test
-    void cambiarCoordenadaAmbas() {
-        coord.setCoordenada(coord.getPixelX() - 2, coord.getPixelY() + 5);
-        assertEquals(8, coord.getPixelX());
-        assertEquals(15, coord.getPixelY());
+    void lanzaExcepcionSiYNegativo() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            coord.setCoordenada(5, -2);
+        });
+        assertTrue(exception.getMessage().contains("y=-2"));
+    }
+
+    @Test
+    void lanzaExcepcionSiAmbasNegativas() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            coord.setCoordenada(-3, -7);
+        });
+        assertTrue(exception.getMessage().contains("x=-3") && exception.getMessage().contains("y=-7"));
     }
 }

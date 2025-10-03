@@ -7,6 +7,12 @@ import org.modelo.utilidades.Coordenada;
 
 import java.util.HashSet;
 import java.util.Set;
+
+/**
+ * Sistema de colisiones basado en una grilla para optimizar la detección de colisiones.
+ * Divide el espacio en celdas y solo verifica colisiones entre entidades que comparten
+ * o están en celdas adyacentes.
+ */
 public class SistemaColisionGrilla {
 
     private static final int FILAS = 30;

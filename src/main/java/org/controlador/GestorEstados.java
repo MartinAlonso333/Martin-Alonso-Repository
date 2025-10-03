@@ -1,7 +1,6 @@
 package org.controlador;
 import org.modelo.input.GestorInput;
 
-
 public class GestorEstados {
 
     private EstadoJuego estadoActual;

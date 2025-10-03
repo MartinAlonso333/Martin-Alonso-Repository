@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/** Clase singleton que maneja eventos y listeners */
 public class EventoManager {
 
     private static EventoManager instancia;

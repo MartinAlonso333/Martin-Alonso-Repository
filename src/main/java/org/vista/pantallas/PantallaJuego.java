@@ -88,9 +88,6 @@ public class PantallaJuego extends Pantalla {
                         ivCasco.setRotate(angulo);
                     }
 
-                    // Borde rojo para pruebas de visibilidad
-                    ivCasco.setStyle("-fx-border-color: red; -fx-border-width: 2; -fx-background-color: transparent;");
-
                     root.getChildren().add(ivCasco);  // Agregar al final: encima de todo
                 } else {
                     System.out.println("CascoImg es NULL - No se renderiza overlay");

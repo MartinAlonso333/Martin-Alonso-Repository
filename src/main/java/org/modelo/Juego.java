@@ -196,7 +196,7 @@ public class Juego {
 
 
     private PowerUp spawnPowerUpAleatorio() {
-        if (Math.random() < 1) { // 20% de probabilidad y max 1 powerup en mapa
+        if (Math.random() < 0.2 &&  getEntesDeTipo(PowerUp.class).size() < 1) { // 20% de probabilidad y max 1 powerup en mapa
             TipoPowerUp tipo = TipoPowerUp.values()[(int) (Math.random() * TipoPowerUp.values().length)];
 
             int intentos = 0;

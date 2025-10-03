@@ -2,6 +2,7 @@ package org.modelo.colisiones;
 
 import org.modelo.entidades.Ente;
 
+import org.modelo.eventos.GestorPowerUp;
 import org.modelo.utilidades.Coordenada;
 
 import java.util.HashSet;
@@ -11,13 +12,14 @@ public class SistemaColisionGrilla {
     private static final int FILAS = 30;
     private static final int COLS = 40;
     private final Set<Ente>[][] celdas;
-    private final ColisionHandler colisionHandler = new ColisionHandler();
+    private final ColisionHandler colisionHandler;
 
-    public SistemaColisionGrilla() {
+    public SistemaColisionGrilla(GestorPowerUp gestorPowerUp) {
         celdas = new HashSet[COLS][FILAS];
         for (int i = 0; i < COLS; i++)
             for (int j = 0; j < FILAS; j++)
                 celdas[i][j] = new HashSet<>();
+        this.colisionHandler = new ColisionHandler(gestorPowerUp);
     }
 
     public void agregarEnte(Ente e) {

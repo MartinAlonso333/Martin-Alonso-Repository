@@ -24,8 +24,8 @@ public class Juego {
 
     private final List<Ente> entes = new ArrayList<>();
     private final Map<Class<? extends Ente>, List<Ente>> porTipo = new HashMap<>();
-    private final SistemaColisionGrilla sistemaColision = new SistemaColisionGrilla();
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
+    private final SistemaColisionGrilla sistemaColision = new SistemaColisionGrilla(gestorPowerUp);
     private final EventoManager em = EventoManager.getInstancia();
 
     private final int INTERVALO_SPAWN_ENEMIGO = 10000; // ms
@@ -69,7 +69,6 @@ public class Juego {
         jugador.mover(dir);
         sistemaColision.actualizarPosicion(jugador, antes);
         sistemaColision.chequearColisiones(jugador);
-        em.notificar(TipoEvento.TANQUE_MOVIDO, jugador);
     }
 
     public void dispararJugador(int indice) {
@@ -188,7 +187,7 @@ public class Juego {
 
 
     private PowerUp spawnPowerUpAleatorio() {
-        if (Math.random() < 0.2 && getEntesDeTipo(PowerUp.class).size() < 1) { // 20% de probabilidad y max 1 powerup en mapa
+        if (Math.random() < 1) { // 20% de probabilidad y max 1 powerup en mapa
             TipoPowerUp tipo = TipoPowerUp.values()[(int) (Math.random() * TipoPowerUp.values().length)];
 
             int intentos = 0;

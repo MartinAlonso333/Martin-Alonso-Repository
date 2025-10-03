@@ -15,11 +15,14 @@ import java.util.function.BiConsumer;
 public class ColisionHandler {
 
     private final Map<EntesInvolucrados, BiConsumer<Ente, Ente>> reglas = new HashMap<>();
-    private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
+    private final GestorPowerUp gestorPowerUp;
 
     private static final int TIEMPOATURDIDO = 2000; // milisegundos
 
-    public ColisionHandler() { registrarReglas(); }
+    public ColisionHandler(GestorPowerUp gestorPowerUp) {
+        registrarReglas();
+    this.gestorPowerUp = gestorPowerUp;
+    }
 
     private void registrarReglas() {
         registrarRegla(Bala.class, TanqueJugador.class, (a, b) -> colisionBalaConTanque((Bala) a, (TanqueJugador) b));

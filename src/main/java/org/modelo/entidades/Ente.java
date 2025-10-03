@@ -9,7 +9,7 @@ public abstract class Ente {
     protected Dimensiones dimensiones;
     private boolean activo = true;
 
-    private static final int MARGEN = 1;// píxeles a reducir en cada lado
+    private static final int MARGEN = 1;
 
     public Ente(Coordenada posicion, Dimensiones dimensiones) {
         this.posicion = posicion;

@@ -10,12 +10,12 @@ public enum TipoPowerUp {
         @Override
         public void aplicar(TanqueJugador jugador) {
             jugador.setInvulnerabilidad(true);
-            EventoManager.getInstancia().notificar(TipoEvento.CASCO_RECOGIDO);
+            EventoManager.getInstancia().notificar(TipoEvento.CASCO_RECOGIDO,jugador);
         }
         @Override
         public void remover(TanqueJugador jugador) {
             jugador.setInvulnerabilidad(false);
-            EventoManager.getInstancia().notificar(TipoEvento.EFECTO_CASCO_TERMINADO);
+            EventoManager.getInstancia().notificar(TipoEvento.EFECTO_CASCO_TERMINADO,jugador);
         }
     },
 
@@ -27,6 +27,7 @@ public enum TipoPowerUp {
         @Override
         public void remover(TanqueJugador jugador) {
             jugador.setDisparoMejorado(false);
+
         }
     },
 

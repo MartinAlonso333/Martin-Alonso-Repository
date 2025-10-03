@@ -51,6 +51,7 @@ public class GestorSprites {
         configs.put("PowerUp-Helmet", new SpriteConfig("PowerUp-Helmet", 1));
         configs.put("PowerUp-Star", new SpriteConfig("PowerUp-Star", 1));
         configs.put("PowerUp-Grenade", new SpriteConfig("PowerUp-Grenade", 1));
+        configs.put("InvulnerableRing.png", new SpriteConfig("InvulnerableRing", 1));
 
         inicializarMapeadores();
     }
@@ -134,7 +135,7 @@ public class GestorSprites {
         return animaciones;
     }
 
-    private static Image obtenerSprite(String nombreArchivo) {
+    public static Image obtenerSprite(String nombreArchivo) {
         if (cache.containsKey(nombreArchivo)) return cache.get(nombreArchivo);
         String ruta = RUTA_SPRITES + nombreArchivo;
         try (InputStream is = GestorSprites.class.getResourceAsStream(ruta)) {

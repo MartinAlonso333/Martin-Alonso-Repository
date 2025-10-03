@@ -4,6 +4,7 @@ import org.modelo.entidades.TipoEnte;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
+
 public class TanqueJugador extends Tanque {
     private boolean invulnerable;
     private boolean disparoMejorado;
@@ -26,10 +27,6 @@ public class TanqueJugador extends Tanque {
 
     public void setInvulnerabilidad(boolean estado) {
         invulnerable = estado;
-    }
-
-    public boolean isInvulnerable() {
-        return invulnerable;
     }
 
     public void setDisparoMejorado(boolean estado) { disparoMejorado = estado; }

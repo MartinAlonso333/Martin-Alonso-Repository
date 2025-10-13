@@ -41,5 +41,6 @@ public abstract class Ente {
     public abstract boolean estaDestruido();
     public abstract TipoEnte getTipoEnte();
     public Direccion getDireccion() { return null; }
+    public boolean permitePaso() { return false; }
     public Enum<?> getSubtipo() { return null; }
 }

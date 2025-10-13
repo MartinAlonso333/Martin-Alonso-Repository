@@ -8,6 +8,7 @@ import org.modelo.entidades.tanques.TanqueEnemigo;
 import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.entidades.tanques.TipoTanque;
 import org.modelo.entidades.tanques.Bala;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Direccion;
 import org.modelo.utilidades.Dimensiones;
@@ -21,10 +22,12 @@ public class RegistroEntidades {
 
     private final Map<String, Function<Element, Ente>> registro = new HashMap<>();
     private final int jugadoresMaximos;
+    private GestorEventos em;
 
-    public RegistroEntidades(int jugadoresMaximos) {
+    public RegistroEntidades(int jugadoresMaximos, GestorEventos gestorEventos) {
         this.jugadoresMaximos = jugadoresMaximos;
         inicializarRegistro();
+        this.em = gestorEventos;
     }
 
     private void inicializarRegistro() {
@@ -79,7 +82,8 @@ public class RegistroEntidades {
                 ),
                 new Dimensiones(20, 20),
                 Direccion.ABAJO,
-                tipo
+                tipo,
+                em
         ));
     }
 
@@ -116,7 +120,8 @@ public class RegistroEntidades {
                 new Dimensiones(20, 20),
                 Direccion.ARRIBA,
                 numJugador,
-                tipo
+                tipo,
+                em
         );
     }
 

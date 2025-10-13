@@ -1,6 +1,8 @@
 package org.modelo.entidades.tanques;
 
 import org.modelo.entidades.TipoEnte;
+import org.modelo.eventos.GestorEventos;
+import org.modelo.eventos.TipoEvento;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
@@ -11,9 +13,11 @@ public class TanqueEnemigo extends Tanque {
     private long inicioConducta;
     private Coordenada ultimaPosicionChequear;
     private long ultimoTiempoQuieto;
+    private GestorEventos em;
 
-    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, TipoTanque tipo) {
-        super(posicion, dimensiones, tipo, direccionInicial);
+    public TanqueEnemigo(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, TipoTanque tipo, GestorEventos gestorEventos) {
+        super(posicion, dimensiones, tipo, direccionInicial, gestorEventos);
+        this.em = gestorEventos;
         this.tiempoConducta = sortearTiempoConducta();
         this.inicioConducta = System.currentTimeMillis();
         this.ultimaPosicionChequear = new Coordenada(posicion.getPixelX(), posicion.getPixelY());
@@ -21,10 +25,11 @@ public class TanqueEnemigo extends Tanque {
     }
 
     @Override
-    public Bala disparar() {
+    public Bala disparar(GestorEventos em) {
         if (puedeDisparar()) {
             registrarDisparo();
-            return new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(6, 6), this);
+            Bala bala = new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(6, 6), this);
+            em.notificar(TipoEvento.BALA_DISPARADA, bala);
         }
         return null;
     }
@@ -38,6 +43,8 @@ public class TanqueEnemigo extends Tanque {
 
         // Evita quedarse quieto demasiado tiempo
         manejarQuietud(ahora);
+
+        disparar(em);
 
         super.actualizar(deltaTime);
     }

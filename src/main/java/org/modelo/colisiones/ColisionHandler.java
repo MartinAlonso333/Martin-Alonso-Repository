@@ -59,27 +59,14 @@ public class ColisionHandler {
 
     // ------------------ FUNCIONES CONCRETAS ------------------
     private void colisionBalaConTanque(Bala bala, Tanque tanque) {
-        if(bala.getDuenio()==tanque){
-            return;
-        }
-
-        if (bala.getDuenio().getTipoEnte() == TipoEnte.JUGADOR && tanque.getTipoEnte() == TipoEnte.JUGADOR) {
-            tanque.aturdir(TIEMPOATURDIDO);
-            bala.setActivo(false);
-            return;
-        }
-        tanque.recibirDanio(bala.getDanio());
-        bala.setActivo(false);
-
-        if (tanque.getTipoTanque() == TipoTanque.BLINDADO) {
-            em.notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO, null);
-        }
+        tanque.impactoConBala(bala, em);
     }
 
     private void colisionTanqueConPowerUp(TanqueJugador tanque, PowerUp powerUp) {
         if (!powerUp.estaActivo()) return;
         gestorPowerUp.activarPowerUp(tanque, powerUp, em);
         powerUp.setActivo(false);
+        em.notificar(TipoEvento.POWERUP_RECOGIDO, powerUp.getTipoPowerUp());
     }
 
     private void colisionBalaConBala(Bala a, Bala b) {
@@ -99,19 +86,7 @@ public class ColisionHandler {
     }
 
     private void colisionBalaConBloque(Bala bala, Bloque bloque) {
-        if (!bloque.balaimpacta()) return;
-
-        bloque.recibirDanio(bala.getDanio());
-        bala.setActivo(false);
-
-
-        switch (bloque.getTipoBloque()) {
-            case BASE -> em.notificar(TipoEvento.BASE_DESTRUIDA, null);
-            case LADRILLO -> {
-                if (bloque.estaDestruido()) em.notificar(TipoEvento.BLOQUE_DESTRUIDO, null);
-            }
-            case ACERO -> em.notificar(TipoEvento.BLOQUE_ACERO_IMPACTADO, null);
-        }
+        bloque.impactoConBala(bala, em);
     }
 
     // ------------------ CLASE AUXILIAR ------------------

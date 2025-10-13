@@ -2,6 +2,8 @@ package org.modelo.entidades.bloques;
 
 import org.modelo.entidades.Ente;
 import org.modelo.entidades.TipoEnte;
+import org.modelo.entidades.tanques.Bala;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 
@@ -25,6 +27,19 @@ public class Bloque extends Ente {
             vida -= cantidad;
             if (estaDestruido()) setActivo(false);
         }
+    }
+
+    public void impactoConBala(Bala bala, GestorEventos em) {
+        if (!getTipoBloque().balaimpacta()) return;
+
+        recibirDanio(bala.getDanio());
+        bala.setActivo(false);
+
+        emitirEventoImpacto(em);
+    }
+
+    public void emitirEventoImpacto(GestorEventos em) {
+        getTipoBloque().emitirEvento(em, this);
     }
 
     @Override

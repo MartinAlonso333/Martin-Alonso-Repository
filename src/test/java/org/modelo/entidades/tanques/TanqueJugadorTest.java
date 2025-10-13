@@ -2,6 +2,8 @@ package org.modelo.entidades.tanques;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
@@ -48,6 +50,7 @@ class TanqueJugadorTest {
 
     @Test
     void tanqueDisparaGeneraBala() {
+        GestorEventos em = new EventoManager();
         // Reflexion para forzar el tiempo de último disparo a 0 y evitar restricciones de tiempo
         try {
             java.lang.reflect.Field field = Tanque.class.getDeclaredField("ultimoDisparo");
@@ -58,7 +61,7 @@ class TanqueJugadorTest {
         }
 
         // Dispara sin restricciones de tiempo
-        assertNotNull(tanque.disparar(), "El tanque debería generar una bala al disparar");
+        assertNotNull(tanque.disparar(GestorEventos em), "El tanque debería generar una bala al disparar");
     }
 
     @Test

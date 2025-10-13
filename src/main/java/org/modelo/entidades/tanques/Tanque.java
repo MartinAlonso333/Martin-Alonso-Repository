@@ -1,6 +1,9 @@
 package org.modelo.entidades.tanques;
 
 import org.modelo.entidades.Ente;
+import org.modelo.entidades.TipoEnte;
+import org.modelo.eventos.GestorEventos;
+import org.modelo.eventos.TipoEvento;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
@@ -16,8 +19,9 @@ public abstract class Tanque extends Ente {
     private long tiempoQuieto = 0;
     private boolean estaMoviendo = false;
     protected final TipoTanque tipo;
+    protected final GestorEventos em;
 
-    public Tanque(Coordenada posicion, Dimensiones dimensiones, TipoTanque tipo, Direccion direccionInicial) {
+    public Tanque(Coordenada posicion, Dimensiones dimensiones, TipoTanque tipo, Direccion direccionInicial, GestorEventos gestorEventos) {
         super(posicion, dimensiones);
         this.tipo = tipo;
         this.vida = tipo.getVida();
@@ -26,9 +30,10 @@ public abstract class Tanque extends Ente {
         this.velocidadDeDisparo = tipo.getVelocidadDisparo();
         this.ultimoDisparo = System.currentTimeMillis();
         this.direccion = direccionInicial;
+        em = gestorEventos;
     }
 
-    public abstract Bala disparar();
+    public abstract Bala disparar(GestorEventos em);
 
     protected Coordenada getPuntoDeDisparo() {
         return new Coordenada(
@@ -63,6 +68,7 @@ public abstract class Tanque extends Ente {
         direccion.aplicarMovimiento(nuevaPos, velocidad * deltaTime);
         posicion.setCoordenada(nuevaPos.getPixelX(), nuevaPos.getPixelY());
     }
+
     public void aturdir(long duracionMs) {
         tiempoQuieto = System.currentTimeMillis() + duracionMs;
         estaMoviendo = false;
@@ -83,13 +89,37 @@ public abstract class Tanque extends Ente {
         return ultimaPosicion;
     }
 
+    public void impactoConBala(Bala bala, GestorEventos em) {
+        if (bala.getDuenio() == this) return;
+
+        if (bala.getDuenio().getTipoEnte() == TipoEnte.JUGADOR && this.getTipoEnte() == TipoEnte.JUGADOR) {
+            aturdir(2000);  // TIEMPOATURDIDO
+            bala.setActivo(false);
+            return;
+        }
+
+        recibirDanio(bala.getDanio());
+        bala.setActivo(false);
+
+        emitirEventoImpacto(em);
+    }
+    public void emitirEventoImpacto(GestorEventos em) {
+        getTipoTanque().emitirEvento(em, this);
+    }
+
+
     public void recibirDanio(int cantidad) {
         if (vida <= 0) return;
         vida -= cantidad;
         if (vida <= 0) destruir();
     }
 
-    public void destruir() { vida = 0; setActivo(false); }
+    public void destruir() {
+        vida = 0;
+        setActivo(false);
+        em.notificar(TipoEvento.TANQUE_DESTRUIDO, this);
+    }
+
     @Override
     public boolean estaDestruido() { return vida <= 0; }
 }

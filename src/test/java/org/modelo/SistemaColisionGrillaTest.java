@@ -9,6 +9,8 @@ import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.tanques.TipoTanque;
+import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
@@ -30,6 +32,7 @@ class SistemaColisionGrillaTest {
 
     @Test
     void balaImpactaBloque() throws InterruptedException {
+        GestorEventos em = new EventoManager();
         // Forzar que pueda disparar
         try {
             var field = Tanque.class.getDeclaredField("ultimoDisparo");
@@ -39,7 +42,7 @@ class SistemaColisionGrillaTest {
             fail("No se pudo forzar ultimoDisparo: " + e.getMessage());
         }
 
-        var bala = jugador.disparar();
+        var bala = jugador.disparar(em);
         assertNotNull(bala);
 
 
@@ -57,6 +60,7 @@ class SistemaColisionGrillaTest {
 
     @Test
     void balaImpactaBloqueNoDestructible() {
+        GestorEventos em = new EventoManager();
         var acero = new Bloque(TipoBloque.ACERO, new Coordenada(0,0), new Dimensiones(20,20));
 
         try {
@@ -65,7 +69,7 @@ class SistemaColisionGrillaTest {
             field.setLong(jugador, 0L);
         } catch (Exception e) { fail(e); }
 
-        var bala = jugador.disparar();
+        var bala = jugador.disparar(em);
         bala.setPosicion(new Coordenada(0,0));
 
         sistema.agregarEnte(bala);

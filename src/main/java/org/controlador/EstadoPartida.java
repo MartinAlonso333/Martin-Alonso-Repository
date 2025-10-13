@@ -1,6 +1,7 @@
 package org.controlador;
 
 import org.modelo.Juego;
+import org.modelo.entidades.TipoEnte;
 import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.entidades.tanques.TanqueEnemigo;
 import org.modelo.eventos.EventoManager;
@@ -21,7 +22,7 @@ public class EstadoPartida implements EstadoJuego {
 
     public EstadoPartida(int numJugadores, GestorEventos gestorEventos) {
         this.numJugadores = numJugadores;
-        this.registro = new RegistroEntidades(numJugadores);
+        this.registro = new RegistroEntidades(numJugadores, gestorEventos);
         this.nivelActual = 1;
         em = gestorEventos;
         iniciarNivel(nivelActual);
@@ -53,11 +54,11 @@ public class EstadoPartida implements EstadoJuego {
     }
 
     private boolean nivelTerminado() {
-        return juego.getEntesDeTipo(TanqueEnemigo.class).isEmpty();
+        return juego.getEntesDeTipo(TipoEnte.ENEMIGO).isEmpty();
     }
 
     private boolean derrota() {
-        return juego.getEntesDeTipo(TanqueJugador.class).isEmpty();
+        return juego.getJugadores().isEmpty();
     }
 
     private void partidaGanada() {
@@ -73,10 +74,10 @@ public class EstadoPartida implements EstadoJuego {
         if (!presionada) {
             switch (input) {
                 case "J1_ARRIBA", "J1_ABAJO", "J1_IZQUIERDA", "J1_DERECHA" ->
-                        juego.getEntesDeTipo(TanqueJugador.class).get(0).detenerMovimiento();
+                        juego.getJugadores().get(0).detenerMovimiento();
                 case "J2_ARRIBA", "J2_ABAJO", "J2_IZQUIERDA", "J2_DERECHA" -> {
                     if (numJugadores > 1)
-                        juego.getEntesDeTipo(TanqueJugador.class).get(1).detenerMovimiento();
+                        juego.getJugadores().get(1).detenerMovimiento();
                 }
             }
             return;

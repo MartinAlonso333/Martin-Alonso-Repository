@@ -1,12 +1,21 @@
 package org.modelo.entidades.tanques;
 
+import org.modelo.entidades.bloques.Bloque;
+import org.modelo.eventos.GestorEventos;
+import org.modelo.eventos.TipoEvento;
+
 public enum TipoTanque {
     JUGADOR1(3, 1, 100.0, 1500),
     JUGADOR2(3, 1, 100.0, 1500),
     BASICO(1, 1, 50.0, 3000),
     RAPIDO(1, 1, 150.0, 2000),
     POTENTE(1, 1, 100, 1000),
-    BLINDADO(3, 1, 100, 2000);
+    BLINDADO(3, 1, 100, 2000) {
+        @Override
+        public void emitirEvento(GestorEventos em, Tanque tanque) {
+            em.notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO, tanque);
+        }
+    };
 
     private final int vida;
     private final int danio;
@@ -24,4 +33,5 @@ public enum TipoTanque {
     public int getDanio() { return danio; }
     public double getVelocidad() { return velocidad; }
     public int getVelocidadDisparo() { return velocidadDisparo; }
+    public void emitirEvento(GestorEventos em, Tanque tanque) {}
 }

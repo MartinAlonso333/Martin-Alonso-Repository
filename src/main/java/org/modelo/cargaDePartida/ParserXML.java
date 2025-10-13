@@ -28,6 +28,9 @@ public class ParserXML {
     private static void procesarNodo(Element elem, RegistroEntidades registro, Juego juego) {
         Ente ente = crearEnteDesdeElemento(elem, registro);
         if (ente != null) {
+            if (elem.getTagName().equals("player")){
+                juego.agregarJugador(ente);
+            }
             juego.agregarEnte(ente);
         }
 

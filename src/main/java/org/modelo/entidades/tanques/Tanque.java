@@ -33,7 +33,7 @@ public abstract class Tanque extends Ente {
         em = gestorEventos;
     }
 
-    public abstract Bala disparar(GestorEventos em);
+    public abstract Bala disparar();
 
     protected Coordenada getPuntoDeDisparo() {
         return new Coordenada(

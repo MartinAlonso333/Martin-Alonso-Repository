@@ -20,7 +20,7 @@ public class TanqueJugador extends Tanque {
     }
 
     @Override
-    public Bala disparar(GestorEventos em) {
+    public Bala disparar() {
         if (puedeDisparar()) {
             registrarDisparo();
             int danioDisparo = disparoMejorado ? getDanio() * 10 : getDanio();

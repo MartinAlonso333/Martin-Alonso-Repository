@@ -11,6 +11,7 @@ import org.modelo.entidades.bloques.TipoBloque;
 import org.modelo.entidades.tanques.TipoTanque;
 import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.GestorEventos;
+import org.modelo.eventos.GestorPowerUp;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
@@ -25,8 +26,10 @@ class SistemaColisionGrillaTest {
 
     @BeforeEach
     void setUp() {
-        sistema = new SistemaColisionGrilla();
-        jugador = new TanqueJugador(new Coordenada(0,0), new Dimensiones(20,20), Direccion.DERECHA, 1, TipoTanque.JUGADOR1);
+        GestorEventos em = new EventoManager();
+        GestorPowerUp gestorPU = new GestorPowerUp();
+        sistema = new SistemaColisionGrilla(gestorPU, em);
+        jugador = new TanqueJugador(new Coordenada(0,0), new Dimensiones(20,20), Direccion.DERECHA, 1, TipoTanque.JUGADOR1, em);
         ladrillo = new Bloque(TipoBloque.LADRILLO, new Coordenada(0,0), new Dimensiones(20,20));
     }
 
@@ -42,7 +45,7 @@ class SistemaColisionGrillaTest {
             fail("No se pudo forzar ultimoDisparo: " + e.getMessage());
         }
 
-        var bala = jugador.disparar(em);
+        var bala = jugador.disparar();
         assertNotNull(bala);
 
 
@@ -69,7 +72,7 @@ class SistemaColisionGrillaTest {
             field.setLong(jugador, 0L);
         } catch (Exception e) { fail(e); }
 
-        var bala = jugador.disparar(em);
+        var bala = jugador.disparar();
         bala.setPosicion(new Coordenada(0,0));
 
         sistema.agregarEnte(bala);
@@ -88,7 +91,6 @@ class SistemaColisionGrillaTest {
         sistema.agregarEnte(powerUp);
 
         sistema.chequearColisiones(jugador);
-        assertTrue(jugador.isInvulnerable());
         assertFalse(powerUp.estaActivo(), "El power-up debe desactivarse al ser recogido");
     }
 

@@ -16,12 +16,14 @@ class TanqueJugadorTest {
 
     @BeforeEach
     void setUp() {
+        GestorEventos em = new EventoManager();
         tanque = new TanqueJugador(
                 new Coordenada(10.0, 10.0),
                 new Dimensiones(20, 20),
                 Direccion.DERECHA,
                 1,
-                TipoTanque.JUGADOR1
+                TipoTanque.JUGADOR1,
+                em
         );
     }
     @Test
@@ -50,7 +52,6 @@ class TanqueJugadorTest {
 
     @Test
     void tanqueDisparaGeneraBala() {
-        GestorEventos em = new EventoManager();
         // Reflexion para forzar el tiempo de último disparo a 0 y evitar restricciones de tiempo
         try {
             java.lang.reflect.Field field = Tanque.class.getDeclaredField("ultimoDisparo");
@@ -61,7 +62,7 @@ class TanqueJugadorTest {
         }
 
         // Dispara sin restricciones de tiempo
-        assertNotNull(tanque.disparar(GestorEventos em), "El tanque debería generar una bala al disparar");
+        assertNotNull(tanque.disparar(), "El tanque debería generar una bala al disparar");
     }
 
     @Test

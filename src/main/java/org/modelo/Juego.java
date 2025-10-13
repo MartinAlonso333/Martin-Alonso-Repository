@@ -103,7 +103,7 @@ public class Juego {
         if (indice < 0 || indice >= jugadores.size()) return;
 
         TanqueJugador jugador = jugadores.get(indice);
-        Bala bala = jugador.disparar(em);
+        Bala bala = jugador.disparar();
         if (bala != null) {
             agregarEnte(bala);
             sistemaColision.chequearColisiones(bala);

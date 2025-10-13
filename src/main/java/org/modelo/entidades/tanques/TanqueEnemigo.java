@@ -25,7 +25,7 @@ public class TanqueEnemigo extends Tanque {
     }
 
     @Override
-    public Bala disparar(GestorEventos em) {
+    public Bala disparar() {
         if (puedeDisparar()) {
             registrarDisparo();
             Bala bala = new Bala(getDireccion(), getDanio(), getPuntoDeDisparo(), new Dimensiones(6, 6), this);
@@ -44,7 +44,7 @@ public class TanqueEnemigo extends Tanque {
         // Evita quedarse quieto demasiado tiempo
         manejarQuietud(ahora);
 
-        disparar(em);
+        disparar();
 
         super.actualizar(deltaTime);
     }

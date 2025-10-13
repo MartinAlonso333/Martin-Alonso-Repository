@@ -1,9 +1,15 @@
 package org.controlador;
 
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 
 public class EstadoMenu implements EstadoJuego {
+    private GestorEventos em;
+
+    public EstadoMenu(GestorEventos gestorEventos) {
+        em = gestorEventos;
+    }
 
     @Override
     public void actualizar(double deltaTime) {
@@ -15,8 +21,8 @@ public class EstadoMenu implements EstadoJuego {
         if (!presionada) return;
 
         switch (input) {
-            case "UN_JUGADOR" -> EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_PARTIDA, 1);
-            case "DOS_JUGADORES" -> EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_PARTIDA, 2);
+            case "UN_JUGADOR" -> em.notificar(TipoEvento.MOSTRAR_PARTIDA, 1);
+            case "DOS_JUGADORES" -> em.notificar(TipoEvento.MOSTRAR_PARTIDA, 2);
         }
     }
 }

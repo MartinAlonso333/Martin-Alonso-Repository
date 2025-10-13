@@ -1,6 +1,7 @@
 package org.vista.sonidos;
 
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 import javafx.scene.media.AudioClip;
 import java.net.URL;
@@ -8,9 +9,9 @@ import java.net.URL;
 public class GestorSonidos {
 
     private AudioClip musicaFondo;
-
-    public GestorSonidos() {
-        EventoManager em = EventoManager.getInstancia();
+    private GestorEventos em;
+    public GestorSonidos(GestorEventos gestorEventos) {
+        em = gestorEventos;
 
         try {
             URL resourceMusica = getClass().getResource("/sounds/tribe-drum-loop-103173.mp3");

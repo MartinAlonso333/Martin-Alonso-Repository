@@ -3,6 +3,7 @@ package org.vista;
 import javafx.scene.image.Image;
 import org.modelo.Juego;
 import org.modelo.entidades.Ente;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.utilidades.Direccion;
 
 import java.util.ArrayList;
@@ -13,9 +14,11 @@ public class JuegoVista {
 
     private final Juego juego;
     private final List<EnteVista> entesVista = new ArrayList<>();
+    protected GestorEventos em;
 
-    public JuegoVista(Juego juego) {
+    public JuegoVista(Juego juego, GestorEventos gestorEventos) {
         this.juego = juego;
+        this.em = gestorEventos;
         sincronizarVistas();
     }
 
@@ -28,7 +31,7 @@ public class JuegoVista {
             boolean yaExiste = entesVista.stream().anyMatch(ev -> ev.getEnte() == e);
             if (!yaExiste) {
                 Map<Direccion, List<Image>> anims = GestorSprites.getAnimacionesPara(e);
-                entesVista.add(new EnteVista(e, anims));
+                entesVista.add(new EnteVista(e, anims, em));
             }
         }
     }

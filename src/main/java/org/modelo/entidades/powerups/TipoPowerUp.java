@@ -2,30 +2,31 @@ package org.modelo.entidades.powerups;
 
 import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 
 public enum TipoPowerUp {
 
     CASCO(5) {
         @Override
-        public void aplicar(TanqueJugador jugador) {
+        public void aplicar(TanqueJugador jugador, GestorEventos em) {
             jugador.setInvulnerabilidad(true);
-            EventoManager.getInstancia().notificar(TipoEvento.CASCO_RECOGIDO,jugador);
+            em.notificar(TipoEvento.CASCO_RECOGIDO,jugador);
         }
         @Override
-        public void remover(TanqueJugador jugador) {
+        public void remover(TanqueJugador jugador, GestorEventos em) {
             jugador.setInvulnerabilidad(false);
-            EventoManager.getInstancia().notificar(TipoEvento.EFECTO_CASCO_TERMINADO,jugador);
+            em.notificar(TipoEvento.EFECTO_CASCO_TERMINADO,jugador);
         }
     },
 
     ESTRELLA(7) {
         @Override
-        public void aplicar(TanqueJugador jugador) {
+        public void aplicar(TanqueJugador jugador, GestorEventos em) {
             jugador.setDisparoMejorado(true);
         }
         @Override
-        public void remover(TanqueJugador jugador) {
+        public void remover(TanqueJugador jugador, GestorEventos em) {
             jugador.setDisparoMejorado(false);
 
         }
@@ -33,11 +34,11 @@ public enum TipoPowerUp {
 
     GRANADA(0) {
         @Override
-        public void aplicar(TanqueJugador jugador) {
-            EventoManager.getInstancia().notificar(TipoEvento.GRANADA_RECOGIDA);
+        public void aplicar(TanqueJugador jugador, GestorEventos em) {
+            em.notificar(TipoEvento.GRANADA_RECOGIDA, null);
         }
         @Override
-        public void remover(TanqueJugador jugador) { /* no hace nada */ }
+        public void remover(TanqueJugador jugador, GestorEventos em) { /* no hace nada */ }
     };
 
     private final double duracion;
@@ -45,6 +46,6 @@ public enum TipoPowerUp {
     TipoPowerUp(double duracion) { this.duracion = duracion; }
     public double getDuracion() { return duracion; }
 
-    public abstract void aplicar(TanqueJugador jugador);
-    public abstract void remover(TanqueJugador jugador);
+    public abstract void aplicar(TanqueJugador jugador, GestorEventos em);
+    public abstract void remover(TanqueJugador jugador, GestorEventos em);
 }

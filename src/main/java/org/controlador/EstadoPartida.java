@@ -4,6 +4,7 @@ import org.modelo.Juego;
 import org.modelo.entidades.tanques.TanqueJugador;
 import org.modelo.entidades.tanques.TanqueEnemigo;
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 import org.modelo.utilidades.Direccion;
 import org.modelo.cargaDePartida.ParserXML;
@@ -16,13 +17,15 @@ public class EstadoPartida implements EstadoJuego {
     private final int numJugadores;
     private int nivelActual;
     private RegistroEntidades registro;
+    private GestorEventos em;
 
-    public EstadoPartida(int numJugadores) {
+    public EstadoPartida(int numJugadores, GestorEventos gestorEventos) {
         this.numJugadores = numJugadores;
         this.registro = new RegistroEntidades(numJugadores);
         this.nivelActual = 1;
+        em = gestorEventos;
         iniciarNivel(nivelActual);
-        EventoManager.getInstancia().registrar(TipoEvento.BASE_DESTRUIDA, (obj) -> partidaPerdida());
+        em.registrar(TipoEvento.BASE_DESTRUIDA, (obj) -> partidaPerdida());
     }
 
     @Override
@@ -34,7 +37,7 @@ public class EstadoPartida implements EstadoJuego {
     }
 
     private void iniciarNivel(int nivelActual) {
-        this.juego = new Juego();
+        this.juego = new Juego(em);
         ParserXML.cargarNivel("nivel" + nivelActual, juego, registro);
     }
 
@@ -46,7 +49,7 @@ public class EstadoPartida implements EstadoJuego {
         nivelActual++;
         iniciarNivel(nivelActual);
 
-        EventoManager.getInstancia().notificar(TipoEvento.NIVEL_CARGADO, juego);
+        em.notificar(TipoEvento.NIVEL_CARGADO, juego);
     }
 
     private boolean nivelTerminado() {
@@ -58,11 +61,11 @@ public class EstadoPartida implements EstadoJuego {
     }
 
     private void partidaGanada() {
-        EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, true);
+        em.notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, true);
     }
 
     private void partidaPerdida() {
-        EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, false);
+        em.notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, false);
     }
 
     @Override

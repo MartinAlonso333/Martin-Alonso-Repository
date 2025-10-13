@@ -1,38 +1,27 @@
 package org.modelo.eventos;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 /** Clase singleton que maneja eventos y listeners */
-public class EventoManager {
+public class EventoManager implements GestorEventos {
 
-    private static EventoManager instancia;
+    private final Map<TipoEvento, List<Listener>> listeners = new HashMap<>();
 
-    private final Map<String, Set<Consumer<Object>>> listeners = new HashMap<>();
-
-    private EventoManager() {}
-
-    public static EventoManager getInstancia() {
-        if (instancia == null) instancia = new EventoManager();
-        return instancia;
-    }
+    public EventoManager() {}
 
     /** Registra un listener para un tipo de evento */
-    public void registrar(TipoEvento evento, Consumer<Object> listener) {
-        listeners.computeIfAbsent(evento.name(), k -> new HashSet<>()).add(listener);
+    @Override
+    public void notificar(TipoEvento tipo, Object datos) {
+        List<Listener> lista = listeners.get(tipo);
+        if (lista != null) {
+            for (Listener l : lista) l.onEvento(datos);
+        }
     }
 
     /** Notifica a todos los listeners que ocurrió un evento con un objeto asociado */
-    public void notificar(TipoEvento evento, Object objeto) {
-        Set<Consumer<Object>> set = listeners.get(evento.name());
-        if (set != null) {
-            for (Consumer<Object> c : set) {
-                c.accept(objeto);
-            }
-        }
+    public void registrar(TipoEvento tipo, Listener listener) {
+        listeners.computeIfAbsent(tipo, k -> new ArrayList<>()).add(listener);
     }
 
     /** Sobrecarga para notificar eventos sin objeto */

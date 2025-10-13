@@ -14,8 +14,8 @@ public class PowerUpActivo {
         this.tiempoRestante = tipo.getDuracion();
     }
 
-    void aplicar() { tipo.aplicar(jugador); }
-    void remover() { tipo.remover(jugador); }
+    void aplicar(GestorEventos em) { tipo.aplicar(jugador, em); }
+    void remover(GestorEventos em) { tipo.remover(jugador, em); }
 
     boolean actualizar(double deltaTime) {
         tiempoRestante -= deltaTime;

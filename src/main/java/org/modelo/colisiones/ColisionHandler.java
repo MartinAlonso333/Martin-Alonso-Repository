@@ -5,6 +5,7 @@ import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.powerups.PowerUp;
 import org.modelo.entidades.tanques.*;
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.GestorPowerUp;
 import org.modelo.eventos.TipoEvento;
 
@@ -20,12 +21,13 @@ public class ColisionHandler {
 
     private final Map<EntesInvolucrados, BiConsumer<Ente, Ente>> reglas = new HashMap<>();
     private final GestorPowerUp gestorPowerUp;
-
+    private GestorEventos em;
     private static final int TIEMPOATURDIDO = 2000; // milisegundos
 
-    public ColisionHandler(GestorPowerUp gestorPowerUp) {
+    public ColisionHandler(GestorPowerUp gestorPowerUp, GestorEventos gestorEventos) {
         registrarReglas();
-    this.gestorPowerUp = gestorPowerUp;
+        this.gestorPowerUp = gestorPowerUp;
+        this.em = gestorEventos;
     }
 
     private void registrarReglas() {
@@ -70,13 +72,13 @@ public class ColisionHandler {
         bala.setActivo(false);
 
         if (tanque.getTipoTanque() == TipoTanque.BLINDADO) {
-            EventoManager.getInstancia().notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO);
+            em.notificar(TipoEvento.TANQUE_BLINDADO_IMPACTADO, null);
         }
     }
 
     private void colisionTanqueConPowerUp(TanqueJugador tanque, PowerUp powerUp) {
         if (!powerUp.estaActivo()) return;
-        gestorPowerUp.activarPowerUp(tanque, powerUp);
+        gestorPowerUp.activarPowerUp(tanque, powerUp, em);
         powerUp.setActivo(false);
     }
 
@@ -104,11 +106,11 @@ public class ColisionHandler {
 
 
         switch (bloque.getTipoBloque()) {
-            case BASE -> EventoManager.getInstancia().notificar(TipoEvento.BASE_DESTRUIDA);
+            case BASE -> em.notificar(TipoEvento.BASE_DESTRUIDA, null);
             case LADRILLO -> {
-                if (bloque.estaDestruido()) EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_DESTRUIDO);
+                if (bloque.estaDestruido()) em.notificar(TipoEvento.BLOQUE_DESTRUIDO, null);
             }
-            case ACERO -> EventoManager.getInstancia().notificar(TipoEvento.BLOQUE_ACERO_IMPACTADO);
+            case ACERO -> em.notificar(TipoEvento.BLOQUE_ACERO_IMPACTADO, null);
         }
     }
 

@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import org.modelo.entidades.Ente;
 import org.modelo.entidades.TipoEnte;
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 import org.modelo.utilidades.Direccion;
 
@@ -18,6 +19,7 @@ public class EnteVista {
 
     protected final Ente ente;
     protected final Map<Direccion, List<Image>> animaciones;
+    protected GestorEventos em;
     protected Direccion direccionActual = Direccion.ABAJO;
     protected int frameActual = 0;
     private double tiempoAcumulado = 0;
@@ -25,9 +27,10 @@ public class EnteVista {
     private boolean tieneCascoOverlay = false;
     private Image cascoImage;
 
-    public EnteVista(Ente ente, Map<Direccion, List<Image>> animaciones) {
+    public EnteVista(Ente ente, Map<Direccion, List<Image>> animaciones, GestorEventos gestorEventos) {
         this.ente = ente;
         this.animaciones = animaciones;
+        this.em = gestorEventos;
         if (ente.getTipoEnte() == TipoEnte.JUGADOR) {
             this.cascoImage = GestorSprites.obtenerSprite("InvulnerableRing.png");
             suscribirEventos();
@@ -39,14 +42,14 @@ public class EnteVista {
      */
     private void suscribirEventos() {
         // Listener para CASCO_RECOGIDO: Activar overlay si el tanque recibido es este ente
-        EventoManager.getInstancia().registrar(TipoEvento.CASCO_RECOGIDO, (Object data) -> {
+        em.registrar(TipoEvento.CASCO_RECOGIDO, (Object data) -> {
             if (data == this.ente) {
                 this.tieneCascoOverlay = true;
             }
         });
 
         // Listener para EFECTO_CASCO_TERMINADO: Desactivar overlay si el tanque recibido es este ente
-        EventoManager.getInstancia().registrar(TipoEvento.EFECTO_CASCO_TERMINADO, (Object data) -> {
+        em.registrar(TipoEvento.EFECTO_CASCO_TERMINADO, (Object data) -> {
             if (data == this.ente) {
                 this.tieneCascoOverlay = false;
             }

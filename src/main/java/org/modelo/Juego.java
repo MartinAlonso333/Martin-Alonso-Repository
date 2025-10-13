@@ -7,6 +7,7 @@ import org.modelo.entidades.powerups.PowerUp;
 import org.modelo.entidades.powerups.TipoPowerUp;
 import org.modelo.entidades.tanques.*;
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 import org.modelo.colisiones.SistemaColisionGrilla;
 import org.modelo.eventos.GestorPowerUp;
@@ -25,8 +26,8 @@ public class Juego {
     private final List<Ente> entes = new ArrayList<>();
     private final Map<Class<? extends Ente>, List<Ente>> porTipo = new HashMap<>();
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
-    private final SistemaColisionGrilla sistemaColision = new SistemaColisionGrilla(gestorPowerUp);
-    private final EventoManager em = EventoManager.getInstancia();
+    private final SistemaColisionGrilla sistemaColision;
+    private final GestorEventos em;
 
     private final int INTERVALO_SPAWN_ENEMIGO = 10000; // ms
     private long ultimoSpawnEnemigo = 0;
@@ -34,7 +35,9 @@ public class Juego {
     private final int MAX_ENEMIGOS_SPAWNEADOS = 3;
     private int enemigosSpawneados = 0;
 
-    public Juego() {
+    public Juego(GestorEventos gestorEventos) {
+        em = gestorEventos;
+        sistemaColision = new SistemaColisionGrilla(gestorPowerUp, em);
         em.registrar(TipoEvento.GRANADA_RECOGIDA, (data) -> destruirTodosEnemigos());
     }
 

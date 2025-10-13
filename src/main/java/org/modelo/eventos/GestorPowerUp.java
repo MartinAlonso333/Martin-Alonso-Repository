@@ -10,11 +10,13 @@ import java.util.List;
 public class GestorPowerUp {
 
     private final List<PowerUpActivo> activos = new ArrayList<>();
+    private GestorEventos em;
 
-    public void activarPowerUp(TanqueJugador jugador, PowerUp powerUp) {
+    public void activarPowerUp(TanqueJugador jugador, PowerUp powerUp, GestorEventos gestor) {
         PowerUpActivo pa = new PowerUpActivo(jugador, powerUp.getTipoPowerUp());
         activos.add(pa);
-        pa.aplicar();
+        this. em = gestor;
+        pa.aplicar(em);
     }
 
     public void actualizar(double deltaTime) {
@@ -22,7 +24,7 @@ public class GestorPowerUp {
         while (it.hasNext()) {
             PowerUpActivo pa = it.next();
             if (pa.actualizar(deltaTime)) {
-                pa.remover();
+                pa.remover(em);
                 it.remove();
             }
         }

@@ -11,15 +11,17 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.modelo.eventos.EventoManager;
+import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 
 public class PantallaFinPartida extends Pantalla {
 
     private final Pane root;
-
-    public PantallaFinPartida(Stage stage, Pane root) {
+    GestorEventos em;
+    public PantallaFinPartida(Stage stage, Pane root, GestorEventos gestorEventos) {
         super(stage);
         this.root = root;
+        this.em = gestorEventos;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class PantallaFinPartida extends Pantalla {
         Button btnMenu = crearBoton("Volver al Menú");
         btnMenu.setLayoutX(300);
         btnMenu.setLayoutY(300);
-        btnMenu.setOnAction(e -> EventoManager.getInstancia().notificar(TipoEvento.MOSTRAR_MENU));
+        btnMenu.setOnAction(e -> em.notificar(TipoEvento.MOSTRAR_MENU, null));
 
         Button btnSalir = crearBoton("Salir");
         btnSalir.setLayoutX(300);

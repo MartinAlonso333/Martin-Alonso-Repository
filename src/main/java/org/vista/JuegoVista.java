@@ -27,8 +27,7 @@ public class JuegoVista {
         for (Ente e : juego.getEntes()) {
             boolean yaExiste = entesVista.stream().anyMatch(ev -> ev.getEnte() == e);
             if (!yaExiste) {
-                @SuppressWarnings("unchecked")
-                Map<Direccion, List<Image>> anims = (Map<Direccion, List<Image>>) (Map<?, ?>) GestorSprites.getAnimacionesPara(e);
+                Map<Direccion, List<Image>> anims = GestorSprites.getAnimacionesPara(e);
                 entesVista.add(new EnteVista(e, anims));
             }
         }

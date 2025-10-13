@@ -32,7 +32,6 @@ public abstract class Ente {
     }
 
 
-
     public void revertirMovimiento(Coordenada ultimaPosicion) {
         if (ultimaPosicion != null)
             posicion.setCoordenada(ultimaPosicion.getPixelX(), ultimaPosicion.getPixelY());

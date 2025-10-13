@@ -33,31 +33,50 @@ public class TanqueEnemigo extends Tanque {
     public void actualizar(double deltaTime) {
         long ahora = System.currentTimeMillis();
 
+        // Actualiza la conducta periódicamente
+        manejarConducta(ahora);
+
+        // Evita quedarse quieto demasiado tiempo
+        manejarQuietud(ahora);
+
+        super.actualizar(deltaTime);
+    }
+
+    private void manejarConducta(long ahora) {
         if (ahora - inicioConducta >= tiempoConducta) {
-            Direccion nueva = sortearDireccion();
-            while (nueva == getDireccion()) {
-                nueva = sortearDireccion();
-            }
-            mover(nueva);
+            moverDireccionAleatoria();
             tiempoConducta = sortearTiempoConducta();
             inicioConducta = ahora;
         }
+    }
+
+    private void manejarQuietud(long ahora) {
         if (getPosicion().equals(ultimaPosicionChequear)) {
             if (ahora - ultimoTiempoQuieto >= 2000) {
-                Direccion nueva = sortearDireccion();
-                while (nueva == getDireccion()) {
-                    nueva = sortearDireccion();
-                }
-                mover(nueva);
-                ultimaPosicionChequear = new Coordenada(getPosicion().getPixelX(), getPosicion().getPixelY());
-                ultimoTiempoQuieto = ahora;
+                moverDireccionAleatoria();
+                actualizarUltimaPosicionYTiempo(ahora);
             }
         } else {
-            ultimaPosicionChequear = new Coordenada(getPosicion().getPixelX(), getPosicion().getPixelY());
-            ultimoTiempoQuieto = ahora;
+            actualizarUltimaPosicionYTiempo(ahora);
         }
+    }
 
-        super.actualizar(deltaTime);
+    private void moverDireccionAleatoria() {
+        Direccion nueva = sortearDireccionDiferente();
+        mover(nueva);
+    }
+
+    private Direccion sortearDireccionDiferente() {
+        Direccion nueva = sortearDireccion();
+        while (nueva == getDireccion()) {
+            nueva = sortearDireccion();
+        }
+        return nueva;
+    }
+
+    private void actualizarUltimaPosicionYTiempo(long ahora) {
+        ultimaPosicionChequear = new Coordenada(getPosicion().getPixelX(), getPosicion().getPixelY());
+        ultimoTiempoQuieto = ahora;
     }
 
     @Override

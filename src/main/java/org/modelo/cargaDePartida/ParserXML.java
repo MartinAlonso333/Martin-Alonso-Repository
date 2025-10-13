@@ -26,26 +26,12 @@ public class ParserXML {
     }
 
     private static void procesarNodo(Element elem, RegistroEntidades registro, Juego juego) {
-        String tag = elem.getTagName(); // player, enemy o staticObject
-        Ente ente = null;
-
-        if (tag.equals("player")) {
-            ente = registro.crearJugador(elem);
-
-        } else if (tag.equals("enemy")) {
-            String tipo = elem.getAttribute("type");
-            ente = registro.crearEnteConTipo(elem, tipo);
-
-        } else if (tag.equals("staticObject")) {
-            String tipo = elem.getAttribute("type");
-            ente = registro.crearEnteConTipo(elem, tipo);
-        }
-
+        Ente ente = crearEnteDesdeElemento(elem, registro);
         if (ente != null) {
             juego.agregarEnte(ente);
         }
 
-        // procesar hijos recursivamente (para <players>, <enemies>, etc.)
+        // Procesar hijos recursivamente
         NodeList hijos = elem.getChildNodes();
         for (int i = 0; i < hijos.getLength(); i++) {
             Node hijo = hijos.item(i);
@@ -54,5 +40,20 @@ public class ParserXML {
             }
         }
     }
+
+    private static Ente crearEnteDesdeElemento(Element elem, RegistroEntidades registro) {
+        String tag = elem.getTagName();
+        switch (tag) {
+            case "player":
+                return registro.crearJugador(elem);
+            case "enemy":
+            case "staticObject":
+                String tipo = elem.getAttribute("type");
+                return registro.crearEnteConTipo(elem, tipo);
+            default:
+                return null;
+        }
+    }
+
 
 }

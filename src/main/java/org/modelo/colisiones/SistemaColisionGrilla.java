@@ -14,6 +14,7 @@ import java.util.Set;
  * Divide el espacio en celdas y solo verifica colisiones entre entidades que comparten
  * o están en celdas adyacentes.
  */
+
 public class SistemaColisionGrilla {
 
     private static final int FILAS = 30;

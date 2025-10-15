@@ -47,5 +47,11 @@ public class TanqueJugador extends Tanque {
     @Override
     public TipoEnte getTipoEnte() { return TipoEnte.JUGADOR; }
     public TipoTanque getSubtipo() { return getTipoTanque(); }
+
+    @Override
+    public String getClaveSprite() {
+        return "player" + getIdJugador();
+    }
+
     public int getIdJugador() { return idJugador; }
 }

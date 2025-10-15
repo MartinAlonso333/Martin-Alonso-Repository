@@ -10,6 +10,7 @@ import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 import org.modelo.input.GestorInput;
+import org.vista.GestorSprites;
 import org.vista.JuegoVista;
 import org.vista.pantallas.PantallaFinPartida;
 import org.vista.pantallas.PantallaJuego;
@@ -44,7 +45,7 @@ public class JuegoApp extends Application {
         PantallaFinPartida pantallaFin = new PantallaFinPartida(stage, root, em);
 
         GestorSonidos gestorSonidos = new GestorSonidos(em);
-
+        GestorSprites gestorSprites= new GestorSprites();
         // Suscripción a eventos
 
 
@@ -59,7 +60,7 @@ public class JuegoApp extends Application {
             gestorEstados.cambiarAEstado(partida);
 
             Juego juego = partida.getJuego();
-            JuegoVista juegoVista = new JuegoVista(juego, em);
+            JuegoVista juegoVista = new JuegoVista(juego, em,gestorSprites);
             pantallaJuego.setJuego(juegoVista);
             pantallaJuego.mostrar();
 
@@ -75,7 +76,7 @@ public class JuegoApp extends Application {
 
         em.registrar(TipoEvento.NIVEL_CARGADO, o -> {
             Juego juegoNuevo = (Juego) o;
-            JuegoVista juegoVistaNuevo = new JuegoVista(juegoNuevo, em);
+            JuegoVista juegoVistaNuevo = new JuegoVista(juegoNuevo, em,gestorSprites);
             pantallaJuego.setJuego(juegoVistaNuevo);
             pantallaJuego.mostrar();
         });

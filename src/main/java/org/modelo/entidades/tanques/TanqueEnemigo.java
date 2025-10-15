@@ -90,6 +90,17 @@ public class TanqueEnemigo extends Tanque {
     public TipoEnte getTipoEnte() { return TipoEnte.ENEMIGO; }
     public TipoTanque getSubtipo() { return getTipoTanque(); }
 
+    @Override
+    public String getClaveSprite() {
+        return switch (getTipoTanque()) {
+            case BASICO -> "EnemyTankRegular";
+            case RAPIDO -> "EnemyTankFast";
+            case POTENTE -> "EnemyTankPowerful";
+            case BLINDADO -> "EnemyTankHeavy";
+            default -> throw new IllegalArgumentException("Tipo de tanque enemigo inválido: " + getTipoTanque());
+        };
+    }
+
     private long sortearTiempoConducta() { return (1 + (int)(Math.random() * 5)) * 1000L; }
 
     private Direccion sortearDireccion() {

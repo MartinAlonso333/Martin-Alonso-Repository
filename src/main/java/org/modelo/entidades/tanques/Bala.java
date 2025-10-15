@@ -25,6 +25,12 @@ public class Bala extends Ente {
     public int getDanio() { return danio; }
     public boolean estaActivo() { return activo; }
     public Direccion getDireccion() { return direccion; }
+
+    @Override
+    public String getClaveSprite() {
+        return "bullet";
+    }
+
     public void setActivo(boolean activo) { this.activo = activo; }
     @Override
     public void actualizar(double deltaTime) {

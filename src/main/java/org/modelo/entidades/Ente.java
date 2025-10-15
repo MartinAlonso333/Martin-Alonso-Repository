@@ -4,7 +4,7 @@ import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 import org.modelo.utilidades.Direccion;
 
-public abstract class Ente {
+public abstract class Ente implements ConSprite {
     protected Coordenada posicion;
     protected Dimensiones dimensiones;
     private boolean activo = true;
@@ -43,4 +43,8 @@ public abstract class Ente {
     public Direccion getDireccion() { return null; }
     public boolean permitePaso() { return false; }
     public Enum<?> getSubtipo() { return null; }
+
+    @Override
+    public abstract String getClaveSprite();
 }
+

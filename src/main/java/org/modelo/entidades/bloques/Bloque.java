@@ -1,5 +1,6 @@
 package org.modelo.entidades.bloques;
 
+import org.modelo.entidades.ConSprite;
 import org.modelo.entidades.Ente;
 import org.modelo.entidades.TipoEnte;
 import org.modelo.entidades.tanques.Bala;
@@ -7,7 +8,7 @@ import org.modelo.eventos.GestorEventos;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 
-public class Bloque extends Ente {
+public class Bloque extends Ente implements ConSprite {
     private final TipoBloque tipo;
     private int vida;
 
@@ -54,4 +55,16 @@ public class Bloque extends Ente {
     public TipoEnte getTipoEnte() { return TipoEnte.BLOQUE; }
 
     public TipoBloque getTipoBloque() { return tipo; }
+
+    @Override
+    public String getClaveSprite() {
+        return switch (tipo) {
+            case ACERO -> "SteelBlock";
+            case LADRILLO -> "BrickBlock";
+            case BASE -> "BaseBlock";
+            case BOSQUE -> "ForestBlock";
+            case AGUA -> "WaterBlock";
+            case TANQUE_DESTRUIDO -> "TankDestroyed";
+        };
+    }
 }

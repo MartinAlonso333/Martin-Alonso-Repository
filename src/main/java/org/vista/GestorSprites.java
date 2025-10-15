@@ -1,6 +1,7 @@
 package org.vista;
 
 import javafx.scene.image.Image;
+import org.modelo.entidades.ConSprite;
 import org.modelo.entidades.Ente;
 import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.bloques.TipoBloque;
@@ -18,13 +19,16 @@ import java.util.function.Function;
 
 public class GestorSprites {
 
-    private static final Map<String, SpriteConfig> configs = new HashMap<>();
-    private static final Map<Class<? extends Ente>, Function<Ente, String>> mapeadores = new HashMap<>();
+    private final Map<String, SpriteConfig> configs = new HashMap<>();
     private static final Map<String, Image> cache = new HashMap<>();
     private static final String RUTA_SPRITES = "/sprites/";
 
-    static {
-        // --- BLOQUES ---
+    public GestorSprites() {
+        inicializarConfigs();
+    }
+
+    private void inicializarConfigs() {
+        // BLOQUES
         configs.put("SteelBlock", new SpriteConfig("SteelBlock", 1));
         configs.put("BrickBlock", new SpriteConfig("BrickBlock", 1));
         configs.put("BaseBlock", new SpriteConfig("BaseBlock", 1));
@@ -32,94 +36,34 @@ public class GestorSprites {
         configs.put("WaterBlock", new SpriteConfig("WaterBlock", 1));
         configs.put("TankDestroyed", new SpriteConfig("TankDestroyed", 1));
 
-        // --- ENEMIGOS ---
+        // ENEMIGOS
         configs.put("EnemyTankRegular", new SpriteConfig("EnemyTankRegular", 2));
         configs.put("EnemyTankFast", new SpriteConfig("EnemyTankFast", 2));
         configs.put("EnemyTankPowerful", new SpriteConfig("EnemyTankPowerful", 2));
         configs.put("EnemyTankHeavy", new SpriteConfig("EnemyTankHeavy", 2));
 
-        // --- JUGADORES ---
+        // JUGADORES
         configs.put("player1", new SpriteConfig("Player1Tank", 2));
         configs.put("player2", new SpriteConfig("Player2Tank", 2));
 
-
-        // --- BALA ---
+        // BALA
         configs.put("bullet", new SpriteConfig("Shot", 1));
 
-        // --- POWERUPS ---
+        // POWERUPS
         configs.put("PowerUp-Helmet", new SpriteConfig("PowerUp-Helmet", 1));
         configs.put("PowerUp-Star", new SpriteConfig("PowerUp-Star", 1));
         configs.put("PowerUp-Grenade", new SpriteConfig("PowerUp-Grenade", 1));
         configs.put("InvulnerableRing.png", new SpriteConfig("InvulnerableRing", 1));
-
-        inicializarMapeadores();
     }
 
-    private static void inicializarMapeadores() {
-        // Bloques → según TipoBloque
-        mapeadores.put(Bloque.class, e -> {
-            TipoBloque tipo = ((Bloque) e).getTipoBloque();
-            return switch (tipo) {
-                case ACERO -> "SteelBlock";
-                case LADRILLO -> "BrickBlock";
-                case BASE -> "BaseBlock";
-                case BOSQUE -> "ForestBlock";
-                case AGUA -> "WaterBlock";
-                case TANQUE_DESTRUIDO -> "TankDestroyed";
-            };
-        });
-
-        mapeadores.put(TanqueJugador.class, e -> {
-            int id = ((TanqueJugador) e).getIdJugador();
-            return "player" + id; // devuelve "player1" o "player2"
-        });
-
-        mapeadores.put(TanqueEnemigo.class, e -> {
-            TipoTanque tipo = ((TanqueEnemigo) e).getTipoTanque();
-            return switch (tipo) {
-                case BASICO -> "EnemyTankRegular";
-                case RAPIDO -> "EnemyTankFast";
-                case POTENTE -> "EnemyTankPowerful";
-                case BLINDADO -> "EnemyTankHeavy";
-                default -> throw new IllegalStateException("Tipo de tanque enemigo inválido: " + tipo);
-            };
-        });
-
-
-        // Bala
-        mapeadores.put(Bala.class, e -> "bullet");
-
-        // PowerUps
-        mapeadores.put(PowerUp.class, e -> {
-            TipoPowerUp tipo = ((PowerUp) e).getTipoPowerUp();
-            return switch (tipo) {
-                case CASCO -> "PowerUp-Helmet";
-                case ESTRELLA -> "PowerUp-Star";
-                case GRANADA -> "PowerUp-Grenade";
-            };
-        });
-    }
-
-    private static String obtenerClave(Ente ente) {
-        Function<Ente, String> fn = mapeadores.get(ente.getClass());
-        if (fn == null) {
-            throw new IllegalArgumentException("No hay mapeador de sprite para la clase: " + ente.getClass());
+    public Map<Direccion, List<Image>> getAnimacionesPara(ConSprite ente) {
+        String clave = ente.getClaveSprite();
+        SpriteConfig config = configs.get(clave);
+        if (config == null) {
+            throw new IllegalArgumentException("No hay configuración de sprite para la clave: " + clave);
         }
-        String clave = fn.apply(ente);
 
-        if (!configs.containsKey(clave)) {
-            throw new IllegalArgumentException("No hay sprite configurado para la clave generada: " + clave +
-                    " (ente: " + ente.getClass() + ")");
-        }
-        return clave;
-    }
-
-    public static Map<Direccion, List<Image>> getAnimacionesPara(Ente ente) {
-        String clave = obtenerClave(ente);
-
-        SpriteConfig config = configs.get(clave); // ya es "player1" o "player2"
         Map<Direccion, List<Image>> animaciones = new EnumMap<>(Direccion.class);
-
         for (Direccion dir : Direccion.values()) {
             List<Image> frames = new ArrayList<>();
             if (config.frames() > 1) {

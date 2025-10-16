@@ -13,18 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-/**
- * Maneja las colisiones entre diferentes tipos de entidades en el juego.
- * Utiliza un mapa para registrar reglas de colisión entre pares de clases de entidades.
- */
-
-
 public class ColisionHandler {
 
     private final Map<EntesInvolucrados, BiConsumer<Ente, Ente>> reglas = new HashMap<>();
     private final GestorPowerUp gestorPowerUp;
     private GestorEventos em;
-    private static final int TIEMPOATURDIDO = 2000; // milisegundos
 
     public ColisionHandler(GestorPowerUp gestorPowerUp, GestorEventos gestorEventos) {
         registrarReglas();

@@ -101,4 +101,10 @@ public class TanqueEnemigo extends Tanque {
         Direccion[] direcciones = Direccion.values();
         return direcciones[(int)(Math.random() * direcciones.length)];
     }
+
+    @Override
+    public void destruir() {
+        super.destruir();
+        em.notificar(TipoEvento.TANQUE_DESTRUIDO, this);
+    }
 }

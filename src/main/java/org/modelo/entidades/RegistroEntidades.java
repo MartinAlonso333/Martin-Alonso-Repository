@@ -100,26 +100,26 @@ public class RegistroEntidades {
 
     public Ente crearJugador(Element elem) {
         String id = elem.getAttribute("id"); // player1, player2
-        int numJugador = Integer.parseInt(id.replace("player", ""));
-        if (numJugador > jugadoresMaximos) return null;
+        int numJugador = Integer.parseInt(id.replace("player", "")) - 1;
+        if (numJugador >= jugadoresMaximos || numJugador < 0) return null;
 
         double x = Double.parseDouble(elem.getAttribute("x"));
         double y = Double.parseDouble(elem.getAttribute("y"));
 
         TipoTanque tipo;
-        if (numJugador == 1) {
+        if (numJugador == 0) {
             tipo = TipoTanque.JUGADOR1;
-        } else if (numJugador == 2) {
+        } else if (numJugador == 1) {
             tipo = TipoTanque.JUGADOR2;
         } else {
             tipo = TipoTanque.JUGADOR1;
         }
 
         return new TanqueJugador(
+                numJugador,
                 new Coordenada(x, y),
                 new Dimensiones(20, 20),
                 Direccion.ARRIBA,
-                numJugador,
                 tipo,
                 em
         );

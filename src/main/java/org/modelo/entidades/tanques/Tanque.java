@@ -43,10 +43,6 @@ public abstract class Tanque extends Ente {
     }
 
     public void mover(Direccion dir) {
-        if (System.currentTimeMillis() < tiempoQuieto) {
-            estaMoviendo = false;
-            return;
-        }
         this.direccion = dir;
         estaMoviendo = true;
     }
@@ -69,11 +65,6 @@ public abstract class Tanque extends Ente {
         posicion.setCoordenada(nuevaPos.getPixelX(), nuevaPos.getPixelY());
     }
 
-    public void aturdir(long duracionMs) {
-        tiempoQuieto = System.currentTimeMillis() + duracionMs;
-        estaMoviendo = false;
-    }
-
     public boolean puedeDisparar() {
         return System.currentTimeMillis() - ultimoDisparo >= velocidadDeDisparo;
     }
@@ -92,17 +83,18 @@ public abstract class Tanque extends Ente {
     public void impactoConBala(Bala bala, GestorEventos em) {
         if (bala.getDuenio() == this) return;
 
-        if (bala.getDuenio().getTipoEnte() == TipoEnte.JUGADOR && this.getTipoEnte() == TipoEnte.JUGADOR) {
-            aturdir(2000);  // TIEMPOATURDIDO
-            bala.setActivo(false);
-            return;
-        }
+        if (manejarAturdimiento(bala)) return;
 
         recibirDanio(bala.getDanio());
         bala.setActivo(false);
 
         emitirEventoImpacto(em);
     }
+
+    protected boolean manejarAturdimiento(Bala bala) {
+        return false;
+    }
+
     public void emitirEventoImpacto(GestorEventos em) {
         getTipoTanque().emitirEvento(em, this);
     }
@@ -117,7 +109,6 @@ public abstract class Tanque extends Ente {
     public void destruir() {
         vida = 0;
         setActivo(false);
-        em.notificar(TipoEvento.TANQUE_DESTRUIDO, this);
     }
 
     @Override

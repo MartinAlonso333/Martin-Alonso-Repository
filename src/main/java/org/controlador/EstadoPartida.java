@@ -58,8 +58,10 @@ public class EstadoPartida implements EstadoJuego {
     }
 
     private boolean derrota() {
-        return juego.getJugadores().isEmpty();
+        return juego.getJugadoresMap().values().stream()
+                .allMatch(TanqueJugador::estaDestruido);
     }
+
 
     private void partidaGanada() {
         em.notificar(TipoEvento.MOSTRAR_FIN_PARTIDA, true);
@@ -74,26 +76,30 @@ public class EstadoPartida implements EstadoJuego {
         if (!presionada) {
             switch (input) {
                 case "J1_ARRIBA", "J1_ABAJO", "J1_IZQUIERDA", "J1_DERECHA" ->
-                        juego.getJugadores().get(0).detenerMovimiento();
+                        juego.detenerJugador(0);
                 case "J2_ARRIBA", "J2_ABAJO", "J2_IZQUIERDA", "J2_DERECHA" -> {
                     if (numJugadores > 1)
-                        juego.getJugadores().get(1).detenerMovimiento();
+                        juego.detenerJugador(1);
                 }
             }
             return;
         }
 
         // Jugador 1
-        switch (input) {
-            case "J1_ARRIBA" -> juego.moverJugador(0, Direccion.ARRIBA);
-            case "J1_ABAJO" -> juego.moverJugador(0, Direccion.ABAJO);
-            case "J1_IZQUIERDA" -> juego.moverJugador(0, Direccion.IZQUIERDA);
-            case "J1_DERECHA" -> juego.moverJugador(0, Direccion.DERECHA);
-            case "J1_DISPARO" -> juego.dispararJugador(0);
+        TanqueJugador j1 = juego.getJugadoresMap().get(0);
+        if (j1 != null && j1.estaActivo()) {
+            switch (input) {
+                case "J1_ARRIBA" -> juego.moverJugador(0, Direccion.ARRIBA);
+                case "J1_ABAJO" -> juego.moverJugador(0, Direccion.ABAJO);
+                case "J1_IZQUIERDA" -> juego.moverJugador(0, Direccion.IZQUIERDA);
+                case "J1_DERECHA" -> juego.moverJugador(0, Direccion.DERECHA);
+                case "J1_DISPARO" -> juego.dispararJugador(0);
+            }
         }
 
         // Jugador 2
-        if (numJugadores > 1) {
+        TanqueJugador j2 = juego.getJugadoresMap().get(1);
+        if (j2 != null && j2.estaActivo() && numJugadores > 1) {
             switch (input) {
                 case "J2_ARRIBA" -> juego.moverJugador(1, Direccion.ARRIBA);
                 case "J2_ABAJO" -> juego.moverJugador(1, Direccion.ABAJO);

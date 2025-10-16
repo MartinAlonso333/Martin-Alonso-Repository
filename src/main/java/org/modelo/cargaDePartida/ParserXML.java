@@ -3,6 +3,7 @@ package org.modelo.cargaDePartida;
 import org.modelo.Juego;
 import org.modelo.entidades.Ente;
 import org.modelo.entidades.RegistroEntidades;
+import org.modelo.entidades.tanques.TanqueJugador;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 public class ParserXML {
 
+    private int idJugador = 1;
     public static void cargarNivel(String nombreArchivo, Juego juego, RegistroEntidades registro) {
         try {
             File file = new File(Objects.requireNonNull(ParserXML.class.getResource("/levels/GeneratedLevels/" + nombreArchivo + ".xml")).toURI());
@@ -29,7 +31,8 @@ public class ParserXML {
         Ente ente = crearEnteDesdeElemento(elem, registro);
         if (ente != null) {
             if (elem.getTagName().equals("player")){
-                juego.agregarJugador(ente);
+                TanqueJugador tanqueJugador = (TanqueJugador) ente;
+                juego.agregarJugador(((TanqueJugador) ente).getIdJugador(), ente);
             }
             juego.agregarEnte(ente);
         }

@@ -24,7 +24,7 @@ public class Juego {
     private static final int ALTO_MAPA = 600;
 
     private final List<Ente> entes = new ArrayList<>();
-    private final List<TanqueJugador> jugadores = new ArrayList<>();
+    private final Map<Integer, TanqueJugador> jugadores = new HashMap<>();
     private final GestorPowerUp gestorPowerUp = new GestorPowerUp();
     private final SistemaColisionGrilla sistemaColision;
     private final GestorEventos em;
@@ -43,14 +43,16 @@ public class Juego {
         em.registrar(TipoEvento.POWERUP_RECOGIDO, (data) -> powerupsActivos = 0);
         em.registrar(TipoEvento.TANQUE_DESTRUIDO, (data) -> {
             Tanque tanque = (Tanque) data;
-            if (tanque.getTipoEnte() != TipoEnte.ENEMIGO) removerJugador(tanque);
-            Bloque bloqueNuevo = new Bloque(TipoBloque.TANQUE_DESTRUIDO,
-                    new Coordenada(tanque.getPosicion().getPixelX(),
-                            tanque.getPosicion().getPixelY()),
-                    new Dimensiones(20, 20));
-            nuevasEntidades.add(bloqueNuevo); // agregado temporal
+            removerEnte(tanque);
+            crearBloqueDestruido(tanque);
             PowerUp nuevo = spawnPowerUpAleatorio();
             if (nuevo != null) nuevasEntidades.add(nuevo);
+        });
+        em.registrar(TipoEvento.TANQUE_JUGADOR_DESTRUIDO, (data) -> {
+            TanqueJugador tanque = (TanqueJugador) data;
+            jugadores.remove(tanque.getIdJugador());  // elimina del mapa por ID
+            removerEnte(tanque);               // sigue removiendo del listado de entes
+            crearBloqueDestruido(tanque);
         });
 
         em.registrar(TipoEvento.BALA_DISPARADA, (data) -> {
@@ -58,16 +60,20 @@ public class Juego {
             nuevasEntidades.add(bala);
         });
     }
+    private void crearBloqueDestruido(Tanque tanque) {
+        Bloque bloqueNuevo = new Bloque(TipoBloque.TANQUE_DESTRUIDO,
+                new Coordenada(tanque.getPosicion().getPixelX(),
+                        tanque.getPosicion().getPixelY()),
+                new Dimensiones(20, 20));
+        nuevasEntidades.add(bloqueNuevo); // agregado temporal
+    }
 
     // ------------------ GESTIÓN DE ENTES ------------------
-    public void agregarJugador(Ente e) {
-        jugadores.add((TanqueJugador) e);
+    public void agregarJugador(int id, Ente e) {
+        jugadores.put(id, (TanqueJugador) e);
         agregarEnte(e);
     }
-    public void removerJugador(Ente e) {
-        jugadores.remove(e);
-        removerEnte(e);
-    }
+
     public void agregarEnte(Ente e) {
         entes.add(e);
         sistemaColision.agregarEnte(e);
@@ -80,7 +86,9 @@ public class Juego {
 
     public List<Ente> getEntes() { return new ArrayList<>(entes); }
 
-    public List<TanqueJugador> getJugadores() { return new ArrayList<>(jugadores); }
+    public Map<Integer, TanqueJugador> getJugadoresMap() {
+        return Collections.unmodifiableMap(jugadores);
+    }
 
     public List<Ente> getEntesDeTipo(TipoEnte tipo) {
         return entes.stream()
@@ -89,26 +97,31 @@ public class Juego {
     }
 
     // ------------------ ACCIONES ------------------
-    public void moverJugador(int indice, Direccion dir) {
-        if (indice < 0 || indice >= jugadores.size()) return;
+    public void moverJugador(int id, Direccion dir) {
+        TanqueJugador jugador = jugadores.get(id);
+        if (jugador == null) return;
 
-        TanqueJugador jugador = jugadores.get(indice);
         Coordenada antes = new Coordenada(jugador.getPosicion().getPixelX(), jugador.getPosicion().getPixelY());
         jugador.mover(dir);
         sistemaColision.actualizarPosicion(jugador, antes);
         sistemaColision.chequearColisiones(jugador);
     }
 
-    public void dispararJugador(int indice) {
-        if (indice < 0 || indice >= jugadores.size()) return;
+    public void dispararJugador(int id) {
+        TanqueJugador jugador = jugadores.get(id);
+        if (jugador == null) return;
 
-        TanqueJugador jugador = jugadores.get(indice);
         Bala bala = jugador.disparar();
         if (bala != null) {
             agregarEnte(bala);
             sistemaColision.chequearColisiones(bala);
             em.notificar(TipoEvento.BALA_DISPARADA, bala);
         }
+    }
+
+    public void detenerJugador(int id) {
+        TanqueJugador jugador = jugadores.get(id);
+        if (jugador != null) jugador.detenerMovimiento();
     }
 
 
@@ -223,16 +236,21 @@ public class Juego {
 
     // ------------------ EVENTO GRANADA ------------------
     private void destruirTodosEnemigos() {
+        List<Ente> snapshot = new ArrayList<>(entes);
         List<Ente> eliminar = new ArrayList<>();
-        for (Ente e : entes) {
-            if (e.getTipoEnte() != TipoEnte.ENEMIGO) continue;
-            TanqueEnemigo enemigo = (TanqueEnemigo) e;
-            enemigo.destruir();
-            eliminar.add(enemigo); // marcar para remover después
-            em.notificar(TipoEvento.TANQUE_DESTRUIDO, enemigo);
+
+        for (Ente e : snapshot) {
+            if (e.getTipoEnte() == TipoEnte.ENEMIGO) {
+                TanqueEnemigo enemigo = (TanqueEnemigo) e;
+                enemigo.destruir();  // solo marca como destruido
+                eliminar.add(enemigo);
+            }
         }
+
         for (Ente e : eliminar) {
-            removerEnte(e);
+            em.notificar(TipoEvento.TANQUE_DESTRUIDO, e);
         }
     }
+
+
 }

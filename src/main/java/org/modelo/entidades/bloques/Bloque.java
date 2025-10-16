@@ -8,7 +8,7 @@ import org.modelo.eventos.GestorEventos;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
 
-public class Bloque extends Ente implements ConSprite {
+public class Bloque extends Ente{
     private final TipoBloque tipo;
     private int vida;
 
@@ -58,13 +58,6 @@ public class Bloque extends Ente implements ConSprite {
 
     @Override
     public String getClaveSprite() {
-        return switch (tipo) {
-            case ACERO -> "SteelBlock";
-            case LADRILLO -> "BrickBlock";
-            case BASE -> "BaseBlock";
-            case BOSQUE -> "ForestBlock";
-            case AGUA -> "WaterBlock";
-            case TANQUE_DESTRUIDO -> "TankDestroyed";
-        };
+        return getTipoBloque().getClaveSprite();
     }
 }

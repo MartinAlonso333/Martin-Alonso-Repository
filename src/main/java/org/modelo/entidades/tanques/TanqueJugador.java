@@ -10,13 +10,11 @@ import org.modelo.utilidades.Direccion;
 public class TanqueJugador extends Tanque {
     private boolean invulnerable;
     private boolean disparoMejorado;
-    private final int idJugador;
     private final GestorEventos em;
 
     public TanqueJugador(Coordenada posicion, Dimensiones dimensiones, Direccion direccionInicial, int idJugador, TipoTanque tipoTanque, GestorEventos gestorEventos) {
         super(posicion, dimensiones, tipoTanque, direccionInicial, gestorEventos);
         this.em = gestorEventos;
-        this.idJugador = idJugador;
     }
 
     @Override
@@ -50,8 +48,7 @@ public class TanqueJugador extends Tanque {
 
     @Override
     public String getClaveSprite() {
-        return "player" + getIdJugador();
+        return getTipoTanque().getClaveSprite();
     }
 
-    public int getIdJugador() { return idJugador; }
 }

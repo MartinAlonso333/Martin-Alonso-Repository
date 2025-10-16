@@ -6,21 +6,19 @@ import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.TipoEvento;
 
 public enum TipoPowerUp {
-
-    CASCO(5) {
+    CASCO("PowerUp-Helmet", 5) {
         @Override
         public void aplicar(TanqueJugador jugador, GestorEventos em) {
             jugador.setInvulnerabilidad(true);
-            em.notificar(TipoEvento.CASCO_RECOGIDO,jugador);
+            em.notificar(TipoEvento.CASCO_RECOGIDO, jugador);
         }
         @Override
         public void remover(TanqueJugador jugador, GestorEventos em) {
             jugador.setInvulnerabilidad(false);
-            em.notificar(TipoEvento.EFECTO_CASCO_TERMINADO,jugador);
+            em.notificar(TipoEvento.EFECTO_CASCO_TERMINADO, jugador);
         }
     },
-
-    ESTRELLA(7) {
+    ESTRELLA("PowerUp-Star", 7) {
         @Override
         public void aplicar(TanqueJugador jugador, GestorEventos em) {
             jugador.setDisparoMejorado(true);
@@ -28,11 +26,9 @@ public enum TipoPowerUp {
         @Override
         public void remover(TanqueJugador jugador, GestorEventos em) {
             jugador.setDisparoMejorado(false);
-
         }
     },
-
-    GRANADA(0) {
+    GRANADA("PowerUp-Grenade", 0) {
         @Override
         public void aplicar(TanqueJugador jugador, GestorEventos em) {
             em.notificar(TipoEvento.GRANADA_RECOGIDA, null);
@@ -40,10 +36,16 @@ public enum TipoPowerUp {
         @Override
         public void remover(TanqueJugador jugador, GestorEventos em) { /* no hace nada */ }
     };
-
+    private final String claveSprite;
     private final double duracion;
+    TipoPowerUp(String claveSprite, double duracion) {
+        this.claveSprite = claveSprite;
+        this.duracion = duracion;
+    }
+    public String getClaveSprite() {
+        return claveSprite;
+    }
 
-    TipoPowerUp(double duracion) { this.duracion = duracion; }
     public double getDuracion() { return duracion; }
 
     public abstract void aplicar(TanqueJugador jugador, GestorEventos em);

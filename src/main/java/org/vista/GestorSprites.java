@@ -2,20 +2,9 @@ package org.vista;
 
 import javafx.scene.image.Image;
 import org.modelo.entidades.ConSprite;
-import org.modelo.entidades.Ente;
-import org.modelo.entidades.bloques.Bloque;
-import org.modelo.entidades.bloques.TipoBloque;
-import org.modelo.entidades.powerups.PowerUp;
-import org.modelo.entidades.powerups.TipoPowerUp;
-import org.modelo.entidades.tanques.TanqueEnemigo;
-import org.modelo.entidades.tanques.TanqueJugador;
-import org.modelo.entidades.tanques.TipoTanque;
-import org.modelo.entidades.tanques.Bala;
 import org.modelo.utilidades.Direccion;
-
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Function;
 
 public class GestorSprites {
 

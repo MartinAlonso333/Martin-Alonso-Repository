@@ -26,11 +26,7 @@ public class PowerUp extends Ente {
 
     @Override
     public String getClaveSprite() {
-        return switch (getTipoPowerUp()) {
-            case CASCO -> "PowerUp-Helmet";
-            case ESTRELLA -> "PowerUp-Star";
-            case GRANADA -> "PowerUp-Grenade";
-        };
+        return getTipoPowerUp().getClaveSprite();
     }
 
     public TipoPowerUp getTipoPowerUp() { return tipo; }

@@ -4,7 +4,6 @@ import org.modelo.entidades.*;
 import org.modelo.entidades.bloques.Bloque;
 import org.modelo.entidades.powerups.PowerUp;
 import org.modelo.entidades.tanques.*;
-import org.modelo.eventos.EventoManager;
 import org.modelo.eventos.GestorEventos;
 import org.modelo.eventos.GestorPowerUp;
 import org.modelo.eventos.TipoEvento;
@@ -17,7 +16,7 @@ public class ColisionHandler {
 
     private final Map<EntesInvolucrados, BiConsumer<Ente, Ente>> reglas = new HashMap<>();
     private final GestorPowerUp gestorPowerUp;
-    private GestorEventos em;
+    private final GestorEventos em;
 
     public ColisionHandler(GestorPowerUp gestorPowerUp, GestorEventos gestorEventos) {
         registrarReglas();

@@ -17,6 +17,8 @@ import java.util.function.BiConsumer;
  * Maneja las colisiones entre diferentes tipos de entidades en el juego.
  * Utiliza un mapa para registrar reglas de colisión entre pares de clases de entidades.
  */
+
+
 public class ColisionHandler {
 
     private final Map<EntesInvolucrados, BiConsumer<Ente, Ente>> reglas = new HashMap<>();

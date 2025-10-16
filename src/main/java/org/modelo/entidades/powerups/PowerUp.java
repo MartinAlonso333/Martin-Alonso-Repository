@@ -1,16 +1,18 @@
 package org.modelo.entidades.powerups;
 
 import org.modelo.entidades.Ente;
-import org.modelo.entidades.TipoEnte;
 import org.modelo.utilidades.Coordenada;
 import org.modelo.utilidades.Dimensiones;
+import org.modelo.entidades.TipoEnte;
 
 public class PowerUp extends Ente {
     private final TipoPowerUp tipo;
+    private final PowerUpEfecto efecto;
 
     public PowerUp(Coordenada pos, Dimensiones dim, TipoPowerUp tipo) {
         super(pos, dim);
         this.tipo = tipo;
+        this.efecto = PowerUpFabrica.crearEfecto(tipo);
     }
 
     @Override
@@ -19,15 +21,22 @@ public class PowerUp extends Ente {
     }
 
     @Override
-    public boolean estaDestruido() { return !estaActivo(); }
+    public boolean estaDestruido() {
+        return !estaActivo();
+    }
 
     @Override
-    public TipoEnte getTipoEnte() { return TipoEnte.POWERUP; }
+    public TipoEnte getTipoEnte() {
+        return TipoEnte.POWERUP;
+    }
 
     @Override
     public String getClaveSprite() {
-        return getTipoPowerUp().getClaveSprite();
+        return efecto.getClaveSprite();
     }
 
-    public TipoPowerUp getTipoPowerUp() { return tipo; }
+    public TipoPowerUp getTipoPowerUp() {
+        return tipo;
+    }
+
 }
